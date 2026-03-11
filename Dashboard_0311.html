@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint Board · 2026 W11</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:    #F7F4F0;
+  --white:    #FFFFFF;
+  --linen:    #EDEBE6;
+  --linen-dk: #E0DDD7;
+  --rule:     #D6D2CB;
+  --rule-dk:  #BDB8B0;
+  --ink:      #1E1C19;
+  --ink-2:    #5C5852;
+  --ink-3:    #9C9890;
+  --ink-4:    #C0BBB4;
+  --hot:      #C02020;
+  --warn:     #A05000;
+  --ok:       #1A6830;
+  --c-amber:  #B06000;
+  --c-slate:  #1A3D6B;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:15px; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Noto Sans TC', sans-serif;
+  line-height: 1.5;
+  padding: 40px 36px 80px;
+}
+
+/* ── HEADER ── */
+.pg-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding-bottom: 24px; margin-bottom: 32px;
+  border-bottom: 2px solid var(--ink);
+}
+.pg-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2rem; font-weight: 600;
+  letter-spacing: -0.02em; line-height: 1.1; color: var(--ink);
+}
+.pg-meta { margin-top:6px; font-size:0.78rem; letter-spacing:0.08em; color:var(--ink-3); text-transform:uppercase; }
+.pg-badge {
+  font-size:0.78rem; font-weight:700; letter-spacing:0.1em; color:var(--ink-2);
+  border:1.5px solid var(--rule-dk); padding:8px 18px; border-radius:2px;
+}
+
+/* ── ALERT ── */
+.alert {
+  display:flex; gap:12px; align-items:flex-start;
+  background:#FBF5EB; border:1.5px solid #C8A060;
+  border-left:4px solid var(--c-amber);
+  border-radius:3px; padding:14px 18px; margin-bottom:44px;
+}
+.alert-lbl { font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--c-amber); margin-bottom:8px; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; }
+.chip {
+  font-size:0.8rem; font-weight:500; padding:4px 10px; border-radius:2px;
+  background:rgba(255,255,255,0.75); border:1px solid var(--rule-dk); color:var(--ink-2);
+}
+.chip.u { background:#F5EAEA; border-color:#C08080; color:var(--hot); }
+
+/* ── SECTION HEAD ── */
+.sh { display:flex; align-items:center; gap:12px; margin:44px 0 18px; }
+.sh-title { font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3); white-space:nowrap; }
+.sh-line { flex:1; height:1px; background:var(--rule); }
+.sh-note { font-size:0.68rem; color:var(--ink-4); white-space:nowrap; }
+
+/* ══════════════════════════════════════════════════
+   GANTT  —  pixel-perfect layout, no float/overlap
+   Columns: label(200px) | W1(80px) | W2(80px) |
+            W3(80px) | W4(80px) | APR(120px) |
+            MAY(100px) | JUN(100px)
+   Total track = 640px
+   Each col px value stored in JS COL_PX array
+══════════════════════════════════════════════════ */
+.gantt-outer {
+  overflow-x: auto;
+  border: 1.5px solid var(--rule-dk);
+  border-radius: 3px;
+  background: var(--white);
+  /* prevent any child from escaping */
+}
+
+.gantt-table {
+  width: 100%;
+  min-width: 840px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Column group widths */
+.col-lbl  { width: 200px; }
+.col-w1   { width: 80px; }
+.col-w2   { width: 80px; }
+.col-w3   { width: 80px; }
+.col-w4   { width: 80px; }
+.col-apr-1 { width: 80px; }
+.col-apr-2 { width: 80px; }
+.col-apr-3 { width: 80px; }
+
+/* Header row */
+.g-th {
+  background: var(--linen);
+  font-size: 0.68rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3);
+  padding: 10px 0; text-align:center;
+  border-bottom: 1.5px solid var(--rule-dk);
+  border-right: 1px solid var(--rule);
+}
+.g-th:last-child { border-right:none; }
+.g-th.lbl-th { text-align:left; padding-left:16px; border-right:1px solid var(--rule-dk); }
+.g-th.now { color:var(--c-slate); font-size:0.72rem; }
+
+/* Section sub-header (遊戲/技術 divider) */
+.g-sec td {
+  background: var(--linen);
+  padding: 7px 16px;
+  font-size:0.65rem; font-weight:800;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-2);
+  border-top: 2px solid var(--rule-dk);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Data row */
+.g-row { border-bottom: 1px solid var(--rule); transition: background 0.1s; }
+.g-row:last-child { border-bottom: none; }
+.g-row:hover td { background: var(--linen); }
+
+/* Label cell */
+.g-lbl-cell {
+  padding: 10px 14px 10px 14px;
+  border-right: 1.5px solid var(--rule-dk);
+  vertical-align: middle;
+}
+.g-lbl-inner { display:flex; align-items:center; gap:9px; }
+.g-ico  { font-size:16px; flex-shrink:0; }
+.g-nm   { font-size:0.875rem; font-weight:600; color:var(--ink); line-height:1.2; }
+.g-sub  { font-size:0.65rem; color:var(--ink-3); margin-top:1px; }
+.g-type {
+  display:inline-block; font-size:0.58rem; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase;
+  padding:2px 5px; border-radius:2px;
+  background:var(--linen-dk); color:var(--ink-3); margin-top:2px;
+}
+
+/* Track cell — this is where bars & milestones live */
+.g-track-cell {
+  position: relative;
+  padding: 0;
+  border-right: 1px solid var(--rule);
+  vertical-align: top;
+  height: 100px;           /* increased to accommodate stacked milestones (bar 36px + multiple milestone rows) */
+  overflow: visible;
+}
+.g-track-cell:last-child { border-right:none; }
+
+/* The inner wrapper that carries the absolute-positioned bar */
+.g-cell-inner {
+  position: relative;
+  width: 100%; height: 100%;
+}
+
+/* ── BAR ──
+   JS will set: left, width as px offset WITHIN the full track span.
+   But since each bar may span multiple cells, we use a different approach:
+   bars are rendered as absolute inside a single "full-track" overlay div
+   that sits over all track cells. This avoids any cell boundary clipping.
+*/
+
+/* Full-width track overlay — spans all 7 time columns via JS */
+.g-track-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  height: 64px;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+}
+
+.g-bar {
+  position: absolute;
+  top: 10px;
+  height: 20px;
+  border-radius: 2px;
+  display: flex; align-items: center;
+  padding: 0 8px;
+  font-size: 0.68rem; font-weight:700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+}
+/* 截止壓力警告 - 14天內 */
+.g-bar.urgent {
+  border: 2.5px solid var(--hot) !important;
+  box-shadow: 0 0 8px rgba(192, 32, 32, 0.3);
+}
+
+/* Milestones sit below bar in the same overlay */
+.ms-flag {
+  position: absolute;
+  display: flex; align-items: center; gap:3px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: auto;
+}
+.ms-dot {
+  width:8px; height:8px; border-radius:50%; flex-shrink:0;
+  border:1.5px solid var(--white);
+  box-shadow: 0 0 0 1px currentColor;
+}
+.ms-txt { font-size:0.62rem; font-weight:800; line-height:1; }
+
+/* Today line — absolute over entire table */
+.today-line {
+  position: absolute;
+  top: 0; bottom: 0; width: 2px;
+  background: var(--c-slate);
+  opacity: 0.4; z-index: 10;
+  pointer-events: none;
+}
+.today-line::after {
+  content: '今';
+  position: absolute; top: 4px; left: 3px;
+  font-size: 0.6rem; font-weight:700; color:var(--c-slate);
+  opacity: 0.8;
+}
+
+/* Table wrapper for today-line positioning */
+.gantt-rel { position: relative; }
+
+/* Legend row */
+.g-legend {
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  padding:11px 16px;
+  background:var(--linen);
+  border-top: 1px solid var(--rule);
+}
+.g-legend-ttl { font-size:0.62rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); }
+.leg-i { display:flex; align-items:center; gap:5px; font-size:0.75rem; color:var(--ink-2); }
+.leg-dot { width:8px; height:8px; border-radius:50%; }
+
+/* ── PROJECT CARDS ── */
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5px;
+  background: var(--rule-dk);
+  border: 1.5px solid var(--rule-dk);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.pc {
+  background: var(--white); padding:20px 20px 18px;
+  position:relative; display:flex; flex-direction:column;
+  animation: rise 0.3s ease both;
+}
+.pc::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:3px; background:var(--pc-color, var(--rule-dk));
+}
+@keyframes rise { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.pc-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.pc-ico { font-size:21px; }
+.pc-pill { font-size:0.62rem; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; padding:3px 8px; border-radius:2px; }
+.pc-name { font-size:1rem; font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:2px; }
+.pc-sub  { font-size:0.75rem; color:var(--ink-3); margin-bottom:14px; }
+.pc-prog-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; }
+.pc-prog-lbl { font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); }
+.pc-prog-pct { font-size:1.05rem; font-weight:700; letter-spacing:-0.02em; }
+.pc-bar-track { height:3px; background:var(--linen-dk); margin-bottom:16px; }
+.pc-bar-fill  { height:100%; }
+.pc-dates { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+.pc-date { background:var(--linen); padding:8px 10px; border-radius:2px; }
+.pcd-lbl { font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:2px; }
+.pcd-val { font-size:0.95rem; font-weight:700; color:var(--ink); line-height:1; }
+.pcd-cnt { font-size:0.68rem; color:var(--ink-3); margin-top:2px; }
+.pc-team { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.pc-tag  { font-size:0.7rem; padding:2px 7px; background:var(--linen); border:1px solid var(--rule); border-radius:2px; color:var(--ink-2); }
+.pc-tag em { color:var(--ink-3); font-style:normal; margin-right:2px; }
+.pc-updates { display:flex; flex-direction:column; gap:4px; margin-top:auto; }
+.pc-upd { display:flex; gap:7px; align-items:flex-start; font-size:0.8rem; color:var(--ink-2); line-height:1.4; }
+.upd-pip { width:3px; height:3px; border-radius:50%; flex-shrink:0; margin-top:6px; }
+
+/* ── TECH CARDS ── */
+.tech-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:1.5px; background:var(--rule-dk);
+  border:1.5px solid var(--rule-dk); border-radius:3px; overflow:hidden;
+}
+.tc { background:var(--white); padding:18px 20px; display:flex; gap:12px; align-items:flex-start; }
+.tc-ico { width:36px; height:36px; background:var(--linen); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.tc-name { font-size:0.875rem; font-weight:700; color:var(--ink); margin-bottom:8px; }
+.tc-rows { display:flex; flex-direction:column; gap:5px; }
+.tc-row  { display:flex; justify-content:space-between; gap:8px; }
+.tc-k    { font-size:0.75rem; color:var(--ink-3); }
+.tc-v    { font-size:0.75rem; font-weight:700; color:var(--ink-2); text-align:right; }
+.tc-v.hot  { color:var(--hot); }
+.tc-v.warn { color:var(--warn); }
+.tc-v.ok   { color:var(--ok); }
+
+/* Pill colors */
+.pill-final  { background:#E8EFF8; color:#1E3D6A; }
+.pill-qa     { background:#F5EAEA; color:#7A2020; }
+.pill-survey { background:#FAF0E0; color:#6A3E08; }
+.pill-audio  { background:#F0EBF8; color:#3C2060; }
+.pill-fe     { background:#E8F4F5; color:#0E3E44; }
+.pill-art    { background:#F5EDE8; color:#5C2E18; }
+
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:var(--paper); }
+::-webkit-scrollbar-thumb { background:var(--rule-dk); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<header class="pg-header">
+  <div>
+    <div class="pg-title">専案週報<br>Sprint Board</div>
+    <div class="pg-meta">Week 11 &nbsp;·&nbsp; 2026.03.09 – 03.13 &nbsp;·&nbsp; Slot Studio</div>
+  </div>
+  <div class="pg-badge">W11 · 2026</div>
+</header>
+
+<div class="alert">
+  <div style="font-size:1.1rem;padding-top:1px">⚡</div>
+  <div style="flex:1">
+    <div class="alert-lbl">本週 QA 重點關注</div>
+    <div class="chips">
+      <span class="chip u">🔗 Free Round API 今日已送測 🔴</span>
+      <span class="chip u">🤠 狂野霸盜 3/13 17點 DEMO彙整會議</span>
+      <span class="chip u">🏛️ 黃金城+糖果狂潮 加入FRB補測中</span>
+      <span class="chip u">⚡ Apollo Game Info 初步排版完成</span>
+      <span class="chip">🎮 埃及之書 3.8.8 UAT/Stage/Prod更新中</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh">
+  <span class="sh-title">全專案時間軸</span>
+  <div class="sh-line"></div>
+  <span class="sh-note">固定 2 個月份（週別檢視）&nbsp;·&nbsp; 3月+4月</span>
+</div>
+
+<!-- Gantt -->
+<div class="gantt-outer">
+  <div class="gantt-rel" id="gantt-rel">
+    <table class="gantt-table" id="gantt-table">
+      <colgroup>
+        <col class="col-lbl">
+        <col class="col-w1">
+        <col class="col-w2">
+        <col class="col-w3">
+        <col class="col-w4">
+        <col class="col-apr-1">
+        <col class="col-apr-2">
+        <col class="col-apr-3">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="g-th lbl-th">專案名稱</th>
+          <th class="g-th">3/9–15</th>
+          <th class="g-th now">3/16–22</th>
+          <th class="g-th">3/23–31</th>
+          <th class="g-th">4/1–7</th>
+          <th class="g-th">4/8–14</th>
+          <th class="g-th">4/15–21</th>
+          <th class="g-th">4/22–30</th>
+        </tr>
+      </thead>
+      <tbody id="gantt-body"></tbody>
+    </table>
+    <div class="today-line" id="today-line"></div>
+  </div>
+  <div class="g-legend">
+    <span class="g-legend-ttl">圖例</span>
+    <span class="leg-i"><span class="leg-dot" style="background:var(--hot)"></span>QA 進測</span>
+    <span class="leg-i"><span class="leg-dot" style="background:var(--warn)"></span>出貨</span>
+    <span class="leg-i"><span class="leg-dot" style="background:var(--ok)"></span>上線 / Prod</span>
+    <span class="leg-i"><span style="display:inline-block;width:2px;height:12px;background:var(--c-slate);opacity:0.5"></span>今天</span>
+  </div>
+</div>
+
+<!-- Game Cards -->
+<div class="sh">
+  <span class="sh-title">遊戲專案詳情</span>
+  <div class="sh-line"></div>
+</div>
+<div class="proj-grid" id="game-cards"></div>
+
+<!-- Tech Cards -->
+<div class="sh">
+  <span class="sh-title">技術 ／ API 專案詳情</span>
+  <div class="sh-line"></div>
+</div>
+<div class="tech-grid" id="tech-cards"></div>
+
+
+<script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   每週更新區 — 只改這裡
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+const TODAY = new Date('2026-03-09');
+
+// ── 時間軸欄位定義 ──
+// 每欄的「起始日」與「px 寬度」，對應 <col> 順序
+// LABEL 欄(200px)不在這裡，純時間軸欄
+// 固定顯示 2 個月份（3月+4月）= 7 週
+const COLS = [
+  { label:'3/9–15',  start:'2026-03-09', end:'2026-03-16', px:80  },
+  { label:'3/16–22', start:'2026-03-16', end:'2026-03-23', px:80  },
+  { label:'3/23–31', start:'2026-03-23', end:'2026-04-01', px:80  },
+  { label:'4/1–7',   start:'2026-04-01', end:'2026-04-08', px:80  },
+  { label:'4/8–14',  start:'2026-04-08', end:'2026-04-15', px:80  },
+  { label:'4/15–21', start:'2026-04-15', end:'2026-04-22', px:80  },
+  { label:'4/22–30', start:'2026-04-22', end:'2026-05-01', px:80  },
+];
+
+// ── 遊戲專案 ── status: final/qa/survey/audio/fe/art
+const GAMES = [
+  {
+    id:'932', emoji:'🏛️', name:'失落黃金城', en:'Legacy of Aztec',
+    color:'#C0420A', status:'final', statusLabel:'Final Test', progress:98,
+    qa:'2026-03-05', ship:'2026-03-05', live:'2026-03-25',
+    team:{ GP:'毛哥', FE:'Liyi', Info:'梅森', HIS:'梅森', GS:'Louis' },
+    done:['3/5 出貨完成','3/6 追加公版購買 / 開始遊戲 / Extra Bet 按鈕','Info 已更新至 Prod','3/11 加入FRB補測'],
+    wip: [],
+    barStart:'2026-02-20', barEnd:'2026-03-25'
+  },
+  {
+    id:'933', emoji:'🦏', name:'金甲犀牛', en:'Rhino Rumble',
+    color:'#1A6B3C', status:'survey', statusLabel:'問卷彙整', progress:75,
+    qa:'2026-03-02', ship:'2026-03-18', live:'2026-04-08',
+    team:{ GP:'毛哥', FE:'大瑞', Info:'梅森', HIS:'阿竹', GS:'阿岳' },
+    done:['3/6 問卷截止','3/10 DEMO會議完成'],
+    wip: ['預計 3/18 出貨'],
+    barStart:'2026-02-15', barEnd:'2026-04-08'
+  },
+  {
+    id:'934', emoji:'🤠', name:'狂野霸盜', en:'Wild Bandit',
+    color:'#5C2A88', status:'survey', statusLabel:'問卷彙整', progress:60,
+    qa:null, ship:'2026-04-01', live:'2026-04-22',
+    team:{ GP:'曉藝', FE:'賽門', Info:'阿竹', HIS:'梅森', GS:'阿岳' },
+    done:['問卷 3/10 截止'],
+    wip: ['3/13 17:00 DEMO彙整會議'],
+    barStart:'2026-03-01', barEnd:'2026-04-22'
+  },
+  {
+    id:'931', emoji:'⚡', name:'奧林匹斯 阿波羅', en:'Apollo',
+    color:'#B06000', status:'audio', statusLabel:'Game Info排版', progress:40,
+    qa:'2026-03-24', ship:'2026-04-17', live:null,
+    team:{},
+    done:['GDD 會議完成','Game Info 初步排版完成','美術歷史紀錄小圖已提交'],
+    wip: ['音效串接進行中'],
+    barStart:'2026-02-01', barEnd:'2026-04-17'
+  },
+  {
+    id:'928', emoji:'🪅', name:'Pinata 1000', en:'Pinata Wins',
+    color:'#B01858', status:'fe', statusLabel:'FE 串接 W2', progress:25,
+    qa:'2026-04-06', ship:'2026-05-13', live:null,
+    team:{},
+    done:['FE 串接第一週完成'],
+    wip: ['本週遊戲前端串接第二週'],
+    barStart:'2026-03-01', barEnd:'2026-04-30'
+  },
+  {
+    id:'ACE', emoji:'🂡', name:'Ace', en:'Ace',
+    color:'#0A6070', status:'art', statusLabel:'美術 W3', progress:15,
+    qa:'2026-05-04', ship:'2026-06-10', live:null,
+    team:{},
+    done:[],
+    wip: ['本週美術製作第三週'],
+    barStart:'2026-03-01', barEnd:'2026-04-30'
+  },
+];
+
+// ── 技術 / API 專案 ── cls: hot/warn/ok/''
+const TECH = [
+  {
+    icon:'🎮', name:'COCOS 引擎升級', type:'Engine',
+    color:'#6B3A8A',
+    qa:null, ship:'2026-03-10', prod:'2026-03-11',
+    barStart:'2026-03-01', barEnd:'2026-03-11',
+    rows:[
+      { k:'專案',            v:'埃及之書',  cls:'' },
+      { k:'出貨',            v:'03/10 完成', cls:'ok' },
+      { k:'UAT/Stage/Prod', v:'03/11 更新中',    cls:'warn' },
+    ]
+  },
+  {
+    icon:'🔗', name:'Free Round API', type:'API',
+    color:'#2255A0',
+    qa:'2026-03-09', ship:'2026-03-20', prod:'2026-03-25',
+    barStart:'2026-03-09', barEnd:'2026-03-25',
+    rows:[
+      { k:'QA 進測',    v:'3/11 已送測 🔴', cls:'ok' },
+      { k:'出貨',        v:'03/20',   cls:'' },
+      { k:'UAT/Stage',  v:'03/23',   cls:'warn' },
+      { k:'Prod 更新',  v:'03/25',   cls:'ok' },
+    ]
+  },
+  {
+    icon:'🧪', name:'DAL Testing', type:'Testing',
+    color:'#1A6868',
+    qa:'2026-03-23', ship:'2026-04-02', prod:'2026-04-08',
+    barStart:'2026-03-23', barEnd:'2026-04-08',
+    rows:[
+      { k:'QA + 壓測',  v:'03/23', cls:'warn' },
+      { k:'出貨',        v:'04/02', cls:'' },
+      { k:'UAT/Stage',  v:'04/07', cls:'' },
+      { k:'Prod 更新',  v:'04/08', cls:'ok' },
+    ]
+  },
+  {
+    icon:'🏆', name:'FRB Max Win 優化', type:'FE優化',
+    color:'#7A5010',
+    qa:'2026-04-06', ship:'2026-04-17', prod:'2026-04-20',
+    barStart:'2026-04-06', barEnd:'2026-04-20',
+    rows:[
+      { k:'QA 進測',        v:'04/06', cls:'' },
+      { k:'出貨',            v:'04/17', cls:'' },
+      { k:'UAT/Stage/Prod', v:'04/20', cls:'ok' },
+    ]
+  },
+];
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Render Engine — 不需要修改
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+// Build cumulative offset map: date → pixel offset from track start (left edge of col 0)
+const TRACK_START = new Date(COLS[0].start);
+const TRACK_END   = new Date(COLS[COLS.length - 1].end);
+const TOTAL_TRACK_MS = TRACK_END - TRACK_START;
+const TOTAL_TRACK_PX = COLS.reduce((s, c) => s + c.px, 0);
+
+function dateToPx(ds) {
+  const d = new Date(ds);
+  const clamped = Math.max(TRACK_START, Math.min(TRACK_END, d));
+  return Math.round((clamped - TRACK_START) / TOTAL_TRACK_MS * TOTAL_TRACK_PX);
+}
+
+function cd(ds) {
+  const diff = Math.round((new Date(ds) - TODAY) / 86400000);
+  return diff < 0 ? '已完成' : diff === 0 ? '今天！' : `剩 ${diff} 天`;
+}
+
+// Nearest upcoming milestone for sorting
+function nearestMs(item) {
+  const candidates = [item.qa, item.ship || item.barEnd, item.live, item.prod]
+    .filter(Boolean)
+    .map(d => new Date(d));
+  const future = candidates.filter(d => d >= TODAY);
+  if (future.length) return Math.min(...future.map(d => d.getTime()));
+  return Math.max(...candidates.map(d => d.getTime()));
+}
+
+// Sort GAMES by nearest milestone
+const sortedGames = [...GAMES].sort((a, b) => nearestMs(a) - nearestMs(b));
+// TECH is already in desired order (COCOS → Free Round → DAL → FRB), sorted by ship date
+const sortedTech = [...TECH].sort((a, b) => nearestMs(a) - nearestMs(b));
+
+const PILL = { final:'pill-final', qa:'pill-qa', survey:'pill-survey', audio:'pill-audio', fe:'pill-fe', art:'pill-art' };
+
+function makeRow(name, color, emoji, subLine, isType, barStart, barEnd, qa, ship, live, prod, idx) {
+  const bL = dateToPx(barStart);
+  const bR = dateToPx(barEnd);
+  const bW = Math.max(bR - bL, 4);
+
+  // 判斷是否在「截止壓力區」(14天內)
+  const daysToEnd = Math.round((new Date(barEnd) - TODAY) / 86400000);
+  const isUrgent = daysToEnd > -3 && daysToEnd < 14; // -3 到 13 天內視為緊急
+  const urgentClass = isUrgent ? 'urgent' : '';
+
+  const milestones = [];
+  if (qa)   milestones.push({ px: dateToPx(qa),   color:'var(--hot)',  label:'QA 進測' });
+  if (ship) milestones.push({ px: dateToPx(ship),  color:'var(--warn)', label:'出貨' });
+  if (live) milestones.push({ px: dateToPx(live),  color:'var(--ok)',   label:'上線' });
+  if (prod) milestones.push({ px: dateToPx(prod),  color:'var(--ok)',   label:'Prod' });
+
+  // 檢測重疊的里程碑，若距離<12px則垂直堆疊
+  const milestonesWithOffset = [];
+  milestones.forEach((m, idx) => {
+    let offsetY = 0;
+    // 檢查是否與前面的里程碑重疊
+    milestonesWithOffset.forEach(prev => {
+      if (Math.abs(m.px - prev.m.px) < 12) {
+        offsetY = Math.max(offsetY, prev.offsetY + 18); // 18px 垂直間距
+      }
+    });
+    milestonesWithOffset.push({ m, offsetY });
+  });
+
+  const msHTML = milestonesWithOffset.map(({ m, offsetY }) =>
+    `<div class="ms-flag" style="left:${m.px}px;top:${36 + offsetY}px">
+      <div class="ms-dot" style="background:${m.color};color:${m.color}"></div>
+      <span class="ms-txt" style="color:${m.color};white-space:nowrap">${m.label}</span>
+    </div>`).join('');
+
+  // 7 empty track cells + overlay in first cell
+  const trackCells = COLS.map((_, ci) => {
+    if (ci === 0) {
+      return `<td class="g-track-cell" colspan="1" style="position:relative;overflow:visible">
+        <div class="g-track-overlay" style="width:${TOTAL_TRACK_PX}px">
+          <div class="g-bar ${urgentClass}" style="left:${bL}px;width:${bW}px;background:${color}22;border:2px solid ${color};color:${color};animation:barIn 0.4s ${idx*0.05}s ease both">${name}</div>
+          ${msHTML}
+        </div>
+      </td>`;
+    }
+    return `<td class="g-track-cell"></td>`;
+  }).join('');
+
+  const labelCell = `
+    <td class="g-lbl-cell">
+      <div class="g-lbl-inner">
+        <span class="g-ico">${emoji}</span>
+        <div>
+          <div class="g-nm">${name}</div>
+          <div class="g-sub">${subLine}</div>
+          ${isType ? `<span class="g-type">${isType}</span>` : ''}
+        </div>
+      </div>
+    </td>`;
+
+  return `<tr class="g-row">${labelCell}${trackCells}</tr>`;
+}
+
+function renderGantt() {
+  const todayPx = dateToPx(TODAY.toISOString().slice(0,10));
+  // today line: offset = label(200px) + todayPx
+  document.getElementById('today-line').style.left = (200 + todayPx) + 'px';
+
+  let html = '';
+
+  // ── 遊戲專案 section ──
+  html += `<tr class="g-sec"><td colspan="8">🎮　遊戲專案　— 依最近里程碑排序</td></tr>`;
+  sortedGames.forEach((g, i) => {
+    html += makeRow(g.name, g.color, g.emoji, `#${g.id} · ${g.en}`, null, g.barStart, g.barEnd, g.qa, g.ship, g.live, null, i);
+  });
+
+  // ── 技術 section （隱藏已完成的 COCOS 埃及之書）──
+  const activeTech = sortedTech.filter(t => t.name !== 'COCOS 引擎升級');
+  html += `<tr class="g-sec"><td colspan="8">🔧　技術 / API 專案　— 依最近里程碑排序</td></tr>`;
+  activeTech.forEach((t, i) => {
+    html += makeRow(t.name, t.color, t.icon, t.type, t.type, t.barStart, t.barEnd, t.qa, t.ship, null, t.prod, sortedGames.length + i);
+  });
+
+  document.getElementById('gantt-body').innerHTML = html;
+}
+
+function renderCards() {
+  document.getElementById('game-cards').innerHTML = sortedGames.map((g, i) => {
+    const team = Object.entries(g.team).map(([r,n]) => `<span class="pc-tag"><em>${r}</em>${n}</span>`).join('');
+    const done = g.done.map(t => `<div class="pc-upd"><div class="upd-pip" style="background:var(--ok)"></div><span>${t}</span></div>`).join('');
+    const wip  = g.wip.map(t  => `<div class="pc-upd"><div class="upd-pip" style="background:var(--warn)"></div><span>${t}</span></div>`).join('');
+    
+    const d1 = g.ship ? `<div class="pc-date"><div class="pcd-lbl">📦 出貨</div><div class="pcd-val">${g.ship.slice(5)}</div><div class="pcd-cnt">${cd(g.ship)}</div></div>` : `<div></div>`;
+    const d2 = g.live
+      ? `<div class="pc-date"><div class="pcd-lbl">🚀 上線</div><div class="pcd-val">${g.live.slice(5)}</div><div class="pcd-cnt">${cd(g.live)}</div></div>`
+      : g.qa
+      ? `<div class="pc-date"><div class="pcd-lbl">🔬 QA 進測</div><div class="pcd-val">${g.qa.slice(5)}</div><div class="pcd-cnt" style="color:var(--hot)">${cd(g.qa)}</div></div>`
+      : `<div></div>`;
+    
+    // 截止壓力指標：距離最近截止日期的天數
+    const deadlines = [g.qa, g.ship, g.live].filter(Boolean);
+    const daysToDeadline = deadlines.length > 0
+      ? Math.min(...deadlines.map(d => Math.round((new Date(d) - TODAY) / 86400000)))
+      : 999;
+    
+    // 進度與截止的對比：進度若低於預期則用警告色，若進度高則用正常色
+    const progressExpected = Math.round(100 * Math.max(0, (daysToDeadline + 90) / 90)); // 假設90天內完成
+    const progressGap = g.progress - Math.min(100, progressExpected);
+    
+    // 背景亮度：低進度 = 暗，高進度 = 亮
+    const bgBrightness = Math.min(100, 60 + g.progress * 0.4);
+    const borderStyle = progressGap < -20 ? `border-left: 4px solid var(--hot) !important;` : '';
+    
+    return `
+    <div class="pc" style="--pc-color:${g.color};animation-delay:${i*0.06}s;${borderStyle}background:hsl(0,0%,${bgBrightness}%)">
+      <div class="pc-top"><span class="pc-ico">${g.emoji}</span><span class="pc-pill ${PILL[g.status]}">${g.statusLabel}</span></div>
+      <div class="pc-name">${g.name}</div>
+      <div class="pc-sub">${g.en} · #${g.id}</div>
+      <div class="pc-prog-row"><span class="pc-prog-lbl">進度</span><span class="pc-prog-pct" style="color:${g.color}">${g.progress}%</span></div>
+      <div class="pc-bar-track"><div class="pc-bar-fill" style="width:${g.progress}%;background:${g.color}"></div></div>
+      <div class="pc-dates">${d1}${d2}</div>
+      ${team ? `<div class="pc-team">${team}</div>` : ''}
+      <div class="pc-updates">${done}${wip}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTech() {
+  // 過濾掉已完成的 COCOS 埃及之書，只顯示進行中的技術專案
+  const activeTechCards = TECH.filter(t => t.name !== 'COCOS 引擎升級');
+  document.getElementById('tech-cards').innerHTML = activeTechCards.map(t => `
+    <div class="tc">
+      <div class="tc-ico">${t.icon}</div>
+      <div style="flex:1">
+        <div class="tc-name">${t.name}</div>
+        <div class="tc-rows">
+          ${t.rows.map(r => `<div class="tc-row"><span class="tc-k">${r.k}</span><span class="tc-v ${r.cls}">${r.v}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+const s = document.createElement('style');
+s.textContent = `@keyframes barIn { from{opacity:0;clip-path:inset(0 100% 0 0)} to{opacity:1;clip-path:inset(0 0 0 0)} }`;
+document.head.appendChild(s);
+
+renderGantt();
+renderCards();
+renderTech();
+</script>
+</body>
+</html>
