@@ -101,9 +101,9 @@ body {
 .col-w2   { width: 80px; }
 .col-w3   { width: 80px; }
 .col-w4   { width: 80px; }
-.col-apr  { width: 120px; }
-.col-may  { width: 100px; }
-.col-jun  { width: 100px; }
+.col-apr-1 { width: 80px; }
+.col-apr-2 { width: 80px; }
+.col-apr-3 { width: 80px; }
 
 /* Header row */
 .g-th {
@@ -156,7 +156,7 @@ body {
   padding: 0;
   border-right: 1px solid var(--rule);
   vertical-align: top;
-  height: 64px;           /* fixed row height = bar(36px) + ms(28px) */
+  height: 100px;           /* increased to accommodate stacked milestones (bar 36px + multiple milestone rows) */
   overflow: visible;
 }
 .g-track-cell:last-child { border-right:none; }
@@ -196,12 +196,17 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: auto;
+  transition: all 0.2s ease;
+}
+/* 截止壓力警告 - 14天內 */
+.g-bar.urgent {
+  border: 2.5px solid var(--hot) !important;
+  box-shadow: 0 0 8px rgba(192, 32, 32, 0.3);
 }
 
 /* Milestones sit below bar in the same overlay */
 .ms-flag {
   position: absolute;
-  top: 36px;
   display: flex; align-items: center; gap:3px;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -330,12 +335,11 @@ body {
   <div style="flex:1">
     <div class="alert-lbl">本週 QA 重點關注</div>
     <div class="chips">
-      <span class="chip u">🎮 COCOS 埃及之書 3/10 出貨</span>
-      <span class="chip u">🔗 Free Round API 本週 QA 進測</span>
-      <span class="chip u">🏛️ 失落黃金城 追加按鈕更新</span>
-      <span class="chip">🦏 金甲犀牛 3/10 問卷彙整會議</span>
-      <span class="chip">🤠 狂野霸盜 問卷 3/10 截止</span>
-      <span class="chip">⚡ Apollo 音效串接中</span>
+      <span class="chip u">🔗 Free Round API 今日已送測 🔴</span>
+      <span class="chip u">🤠 狂野霸盜 3/13 17點 DEMO彙整會議</span>
+      <span class="chip u">🏛️ 黃金城+糖果狂潮 加入FRB補測中</span>
+      <span class="chip u">⚡ Apollo Game Info 初步排版完成</span>
+      <span class="chip">🎮 埃及之書 3.8.8 UAT/Stage/Prod更新中</span>
     </div>
   </div>
 </div>
@@ -343,7 +347,7 @@ body {
 <div class="sh">
   <span class="sh-title">全專案時間軸</span>
   <div class="sh-line"></div>
-  <span class="sh-note">三月（週）· 四月 · 五月 · 六月</span>
+  <span class="sh-note">固定 2 個月份（週別檢視）&nbsp;·&nbsp; 3月+4月</span>
 </div>
 
 <!-- Gantt -->
@@ -356,20 +360,20 @@ body {
         <col class="col-w2">
         <col class="col-w3">
         <col class="col-w4">
-        <col class="col-apr">
-        <col class="col-may">
-        <col class="col-jun">
+        <col class="col-apr-1">
+        <col class="col-apr-2">
+        <col class="col-apr-3">
       </colgroup>
       <thead>
         <tr>
           <th class="g-th lbl-th">專案名稱</th>
-          <th class="g-th">3/1–8</th>
-          <th class="g-th now">3/9–15<br><span style="font-size:0.6rem;opacity:0.7">本週</span></th>
-          <th class="g-th">3/16–22</th>
+          <th class="g-th">3/9–15</th>
+          <th class="g-th now">3/16–22</th>
           <th class="g-th">3/23–31</th>
-          <th class="g-th">四月</th>
-          <th class="g-th">五月</th>
-          <th class="g-th">六月</th>
+          <th class="g-th">4/1–7</th>
+          <th class="g-th">4/8–14</th>
+          <th class="g-th">4/15–21</th>
+          <th class="g-th">4/22–30</th>
         </tr>
       </thead>
       <tbody id="gantt-body"></tbody>
@@ -410,14 +414,15 @@ const TODAY = new Date('2026-03-09');
 // ── 時間軸欄位定義 ──
 // 每欄的「起始日」與「px 寬度」，對應 <col> 順序
 // LABEL 欄(200px)不在這裡，純時間軸欄
+// 固定顯示 2 個月份（3月+4月）= 7 週
 const COLS = [
-  { label:'3/1–8',   start:'2026-03-01', end:'2026-03-09', px:80  },
   { label:'3/9–15',  start:'2026-03-09', end:'2026-03-16', px:80  },
   { label:'3/16–22', start:'2026-03-16', end:'2026-03-23', px:80  },
   { label:'3/23–31', start:'2026-03-23', end:'2026-04-01', px:80  },
-  { label:'四月',    start:'2026-04-01', end:'2026-05-01', px:120 },
-  { label:'五月',    start:'2026-05-01', end:'2026-06-01', px:100 },
-  { label:'六月',    start:'2026-06-01', end:'2026-07-01', px:100 },
+  { label:'4/1–7',   start:'2026-04-01', end:'2026-04-08', px:80  },
+  { label:'4/8–14',  start:'2026-04-08', end:'2026-04-15', px:80  },
+  { label:'4/15–21', start:'2026-04-15', end:'2026-04-22', px:80  },
+  { label:'4/22–30', start:'2026-04-22', end:'2026-05-01', px:80  },
 ];
 
 // ── 遊戲專案 ── status: final/qa/survey/audio/fe/art
@@ -427,35 +432,35 @@ const GAMES = [
     color:'#C0420A', status:'final', statusLabel:'Final Test', progress:98,
     qa:'2026-03-05', ship:'2026-03-05', live:'2026-03-25',
     team:{ GP:'毛哥', FE:'Liyi', Info:'梅森', HIS:'梅森', GS:'Louis' },
-    done:['3/5 出貨完成','3/6 追加公版購買 / 開始遊戲 / Extra Bet 按鈕','Info 已更新至 Prod'],
-    wip: ['等 Liyi 處理遊戲前端公版按鈕'],
+    done:['3/5 出貨完成','3/6 追加公版購買 / 開始遊戲 / Extra Bet 按鈕','Info 已更新至 Prod','3/11 加入FRB補測'],
+    wip: [],
     barStart:'2026-02-20', barEnd:'2026-03-25'
   },
   {
     id:'933', emoji:'🦏', name:'金甲犀牛', en:'Rhino Rumble',
-    color:'#1A6B3C', status:'survey', statusLabel:'問卷彙整', progress:65,
+    color:'#1A6B3C', status:'survey', statusLabel:'問卷彙整', progress:75,
     qa:'2026-03-02', ship:'2026-03-18', live:'2026-04-08',
     team:{ GP:'毛哥', FE:'大瑞', Info:'梅森', HIS:'阿竹', GS:'阿岳' },
-    done:['3/6 問卷截止'],
-    wip: ['3/10 17:00 問卷彙整會議','預計 3/18 出貨'],
+    done:['3/6 問卷截止','3/10 DEMO會議完成'],
+    wip: ['預計 3/18 出貨'],
     barStart:'2026-02-15', barEnd:'2026-04-08'
   },
   {
     id:'934', emoji:'🤠', name:'狂野霸盜', en:'Wild Bandit',
-    color:'#5C2A88', status:'survey', statusLabel:'問卷彙整', progress:55,
+    color:'#5C2A88', status:'survey', statusLabel:'問卷彙整', progress:60,
     qa:null, ship:'2026-04-01', live:'2026-04-22',
     team:{ GP:'曉藝', FE:'賽門', Info:'阿竹', HIS:'梅森', GS:'阿岳' },
     done:['問卷 3/10 截止'],
-    wip: ['本週召開問卷彙整會議'],
+    wip: ['3/13 17:00 DEMO彙整會議'],
     barStart:'2026-03-01', barEnd:'2026-04-22'
   },
   {
-    id:'931', emoji:'⚡', name:'Olympus Apollo', en:'Apollo',
-    color:'#B06000', status:'audio', statusLabel:'音效串接', progress:30,
+    id:'931', emoji:'⚡', name:'奧林匹斯 阿波羅', en:'Apollo',
+    color:'#B06000', status:'audio', statusLabel:'Game Info排版', progress:40,
     qa:'2026-03-24', ship:'2026-04-17', live:null,
     team:{},
-    done:['GDD 會議完成'],
-    wip: ['本週進入音效串接階段'],
+    done:['GDD 會議完成','Game Info 初步排版完成','美術歷史紀錄小圖已提交'],
+    wip: ['音效串接進行中'],
     barStart:'2026-02-01', barEnd:'2026-04-17'
   },
   {
@@ -465,7 +470,7 @@ const GAMES = [
     team:{},
     done:['FE 串接第一週完成'],
     wip: ['本週遊戲前端串接第二週'],
-    barStart:'2026-03-01', barEnd:'2026-05-13'
+    barStart:'2026-03-01', barEnd:'2026-04-30'
   },
   {
     id:'ACE', emoji:'🂡', name:'Ace', en:'Ace',
@@ -474,7 +479,7 @@ const GAMES = [
     team:{},
     done:[],
     wip: ['本週美術製作第三週'],
-    barStart:'2026-03-01', barEnd:'2026-06-10'
+    barStart:'2026-03-01', barEnd:'2026-04-30'
   },
 ];
 
@@ -487,8 +492,8 @@ const TECH = [
     barStart:'2026-03-01', barEnd:'2026-03-11',
     rows:[
       { k:'專案',            v:'埃及之書',  cls:'' },
-      { k:'出貨',            v:'03/10 🔴', cls:'hot' },
-      { k:'UAT/Stage/Prod', v:'03/11',    cls:'warn' },
+      { k:'出貨',            v:'03/10 完成', cls:'ok' },
+      { k:'UAT/Stage/Prod', v:'03/11 更新中',    cls:'warn' },
     ]
   },
   {
@@ -497,7 +502,7 @@ const TECH = [
     qa:'2026-03-09', ship:'2026-03-20', prod:'2026-03-25',
     barStart:'2026-03-09', barEnd:'2026-03-25',
     rows:[
-      { k:'QA 進測',    v:'本週 🔴', cls:'hot' },
+      { k:'QA 進測',    v:'3/11 已送測 🔴', cls:'ok' },
       { k:'出貨',        v:'03/20',   cls:'' },
       { k:'UAT/Stage',  v:'03/23',   cls:'warn' },
       { k:'Prod 更新',  v:'03/25',   cls:'ok' },
@@ -571,16 +576,34 @@ function makeRow(name, color, emoji, subLine, isType, barStart, barEnd, qa, ship
   const bR = dateToPx(barEnd);
   const bW = Math.max(bR - bL, 4);
 
+  // 判斷是否在「截止壓力區」(14天內)
+  const daysToEnd = Math.round((new Date(barEnd) - TODAY) / 86400000);
+  const isUrgent = daysToEnd > -3 && daysToEnd < 14; // -3 到 13 天內視為緊急
+  const urgentClass = isUrgent ? 'urgent' : '';
+
   const milestones = [];
   if (qa)   milestones.push({ px: dateToPx(qa),   color:'var(--hot)',  label:'QA 進測' });
   if (ship) milestones.push({ px: dateToPx(ship),  color:'var(--warn)', label:'出貨' });
   if (live) milestones.push({ px: dateToPx(live),  color:'var(--ok)',   label:'上線' });
   if (prod) milestones.push({ px: dateToPx(prod),  color:'var(--ok)',   label:'Prod' });
 
-  const msHTML = milestones.map(m =>
-    `<div class="ms-flag" style="left:${m.px}px">
+  // 檢測重疊的里程碑，若距離<12px則垂直堆疊
+  const milestonesWithOffset = [];
+  milestones.forEach((m, idx) => {
+    let offsetY = 0;
+    // 檢查是否與前面的里程碑重疊
+    milestonesWithOffset.forEach(prev => {
+      if (Math.abs(m.px - prev.m.px) < 12) {
+        offsetY = Math.max(offsetY, prev.offsetY + 18); // 18px 垂直間距
+      }
+    });
+    milestonesWithOffset.push({ m, offsetY });
+  });
+
+  const msHTML = milestonesWithOffset.map(({ m, offsetY }) =>
+    `<div class="ms-flag" style="left:${m.px}px;top:${36 + offsetY}px">
       <div class="ms-dot" style="background:${m.color};color:${m.color}"></div>
-      <span class="ms-txt" style="color:${m.color}">${m.label}</span>
+      <span class="ms-txt" style="color:${m.color};white-space:nowrap">${m.label}</span>
     </div>`).join('');
 
   // 7 empty track cells + overlay in first cell
@@ -588,7 +611,7 @@ function makeRow(name, color, emoji, subLine, isType, barStart, barEnd, qa, ship
     if (ci === 0) {
       return `<td class="g-track-cell" colspan="1" style="position:relative;overflow:visible">
         <div class="g-track-overlay" style="width:${TOTAL_TRACK_PX}px">
-          <div class="g-bar" style="left:${bL}px;width:${bW}px;background:${color}22;border:2px solid ${color};color:${color};animation:barIn 0.4s ${idx*0.05}s ease both">${name}</div>
+          <div class="g-bar ${urgentClass}" style="left:${bL}px;width:${bW}px;background:${color}22;border:2px solid ${color};color:${color};animation:barIn 0.4s ${idx*0.05}s ease both">${name}</div>
           ${msHTML}
         </div>
       </td>`;
@@ -624,9 +647,10 @@ function renderGantt() {
     html += makeRow(g.name, g.color, g.emoji, `#${g.id} · ${g.en}`, null, g.barStart, g.barEnd, g.qa, g.ship, g.live, null, i);
   });
 
-  // ── 技術 section ──
+  // ── 技術 section （隱藏已完成的 COCOS 埃及之書）──
+  const activeTech = sortedTech.filter(t => t.name !== 'COCOS 引擎升級');
   html += `<tr class="g-sec"><td colspan="8">🔧　技術 / API 專案　— 依最近里程碑排序</td></tr>`;
-  sortedTech.forEach((t, i) => {
+  activeTech.forEach((t, i) => {
     html += makeRow(t.name, t.color, t.icon, t.type, t.type, t.barStart, t.barEnd, t.qa, t.ship, null, t.prod, sortedGames.length + i);
   });
 
@@ -638,14 +662,30 @@ function renderCards() {
     const team = Object.entries(g.team).map(([r,n]) => `<span class="pc-tag"><em>${r}</em>${n}</span>`).join('');
     const done = g.done.map(t => `<div class="pc-upd"><div class="upd-pip" style="background:var(--ok)"></div><span>${t}</span></div>`).join('');
     const wip  = g.wip.map(t  => `<div class="pc-upd"><div class="upd-pip" style="background:var(--warn)"></div><span>${t}</span></div>`).join('');
+    
     const d1 = g.ship ? `<div class="pc-date"><div class="pcd-lbl">📦 出貨</div><div class="pcd-val">${g.ship.slice(5)}</div><div class="pcd-cnt">${cd(g.ship)}</div></div>` : `<div></div>`;
     const d2 = g.live
       ? `<div class="pc-date"><div class="pcd-lbl">🚀 上線</div><div class="pcd-val">${g.live.slice(5)}</div><div class="pcd-cnt">${cd(g.live)}</div></div>`
       : g.qa
       ? `<div class="pc-date"><div class="pcd-lbl">🔬 QA 進測</div><div class="pcd-val">${g.qa.slice(5)}</div><div class="pcd-cnt" style="color:var(--hot)">${cd(g.qa)}</div></div>`
       : `<div></div>`;
+    
+    // 截止壓力指標：距離最近截止日期的天數
+    const deadlines = [g.qa, g.ship, g.live].filter(Boolean);
+    const daysToDeadline = deadlines.length > 0
+      ? Math.min(...deadlines.map(d => Math.round((new Date(d) - TODAY) / 86400000)))
+      : 999;
+    
+    // 進度與截止的對比：進度若低於預期則用警告色，若進度高則用正常色
+    const progressExpected = Math.round(100 * Math.max(0, (daysToDeadline + 90) / 90)); // 假設90天內完成
+    const progressGap = g.progress - Math.min(100, progressExpected);
+    
+    // 背景亮度：低進度 = 暗，高進度 = 亮
+    const bgBrightness = Math.min(100, 60 + g.progress * 0.4);
+    const borderStyle = progressGap < -20 ? `border-left: 4px solid var(--hot) !important;` : '';
+    
     return `
-    <div class="pc" style="--pc-color:${g.color};animation-delay:${i*0.06}s">
+    <div class="pc" style="--pc-color:${g.color};animation-delay:${i*0.06}s;${borderStyle}background:hsl(0,0%,${bgBrightness}%)">
       <div class="pc-top"><span class="pc-ico">${g.emoji}</span><span class="pc-pill ${PILL[g.status]}">${g.statusLabel}</span></div>
       <div class="pc-name">${g.name}</div>
       <div class="pc-sub">${g.en} · #${g.id}</div>
@@ -659,7 +699,9 @@ function renderCards() {
 }
 
 function renderTech() {
-  document.getElementById('tech-cards').innerHTML = TECH.map(t => `
+  // 過濾掉已完成的 COCOS 埃及之書，只顯示進行中的技術專案
+  const activeTechCards = TECH.filter(t => t.name !== 'COCOS 引擎升級');
+  document.getElementById('tech-cards').innerHTML = activeTechCards.map(t => `
     <div class="tc">
       <div class="tc-ico">${t.icon}</div>
       <div style="flex:1">
