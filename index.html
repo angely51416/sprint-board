@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprint Board · 2026 W11</title>
+<title>Sprint Board · 2026 W13</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -13,421 +13,354 @@
   --panel-b:   #E8E4DD;
   --border:    #DDD9D2;
   --border-dk: #C4C0B8;
-
   --ink:   #1A1816;
   --ink-2: #4C4840;
   --ink-3: #8C887F;
   --ink-4: #B8B4AB;
-
-  --red:    #943020;
-  --red-bg: #F5ECEB;
-  --amber:  #7A4E18;
-  --amb-bg: #F5EDDF;
-  --green:  #2A5E38;
-  --grn-bg: #E6EFE8;
-  --blue:   #1E3F6A;
-  --blu-bg: #DDE6F0;   /* 本週欄深色背景 */
-  --blu-hd: #C8D8EC;   /* header 本週欄 */
-
+  --red:    #943020; --red-bg:  #F5ECEB;
+  --amber:  #7A4E18; --amb-bg:  #F5EDDF;
+  --green:  #2A5E38; --grn-bg:  #E8F0E8;
+  --blue:   #1E3F6A; --blu-bg:  #DDE6F0;
   --mono:  'DM Mono', monospace;
   --sans:  'Noto Sans TC', sans-serif;
   --serif: 'Noto Serif TC', serif;
   --radius: 3px;
   --shadow: 0 2px 8px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
 }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:40px 44px 100px;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-dk);border-radius:2px;}
 
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { font-size:15px; }
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--sans);
-  line-height: 1.55;
-  padding: 44px 44px 100px;
-}
-::-webkit-scrollbar { width:4px; height:4px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border-dk); border-radius:2px; }
+/* ── HEADER ── */
+.pg-hd{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:20px;margin-bottom:32px;border-bottom:1.5px solid var(--border-dk);}
+.pg-title{font-family:var(--serif);font-size:2rem;font-weight:700;letter-spacing:-0.025em;line-height:1.08;color:var(--ink);}
+.pg-title span{display:block;}
+.pg-meta{margin-top:7px;font-family:var(--mono);font-size:0.7rem;letter-spacing:0.1em;color:var(--ink-3);text-transform:uppercase;}
+.pg-badge{font-family:var(--mono);font-size:0.76rem;font-weight:500;letter-spacing:0.1em;color:var(--ink-2);border:1.5px solid var(--border-dk);padding:8px 18px;border-radius:var(--radius);background:var(--surface);}
 
-/* ━━━━━━━━ HEADER ━━━━━━━━ */
-.pg-hd {
-  display:flex; justify-content:space-between; align-items:flex-end;
-  padding-bottom:22px; margin-bottom:36px;
-  border-bottom:1.5px solid var(--border-dk);
+/* ── QA BOARD ── */
+.qa-board{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:40px;}
+.qa-col{background:var(--surface);border:1px solid var(--border-dk);border-radius:4px;overflow:hidden;box-shadow:var(--shadow);}
+.qa-col-hd{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  font-family:var(--mono);font-size:0.65rem;font-weight:500;
+  letter-spacing:0.14em;text-transform:uppercase;
 }
-.pg-title {
-  font-family:var(--serif);
-  font-size:2.1rem; font-weight:700;
-  letter-spacing:-0.025em; line-height:1.08; color:var(--ink);
-}
-.pg-title span { display:block; }
-.pg-meta {
-  margin-top:8px; font-family:var(--mono);
-  font-size:0.72rem; letter-spacing:0.1em;
-  color:var(--ink-3); text-transform:uppercase;
-}
-.pg-badge {
-  font-family:var(--mono); font-size:0.78rem; font-weight:500;
-  letter-spacing:0.1em; color:var(--ink-2);
-  border:1.5px solid var(--border-dk); padding:9px 20px;
-  border-radius:var(--radius); background:var(--surface);
-}
+.qa-col-hd.todo{color:var(--amber);background:var(--amb-bg);}
+.qa-col-hd.done{color:var(--green);background:var(--grn-bg);}
+.qa-col-hd .col-count{margin-left:auto;font-family:var(--mono);font-size:0.72rem;font-weight:500;color:inherit;opacity:0.7;}
+.qa-list{min-height:60px;padding:8px;display:flex;flex-direction:column;gap:6px;}
+.qa-list.drag-over{background:rgba(30,63,106,0.04);border-radius:3px;}
 
-/* ━━━━━━━━ ALERT ━━━━━━━━ */
-.alert {
-  display:flex; gap:14px; align-items:flex-start;
-  background:var(--amb-bg); border:1px solid #C8A060;
-  border-left:3px solid var(--amber); border-radius:4px;
-  padding:12px 16px; margin-bottom:44px;
+.qa-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:4px;
+  font-size:0.8rem;font-weight:500;
+  cursor:grab;user-select:none;
+  transition:box-shadow 0.15s, opacity 0.15s, transform 0.12s;
+  border:1px solid var(--border);
+  background:var(--panel);color:var(--ink-2);
 }
-.alert-icon { font-size:1rem; padding-top:2px; flex-shrink:0; opacity:0.8; }
-.alert-lbl {
-  font-family:var(--mono); font-size:0.65rem; font-weight:500;
-  letter-spacing:0.14em; text-transform:uppercase;
-  color:var(--amber); margin-bottom:9px;
+.qa-chip:active{cursor:grabbing;}
+.qa-chip.done-item{background:var(--grn-bg);border-color:#A8C8B0;color:var(--green);opacity:0.8;}
+.qa-chip.dragging{opacity:0.35;transform:scale(0.97);}
+.qa-chip .drag-handle{color:var(--ink-4);font-size:0.75rem;flex-shrink:0;}
+.qa-chip .chip-text{flex:1;min-width:0;}
+.qa-chip-actions{display:flex;gap:3px;flex-shrink:0;opacity:0;transition:opacity 0.15s;}
+.qa-chip:hover .qa-chip-actions{opacity:1;}
+.qa-act-btn{
+  width:22px;height:22px;border:none;border-radius:3px;
+  background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;color:var(--ink-3);
+  transition:background 0.1s, color 0.1s;
 }
-.chips { display:flex; flex-wrap:wrap; gap:6px; }
-.chip {
-  font-size:0.78rem; font-weight:500; padding:4px 10px;
-  border-radius:20px; background:rgba(255,255,255,0.7);
-  border:1px solid var(--border-dk); color:var(--ink-2);
-}
-.chip.u { background:var(--red-bg); border-color:#C09090; color:var(--red); }
+.qa-act-btn:hover.edit{background:#E8EEF5;color:var(--blue);}
+.qa-act-btn:hover.del{background:var(--red-bg);color:var(--red);}
 
-/* ━━━━━━━━ SECTION HEADER ━━━━━━━━ */
-.sh { display:flex; align-items:center; gap:14px; margin:40px 0 18px; }
-.sh-title {
-  font-family:var(--mono); font-size:0.66rem; font-weight:500;
-  letter-spacing:0.16em; text-transform:uppercase;
-  color:var(--ink-3); white-space:nowrap;
+/* 新增按鈕 */
+.qa-add-btn{
+  font-family:var(--mono);font-size:0.65rem;font-weight:500;
+  letter-spacing:0.08em;padding:5px 12px;border-radius:var(--radius);
+  background:var(--surface);border:1.5px solid var(--border-dk);
+  color:var(--ink-2);cursor:pointer;white-space:nowrap;
+  transition:background 0.1s, border-color 0.1s;
 }
-.sh-line { flex:1; height:1px; background:var(--border); }
-.sh-note { font-family:var(--mono); font-size:0.64rem; color:var(--ink-4); white-space:nowrap; }
+.qa-add-btn:hover{background:var(--panel);border-color:var(--blue);color:var(--blue);}
+
+/* ── MODAL ── */
+.modal-backdrop{
+  display:none;position:fixed;inset:0;
+  background:rgba(26,24,22,0.45);backdrop-filter:blur(3px);
+  z-index:500;align-items:center;justify-content:center;
+}
+.modal-backdrop.open{display:flex;}
+.modal{
+  background:var(--surface);border:1px solid var(--border-dk);
+  border-radius:6px;padding:28px 28px 24px;
+  width:440px;max-width:90vw;
+  box-shadow:0 8px 32px rgba(0,0,0,0.18);
+  animation:modalIn 0.18s ease both;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.modal-title{
+  font-family:var(--serif);font-size:1.05rem;font-weight:700;
+  color:var(--ink);margin-bottom:18px;
+}
+.modal-label{
+  display:block;font-family:var(--mono);font-size:0.63rem;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:5px;
+}
+.modal-input{
+  width:100%;padding:9px 12px;border-radius:3px;
+  border:1.5px solid var(--border-dk);background:var(--bg);
+  font-family:var(--sans);font-size:0.88rem;color:var(--ink);
+  outline:none;transition:border-color 0.12s;margin-bottom:16px;
+}
+.modal-input:focus{border-color:var(--blue);}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:4px;}
+.modal-cancel{
+  font-family:var(--mono);font-size:0.7rem;padding:7px 16px;
+  border-radius:var(--radius);background:var(--panel);
+  border:1.5px solid var(--border-dk);color:var(--ink-3);cursor:pointer;
+}
+.modal-cancel:hover{background:var(--panel-b);}
+.modal-save{
+  font-family:var(--mono);font-size:0.7rem;font-weight:500;padding:7px 18px;
+  border-radius:var(--radius);background:var(--blue);
+  border:1.5px solid var(--blue);color:#FFF;cursor:pointer;
+  transition:background 0.1s;
+}
+.modal-save:hover{background:#16305A;}
+
+/* ── SECTION HDR ── */
+.sh{display:flex;align-items:center;gap:14px;margin:36px 0 16px;}
+.sh-title{font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+.sh-line{flex:1;height:1px;background:var(--border);}
+.sh-note{font-family:var(--mono);font-size:0.63rem;color:var(--ink-4);white-space:nowrap;}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   GANTT
-   Label 200px | 7 × 80px = 560px
+   GANTT — 關鍵修正：
+   overlay 掛在 gantt-rel 上，不掛在第一個 td 裡
+   table 只負責格線，bar 用 absolute 覆蓋
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.gantt-outer {
-  overflow-x:auto; border:1px solid var(--border-dk);
-  border-radius:var(--radius); background:var(--surface);
-  box-shadow:var(--shadow);
-}
-.gantt-rel { position:relative; }
-.gantt-table {
-  width:100%; min-width:820px;
-  border-collapse:collapse; table-layout:fixed;
-}
-.col-lbl { width:200px; }
-.col-t   { width:80px; }
+.gantt-outer{overflow-x:auto;border:1px solid var(--border-dk);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
+.gantt-rel{position:relative;}           /* bar 的定位父層 */
+.gantt-table{width:100%;min-width:820px;border-collapse:collapse;table-layout:fixed;}
+.col-lbl{width:200px;}
+.col-t  {width:80px;}
 
-/* Header cells */
-.g-th {
-  background:var(--panel);
-  font-family:var(--mono); font-size:0.66rem; font-weight:500;
-  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3);
-  padding:11px 0 10px; text-align:center;
+/* header */
+.g-th{
+  background:var(--panel);font-family:var(--mono);
+  font-size:0.66rem;font-weight:500;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--ink-3);
+  padding:11px 0 10px;text-align:center;
   border-bottom:1.5px solid var(--border-dk);
-  border-right:1px solid var(--border); white-space:nowrap;
+  border-right:1px solid var(--border);white-space:nowrap;
 }
-.g-th:last-child { border-right:none; }
-.g-th.lbl-th {
-  text-align:left; padding-left:16px;
-  border-right:1px solid var(--border-dk); color:var(--ink-3);
-}
-/* 本週欄 header — 深藍背景，白字 */
-.g-th.now {
-  background:var(--blue); color:#FFFFFF;
-  font-weight:600;
+.g-th:last-child{border-right:none;}
+.g-th.lbl-th{text-align:left;padding-left:16px;border-right:1px solid var(--border-dk);}
+.g-th.now-hd{background:var(--blue);color:#FFF;font-weight:600;}
+
+/* section divider */
+.g-sec td{
+  background:var(--panel-b);padding:6px 16px;
+  font-family:var(--mono);font-size:0.62rem;font-weight:500;
+  letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-2);
+  border-top:1.5px solid var(--border-dk);border-bottom:1px solid var(--border);
 }
 
-/* Section divider */
-.g-sec td {
-  background:var(--panel-b); padding:7px 16px;
-  font-family:var(--mono); font-size:0.63rem; font-weight:500;
-  letter-spacing:0.13em; text-transform:uppercase; color:var(--ink-2);
-  border-top:1.5px solid var(--border-dk); border-bottom:1px solid var(--border);
-}
+/* data row */
+.g-row{border-bottom:1px solid var(--border);}
+.g-row:last-child{border-bottom:none;}
+.g-row:hover td{background:#F8F6F2 !important;}
+/* 本週欄底色 */
+.now-td{background:var(--blu-bg)!important;}
 
-/* Data row */
-.g-row { border-bottom:1px solid var(--border); }
-.g-row:last-child { border-bottom:none; }
-.g-row:hover .g-lbl-cell,
-.g-row:hover .g-track-cell { background:#F8F6F2; }
-.g-row:hover .g-track-cell.now-col { background:#D0DCF0; }
+/* label cell */
+.g-lbl-cell{padding:10px 14px;border-right:1px solid var(--border-dk);vertical-align:middle;background:var(--surface);}
+.g-lbl-inner{display:flex;align-items:center;gap:9px;}
+.g-ico{font-size:15px;flex-shrink:0;}
+.g-nm{font-size:0.84rem;font-weight:700;color:var(--ink);line-height:1.25;}
+.g-sub{font-family:var(--mono);font-size:0.62rem;color:var(--ink-3);margin-top:1px;}
+.g-type{display:inline-block;margin-top:3px;font-family:var(--mono);font-size:0.55rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;padding:2px 5px;border-radius:2px;background:var(--panel-b);color:var(--ink-3);}
 
-/* Label cell */
-.g-lbl-cell {
-  padding:10px 14px; border-right:1px solid var(--border-dk);
-  vertical-align:middle; background:var(--surface);
+/* track cell — pure grid, no overlay logic */
+.g-track-cell{
+  position:relative;padding:0;border-right:1px solid var(--border);
+  vertical-align:top;height:62px;overflow:visible;background:var(--surface);
 }
-.g-lbl-inner { display:flex; align-items:center; gap:9px; }
-.g-ico  { font-size:15px; flex-shrink:0; }
-.g-nm   { font-size:0.84rem; font-weight:700; color:var(--ink); line-height:1.25; }
-.g-sub  { font-family:var(--mono); font-size:0.63rem; color:var(--ink-3); margin-top:1px; }
-.g-type {
-  display:inline-block; margin-top:3px;
-  font-family:var(--mono); font-size:0.56rem; font-weight:500;
-  letter-spacing:0.07em; text-transform:uppercase;
-  padding:2px 6px; border-radius:2px;
-  background:var(--panel-b); color:var(--ink-3);
-}
+.g-track-cell:last-child{border-right:none;}
+.g-track-cell.alt{background:#FDFCFA;}
 
-/* Track cells */
-.g-track-cell {
-  position:relative; padding:0; border-right:1px solid var(--border);
-  vertical-align:top; height:64px; overflow:visible; background:var(--surface);
+/* ── BAR LAYER — sits above table via gantt-rel ── */
+/* Each row's bars are rendered as absolutely positioned divs
+   injected by JS into .gantt-bars-layer which is a sibling of the table */
+.gantt-bars-layer{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  pointer-events:none;
+  z-index:10;
+  overflow:visible;
 }
-.g-track-cell:last-child { border-right:none; }
-.g-track-cell.even { background:#FDFCFA; }
-/* 本週欄 — 淡藍背景 */
-.g-track-cell.now-col { background:var(--blu-bg) !important; }
-
-/* Track overlay */
-.g-track-overlay {
-  position:absolute; top:0; left:0;
-  height:64px; pointer-events:none;
-  z-index:5; overflow:visible;
-}
-
-/* Bar */
-.g-bar {
-  position:absolute; top:14px; height:14px;
-  border-radius:2px; pointer-events:auto;
-  transition:filter 0.15s, box-shadow 0.15s; cursor:default;
-}
-.g-bar:hover { filter:brightness(0.9); box-shadow:0 2px 8px rgba(0,0,0,0.12); }
-.g-bar.urgent {
-  border-width:2px !important; border-style:solid !important;
-  box-shadow:0 0 0 2px rgba(148,48,32,0.1);
-}
-
-/* Milestone flag — hover shows tooltip */
-.ms-flag {
-  position:absolute; display:flex; align-items:center; gap:3px;
-  transform:translateX(-50%); white-space:nowrap;
-  pointer-events:auto; cursor:default;
-}
-.ms-dot {
-  width:7px; height:7px; border-radius:50%; flex-shrink:0;
-  border:1.5px solid var(--surface);
-  box-shadow:0 0 0 1px currentColor;
-  transition:transform 0.12s;
-}
-.ms-flag:hover .ms-dot { transform:scale(1.4); }
-.ms-txt {
-  font-family:var(--mono); font-size:0.6rem; font-weight:500; line-height:1;
-}
-
-/* Milestone tooltip */
-.ms-flag .ms-tip {
-  display:none; position:absolute;
-  bottom:calc(100% + 7px); left:50%; transform:translateX(-50%);
-  background:var(--ink); color:#FFF;
-  font-family:var(--mono); font-size:0.65rem; line-height:1.4;
-  padding:5px 9px; border-radius:3px; white-space:nowrap;
-  pointer-events:none; z-index:100;
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
-}
-.ms-flag .ms-tip::after {
-  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
-  border:4px solid transparent; border-top-color:var(--ink);
-}
-.ms-flag:hover .ms-tip { display:block; }
-
-/* Legend */
-.g-legend {
-  display:flex; flex-wrap:wrap; gap:18px; align-items:center;
-  padding:10px 16px; background:var(--panel);
-  border-top:1px solid var(--border);
-}
-.g-legend-ttl {
-  font-family:var(--mono); font-size:0.6rem; font-weight:500;
-  letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-4);
-}
-.leg-i { display:flex; align-items:center; gap:5px; font-size:0.73rem; color:var(--ink-3); }
-.leg-dot { width:7px; height:7px; border-radius:50%; }
-.leg-wk  {
-  display:inline-block; width:14px; height:10px;
-  background:var(--blu-bg); border:1px solid var(--blue);
-  border-radius:1px; opacity:0.9;
-}
-
-/* ━━━━━━━━ UNIFIED CARD GRID ━━━━━━━━ */
-.all-cards-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
-  gap:1px; background:var(--border);
-  border:1px solid var(--border-dk);
-  border-radius:var(--radius); overflow:hidden;
-  box-shadow:var(--shadow);
-}
-
-/* ── Flip Card Shell ── */
-.flip-card {
-  height:260px;          /* 固定高度讓翻轉有空間 */
-  perspective:1000px;
-  animation:rise 0.35s ease both;
-}
-@keyframes rise {
-  from { opacity:0; transform:translateY(4px) }
-  to   { opacity:1; transform:none }
-}
-.flip-inner {
-  position:relative; width:100%; height:100%;
-  transform-style:preserve-3d;
-  transition:transform 0.42s cubic-bezier(0.4,0,0.2,1);
-}
-.flip-card:hover .flip-inner { transform:rotateY(180deg); }
-
-/* Front & Back shared */
-.flip-front, .flip-back {
-  position:absolute; inset:0;
-  backface-visibility:hidden; -webkit-backface-visibility:hidden;
-  padding:18px 18px 16px;
-  display:flex; flex-direction:column;
-  background:var(--surface);
-}
-.flip-back {
-  transform:rotateY(180deg);
-  background:var(--ink); color:#FFF;
-  justify-content:center;
-}
-
-/* Front accent bar */
-.flip-front::before {
-  content:''; position:absolute;
-  left:0; top:0; bottom:0; width:2px;
-  background:var(--pc-color, var(--border));
-}
-
-/* Front content */
-.pc-top {
-  display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
-}
-.pc-ico  { font-size:18px; }
-.pc-pill {
-  font-family:var(--mono); font-size:0.58rem; font-weight:500;
-  letter-spacing:0.07em; text-transform:uppercase;
-  padding:2px 7px; border-radius:2px;
-}
-.pc-name { font-size:0.95rem; font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:1px; }
-.pc-sub  { font-family:var(--mono); font-size:0.67rem; color:var(--ink-4); margin-bottom:11px; }
-
-/* Progress */
-.pc-prog-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
-.pc-prog-lbl { font-family:var(--mono); font-size:0.62rem; letter-spacing:0.1em; color:var(--ink-4); }
-.pc-prog-pct { font-family:var(--mono); font-size:0.92rem; font-weight:500; }
-.pc-bar-track { height:2px; background:var(--panel-b); margin-bottom:13px; border-radius:1px; overflow:hidden; }
-.pc-bar-fill  { height:100%; border-radius:1px; transition:width 0.6s ease; }
-
-/* 3-col date row */
-.pc-dates {
-  display:grid; grid-template-columns:repeat(3, 1fr);
-  gap:1px; background:var(--border);
-  border:1px solid var(--border); border-radius:2px;
-  overflow:hidden; margin-bottom:11px;
-}
-.pc-date  { background:var(--panel); padding:6px 8px; }
-.pc-date.empty { background:var(--bg); }
-.pcd-lbl {
-  font-family:var(--mono); font-size:0.54rem; font-weight:500;
-  letter-spacing:0.08em; text-transform:uppercase;
-  color:var(--ink-4); margin-bottom:3px;
-}
-.pcd-val { font-family:var(--mono); font-size:0.82rem; font-weight:500; color:var(--ink); line-height:1; }
-.pcd-cnt { font-family:var(--mono); font-size:0.6rem; color:var(--ink-3); margin-top:2px; }
-.pcd-cnt.hot { color:var(--red); }
-
-/* Updates list */
-.pc-updates { display:flex; flex-direction:column; gap:4px; margin-top:auto; }
-.pc-upd { display:flex; gap:7px; align-items:flex-start; font-size:0.76rem; color:var(--ink-2); line-height:1.4; }
-.upd-pip { width:3px; height:3px; border-radius:50%; flex-shrink:0; margin-top:7px; }
-
-/* Tech card front — no progress bar, uses tc-rows */
-.tc-rows { display:flex; flex-direction:column; gap:5px; margin-top:auto; }
-.tc-row  { display:flex; justify-content:space-between; gap:8px; }
-.tc-k    { font-family:var(--mono); font-size:0.7rem; color:var(--ink-3); }
-.tc-v    { font-family:var(--mono); font-size:0.7rem; font-weight:500; color:var(--ink-2); text-align:right; }
-.tc-v.hot  { color:var(--red); }
-.tc-v.warn { color:var(--amber); }
-.tc-v.ok   { color:var(--green); }
-
-/* BACK — team grid */
-.back-hint {
-  font-family:var(--mono); font-size:0.58rem; letter-spacing:0.12em;
-  text-transform:uppercase; color:rgba(255,255,255,0.35);
-  margin-bottom:14px;
-}
-.back-name {
-  font-family:var(--serif); font-size:1.1rem; font-weight:700;
-  color:#FFF; margin-bottom:3px; line-height:1.2;
-}
-.back-sub {
-  font-family:var(--mono); font-size:0.65rem;
-  color:rgba(255,255,255,0.45); margin-bottom:18px;
-}
-.back-team {
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:8px 14px;
-}
-.bt-item { display:flex; flex-direction:column; gap:2px; }
-.bt-role {
-  font-family:var(--mono); font-size:0.58rem; letter-spacing:0.08em;
-  text-transform:uppercase; color:rgba(255,255,255,0.4);
-}
-.bt-name { font-size:0.82rem; font-weight:700; color:#FFF; }
-.back-no-team {
-  font-family:var(--mono); font-size:0.72rem;
-  color:rgba(255,255,255,0.35); margin-top:8px;
-}
-
-/* Hover hint on front */
-.flip-hint {
-  position:absolute; bottom:9px; right:12px;
-  font-family:var(--mono); font-size:0.55rem; letter-spacing:0.08em;
-  color:var(--ink-4); opacity:0; transition:opacity 0.2s;
+.g-bar-row{
+  position:absolute;left:0;right:0;
   pointer-events:none;
 }
-.flip-card:hover .flip-front .flip-hint { opacity:0; } /* hide on hover since flipping */
-.flip-front .flip-hint { opacity:0.8; }
+.g-bar{
+  position:absolute;height:14px;
+  border-radius:2px;pointer-events:auto;
+  transition:filter 0.12s;cursor:default;
+}
+.g-bar:hover{filter:brightness(0.88);box-shadow:0 2px 6px rgba(0,0,0,0.12);}
+.g-bar.urgent{box-shadow:0 0 0 2px rgba(148,48,32,0.18);}
 
-/* Status pills */
-.pill-final  { background:#E6EDF5; color:#1A3A6A; }
-.pill-qa     { background:var(--red-bg); color:var(--red); }
-.pill-survey { background:var(--amb-bg); color:var(--amber); }
-.pill-audio  { background:#EDE8F5; color:#3A2060; }
-.pill-fe     { background:#E4EFF0; color:#0C3840; }
-.pill-art    { background:#F2EAE5; color:#4E2818; }
-.pill-tech   { background:#EAE8F2; color:#2A2060; }
+/* milestone */
+.ms-flag{
+  position:absolute;display:flex;align-items:center;gap:2px;
+  transform:translateX(-50%);white-space:nowrap;pointer-events:auto;cursor:default;
+}
+.ms-dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid #FFF;box-shadow:0 0 0 1px currentColor;
+  transition:transform 0.1s;
+}
+.ms-flag:hover .ms-dot{transform:scale(1.5);}
+.ms-txt{font-family:var(--mono);font-size:0.58rem;font-weight:500;line-height:1;}
+
+/* milestone tooltip */
+.ms-tip{
+  display:none;position:absolute;
+  bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--ink);color:#FFF;
+  font-family:var(--mono);font-size:0.64rem;line-height:1.5;
+  padding:5px 10px;border-radius:3px;white-space:nowrap;
+  pointer-events:none;z-index:200;
+  box-shadow:0 4px 12px rgba(0,0,0,0.22);
+}
+.ms-tip::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:4px solid transparent;border-top-color:var(--ink);
+}
+.ms-flag:hover .ms-tip{display:block;}
+
+/* legend */
+.g-legend{display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding:9px 16px;background:var(--panel);border-top:1px solid var(--border);}
+.g-legend-ttl{font-family:var(--mono);font-size:0.59rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-4);}
+.leg-i{display:flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--ink-3);}
+.leg-dot{width:7px;height:7px;border-radius:50%;}
+.leg-wk{display:inline-block;width:12px;height:10px;background:var(--blu-bg);border:1px solid var(--blue);border-radius:1px;}
+
+/* ━━━━━━━━ CARDS ━━━━━━━━ */
+.all-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border-dk);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+
+.flip-card{height:300px;perspective:1000px;animation:rise 0.35s ease both;}
+@keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 0.42s cubic-bezier(0.4,0,0.2,1);}
+.flip-card:hover .flip-inner{transform:rotateY(180deg);}
+
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:17px 17px 14px;display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
+.flip-back{transform:rotateY(180deg);background:var(--ink);color:#FFF;justify-content:center;}
+.flip-front::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--pc-color,var(--border));}
+
+.pc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.pc-ico{font-size:18px;}
+.pc-pill{font-family:var(--mono);font-size:0.57rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.pc-name{font-size:0.93rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:1px;}
+.pc-sub{font-family:var(--mono);font-size:0.65rem;color:var(--ink-4);margin-bottom:10px;}
+.pc-prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.pc-prog-lbl{font-family:var(--mono);font-size:0.61rem;letter-spacing:0.1em;color:var(--ink-4);}
+.pc-prog-pct{font-family:var(--mono);font-size:0.9rem;font-weight:500;}
+.pc-bar-track{height:2px;background:var(--panel-b);margin-bottom:12px;border-radius:1px;overflow:hidden;}
+.pc-bar-fill{height:100%;border-radius:1px;}
+
+.pc-dates{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+.pc-date{background:var(--panel);padding:6px 8px;}
+.pc-date.empty{background:var(--bg);}
+.pcd-lbl{font-family:var(--mono);font-size:0.53rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:2px;}
+.pcd-val{font-family:var(--mono);font-size:0.8rem;font-weight:500;color:var(--ink);line-height:1;}
+.pcd-cnt{font-family:var(--mono);font-size:0.59rem;color:var(--ink-3);margin-top:2px;}
+.pcd-cnt.hot{color:var(--red);}
+
+.pc-updates{display:flex;flex-direction:column;gap:3px;margin-top:auto;overflow:hidden;flex-shrink:1;min-height:0;}
+.pc-upd{display:flex;gap:7px;align-items:flex-start;font-size:0.75rem;color:var(--ink-2);line-height:1.4;}
+.upd-pip{width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+
+.tc-rows{display:flex;flex-direction:column;gap:5px;margin-top:auto;overflow:hidden;flex-shrink:1;min-height:0;}
+.tc-row{display:flex;justify-content:space-between;gap:8px;}
+.tc-k{font-family:var(--mono);font-size:0.69rem;color:var(--ink-3);}
+.tc-v{font-family:var(--mono);font-size:0.69rem;font-weight:500;color:var(--ink-2);text-align:right;}
+.tc-v.hot{color:var(--red);} .tc-v.warn{color:var(--amber);} .tc-v.ok{color:var(--green);}
+
+.back-hint{font-family:var(--mono);font-size:0.57rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;}
+.back-name{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:#FFF;margin-bottom:2px;line-height:1.2;}
+.back-sub{font-family:var(--mono);font-size:0.63rem;color:rgba(255,255,255,0.4);margin-bottom:16px;}
+.back-team{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;}
+.bt-item{display:flex;flex-direction:column;gap:1px;}
+.bt-role{font-family:var(--mono);font-size:0.57rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.bt-name{font-size:0.82rem;font-weight:700;color:#FFF;}
+.back-no-team{font-family:var(--mono);font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;}
+
+.flip-hint{position:absolute;bottom:8px;right:11px;font-family:var(--mono);font-size:0.54rem;letter-spacing:0.07em;color:var(--ink-4);opacity:0.75;pointer-events:none;}
+
+/* pills */
+.pill-final{background:#E6EDF5;color:#1A3A6A;} .pill-qa{background:var(--red-bg);color:var(--red);}
+.pill-survey{background:var(--amb-bg);color:var(--amber);} .pill-audio{background:#EDE8F5;color:#3A2060;}
+.pill-fe{background:#E4EFF0;color:#0C3840;} .pill-art{background:#F2EAE5;color:#4E2818;}
+.pill-tech{background:#EAE8F2;color:#2A2060;}
 </style>
 </head>
 <body>
 
+<!-- MODAL -->
+<div class="modal-backdrop" id="qa-modal" onclick="onBackdropClick(event)">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">新增關注項目</div>
+    <label class="modal-label" for="modal-text">項目內容</label>
+    <input class="modal-input" id="modal-text" type="text" placeholder="例：🔗 Free Round API 3/20 出貨確認" maxlength="120"
+      onkeydown="if(event.key==='Enter')saveModal();if(event.key==='Escape')closeModal();">
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeModal()">取消</button>
+      <button class="modal-save" onclick="saveModal()">儲存</button>
+    </div>
+  </div>
+</div>
+
 <!-- HEADER -->
 <header class="pg-hd">
   <div>
-    <div class="pg-title">
-      <span>専案週報</span>
-      <span>Sprint Board</span>
-    </div>
-    <div class="pg-meta">Week 11 &nbsp;·&nbsp; 2026.03.09 – 03.15 &nbsp;·&nbsp; Slot Studio</div>
+    <div class="pg-title"><span>専案週報</span><span>Sprint Board</span></div>
+    <div class="pg-meta">Week 13 &nbsp;·&nbsp; 2026.03.23 – 03.29 &nbsp;·&nbsp; Slot Studio</div>
   </div>
-  <div class="pg-badge">W11 · 2026</div>
+  <div class="pg-badge">W13 · 2026</div>
 </header>
 
-<!-- ALERT -->
-<div class="alert">
-  <div class="alert-icon">⚡</div>
-  <div style="flex:1">
-    <div class="alert-lbl">本週 QA 重點關注</div>
-    <div class="chips">
-      <span class="chip u">🔗 Free Round API 今日已送測 🔴</span>
-      <span class="chip u">🤠 狂野霸盜 3/13 17點 DEMO彙整會議</span>
-      <span class="chip u">🏛️ 黃金城＋糖果狂潮 加入FRB補測中</span>
-      <span class="chip u">⚡ Apollo Game Info 初步排版完成</span>
-      <span class="chip">🎮 埃及之書 3.8.8 UAT/Stage/Prod 更新中</span>
+<!-- QA BOARD -->
+<div class="sh">
+  <span class="sh-title">本週 QA 重點關注</span>
+  <div class="sh-line"></div>
+  <button class="qa-add-btn" onclick="openModal()">＋ 新增項目</button>
+</div>
+<div class="qa-board">
+  <div class="qa-col">
+    <div class="qa-col-hd todo">
+      ⚡ 進行中 / 待處理
+      <span class="col-count" id="todo-count"></span>
     </div>
+    <div class="qa-list" id="qa-todo" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'todo')"></div>
+  </div>
+  <div class="qa-col">
+    <div class="qa-col-hd done">
+      ✓ 已完成
+      <span class="col-count" id="done-count"></span>
+    </div>
+    <div class="qa-list" id="qa-done" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'done')"></div>
   </div>
 </div>
 
@@ -435,314 +368,319 @@ body {
 <div class="sh">
   <span class="sh-title">全專案時間軸</span>
   <div class="sh-line"></div>
-  <span class="sh-note">固定 2 個月份（週別檢視）· 3月＋4月</span>
+  <span class="sh-note">3月 – 6月 &nbsp;｜&nbsp; hover 里程碑可見日期</span>
 </div>
 <div class="gantt-outer">
   <div class="gantt-rel" id="gantt-rel">
     <table class="gantt-table" id="gantt-table">
       <colgroup>
         <col class="col-lbl">
-        <col class="col-t"><col class="col-t"><col class="col-t"><col class="col-t">
+        <col class="col-t"><col class="col-t"><col class="col-t">
+        <col class="col-t"><col class="col-t"><col class="col-t">
         <col class="col-t"><col class="col-t"><col class="col-t">
       </colgroup>
-      <thead>
+      <thead id="g-thead">
         <tr>
           <th class="g-th lbl-th">專案名稱</th>
-          <th class="g-th">3/9–15</th>
-          <th class="g-th now">3/16–22 ▪ 本週</th>
-          <th class="g-th">3/23–31</th>
-          <th class="g-th">4/1–7</th>
-          <th class="g-th">4/8–14</th>
-          <th class="g-th">4/15–21</th>
-          <th class="g-th">4/22–30</th>
+          <th class="g-th" data-ci="0">3/23–31</th>
+          <th class="g-th" data-ci="1">4/1–7</th>
+          <th class="g-th" data-ci="2">4/8–14</th>
+          <th class="g-th" data-ci="3">4/15–21</th>
+          <th class="g-th" data-ci="4">4/22–30</th>
+          <th class="g-th" data-ci="5">5/4–15</th>
+          <th class="g-th" data-ci="6">5/18–29</th>
+          <th class="g-th" data-ci="7">6/1–12</th>
+          <th class="g-th" data-ci="8">6/15–30</th>
         </tr>
       </thead>
       <tbody id="gantt-body"></tbody>
     </table>
+    <!-- bar layer is injected here by JS -->
   </div>
   <div class="g-legend">
     <span class="g-legend-ttl">圖例</span>
     <span class="leg-i"><span class="leg-dot" style="background:var(--red)"></span>QA 進測</span>
     <span class="leg-i"><span class="leg-dot" style="background:var(--amber)"></span>出貨</span>
     <span class="leg-i"><span class="leg-dot" style="background:var(--green)"></span>上線 / Prod</span>
-    <span class="leg-i"><span class="leg-wk"></span>本週（3/16–22）</span>
-    <span class="leg-i" style="color:var(--ink-4);font-size:0.7rem;font-family:var(--mono)">hover 里程碑可見日期</span>
+    <span class="leg-i"><span class="leg-wk"></span>本週</span>
   </div>
 </div>
 
-<!-- UNIFIED CARDS -->
+<!-- CARDS -->
 <div class="sh">
   <span class="sh-title">所有專案詳情</span>
   <div class="sh-line"></div>
-  <span class="sh-note">hover 卡片可翻轉查看負責人</span>
+  <span class="sh-note">hover 翻轉查看負責人</span>
 </div>
 <div class="all-cards-grid" id="all-cards"></div>
 
 <script>
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    每週更新區 — 只改這裡
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const TODAY = new Date('2026-03-11');
-
-// 本週欄 index（0-based，對應 COLS）— 3/9–15 含 3/11，所以 index 0
-// 但 3/11 所在週是 3/9–15，header 標示本週的是哪一欄？
-// 依原始資料：header .now 是 3/16–22（colIdx:1），表示「本週是 3/16 那週」
-// 實際今天 3/11 在 3/9–15 欄（index 0）→ 把 NOW_COL 設為 0
-const NOW_COL = 0;  // 3/9–15 是今天所在週
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const TODAY_STR = '2026-03-24';
+const TODAY = new Date(TODAY_STR);
 
 const COLS = [
-  { label:'3/9–15',  start:'2026-03-09', end:'2026-03-16', px:80 },
-  { label:'3/16–22', start:'2026-03-16', end:'2026-03-23', px:80 },
-  { label:'3/23–31', start:'2026-03-23', end:'2026-04-01', px:80 },
-  { label:'4/1–7',   start:'2026-04-01', end:'2026-04-08', px:80 },
-  { label:'4/8–14',  start:'2026-04-08', end:'2026-04-15', px:80 },
-  { label:'4/15–21', start:'2026-04-15', end:'2026-04-22', px:80 },
-  { label:'4/22–30', start:'2026-04-22', end:'2026-05-01', px:80 },
+  { label:'3/23–31',  start:'2026-03-23', end:'2026-04-01', px:80 },
+  { label:'4/1–7',    start:'2026-04-01', end:'2026-04-08', px:80 },
+  { label:'4/8–14',   start:'2026-04-08', end:'2026-04-15', px:80 },
+  { label:'4/15–21',  start:'2026-04-15', end:'2026-04-22', px:80 },
+  { label:'4/22–30',  start:'2026-04-22', end:'2026-05-01', px:80 },
+  { label:'5/4–15',   start:'2026-05-04', end:'2026-05-16', px:80 },
+  { label:'5/18–29',  start:'2026-05-18', end:'2026-05-30', px:80 },
+  { label:'6/1–12',   start:'2026-06-01', end:'2026-06-13', px:80 },
+  { label:'6/15–30',  start:'2026-06-15', end:'2026-07-01', px:80 },
+];
+const NOW_COL = COLS.findIndex(c => TODAY >= new Date(c.start) && TODAY < new Date(c.end));
+
+// W13 QA 重點關注
+const QA_ITEMS = [
+  { id:'qa2', text:'🧪 DAL 3/24 QA 測試中，4/2 完成測試，4/7 更新 UAT&Stage', done:false },
+  { id:'qa3', text:'🤠 狂野霸盜 QA 測試中，4/1 完成測試，4/22 上線', done:false },
+  { id:'qa4', text:'⚡ 阿波羅 3/24 QA 進測，4/22 完成測試，5/6 上線', done:false },
+  { id:'qa5', text:'🪅 Piñata 1000 本週 COCOS 串接，Internal Preview 4/1～4/13', done:false },
+  { id:'qa6', text:'🔥 Flaming Ace 3/27 美術提交所有素材，進入 COCOS 開發', done:false },
 ];
 
+// ── 遊戲專案（依 QA 進測日由近到遠）──
 const GAMES = [
   {
-    kind:'game',
-    id:'932', emoji:'🏛️', name:'失落黃金城', en:'Legacy of Aztec',
-    color:'#B03A0A', status:'final', statusLabel:'Final Test', progress:98,
-    qa:'2026-03-05', ship:'2026-03-05', live:'2026-03-25',
-    team:{ GP:'毛哥', FE:'Liyi', Info:'梅森', HIS:'梅森', GS:'Louis' },
-    done:['3/5 出貨完成','3/6 追加公版購買 / 開始遊戲 / Extra Bet 按鈕','Info 已更新至 Prod','3/11 加入FRB補測'],
-    wip:[],
-    barStart:'2026-02-20', barEnd:'2026-03-25'
-  },
-  {
-    kind:'game',
-    id:'933', emoji:'🦏', name:'金甲犀牛', en:'Rhino Rumble',
-    color:'#1A6038', status:'survey', statusLabel:'問卷彙整', progress:75,
-    qa:'2026-03-02', ship:'2026-03-18', live:'2026-04-08',
-    team:{ GP:'毛哥', FE:'大瑞', Info:'梅森', HIS:'阿竹', GS:'阿岳' },
-    done:['3/6 問卷截止','3/10 DEMO會議完成'],
-    wip:['預計 3/18 出貨'],
-    barStart:'2026-02-15', barEnd:'2026-04-08'
-  },
-  {
-    kind:'game',
-    id:'934', emoji:'🤠', name:'狂野霸盜', en:'Wild Bandit',
-    color:'#542080', status:'survey', statusLabel:'問卷彙整', progress:60,
-    qa:null, ship:'2026-04-01', live:'2026-04-22',
+    kind:'game', id:'934', emoji:'🤠', name:'狂野霸盜', en:'Bandito Returns',
+    color:'#542080', status:'qa', statusLabel:'QA 進測', progress:70,
+    qa:'2026-03-24', ship:'2026-04-01', live:'2026-04-22',
     team:{ GP:'曉藝', FE:'賽門', Info:'阿竹', HIS:'梅森', GS:'阿岳' },
-    done:['問卷 3/10 截止'],
-    wip:['3/13 17:00 DEMO彙整會議'],
+    done:['3/10 問卷截止','3/13 DEMO 彙整（提前）','QA 進測中'],
+    wip:['4/1 完成測試','4/22 上線'],
     barStart:'2026-03-01', barEnd:'2026-04-22'
   },
   {
-    kind:'game',
-    id:'931', emoji:'⚡', name:'奧林匹斯 阿波羅', en:'Apollo',
-    color:'#9A5010', status:'audio', statusLabel:'Game Info排版', progress:40,
-    qa:'2026-03-24', ship:'2026-04-17', live:null,
+    kind:'game', id:'931', emoji:'⚡', name:'奧林匹斯 阿波羅', en:'Olympus Apollo',
+    color:'#9A5010', status:'qa', statusLabel:'QA 進測', progress:50,
+    qa:'2026-03-24', ship:'2026-04-22', live:'2026-05-06',
     team:{ GP:'毛哥', FE:'Liyi', Info:'梅森', HIS:'阿竹', GS:'Louis' },
-    done:['GDD 會議完成','Game Info 初步排版完成','美術歷史紀錄小圖已提交'],
-    wip:['音效串接進行中'],
-    barStart:'2026-02-01', barEnd:'2026-04-17'
+    done:['Game Info 排版完成','美術歷史紀錄小圖已提交','CC 開發完成','4/2 數學定版'],
+    wip:['3/24 QA 進測','4/22 完成測試','5/6 上線'],
+    barStart:'2026-02-01', barEnd:'2026-05-06'
   },
   {
-    kind:'game',
-    id:'928', emoji:'🪅', name:'Pinata 1000', en:'Pinata Wins',
-    color:'#A01450', status:'fe', statusLabel:'FE 串接 W2', progress:25,
-    qa:'2026-04-06', ship:'2026-05-13', live:null,
+    kind:'game', id:'928', emoji:'🪅', name:'墨西哥狂歡 1000', en:'Piñata 1000',
+    color:'#A01450', status:'fe', statusLabel:'CC 開發中', progress:30,
+    qa:'2026-04-13', ship:'2026-05-13', live:'2026-05-20',
     team:{ GP:'曉藝', FE:'大瑞', Info:'阿竹', HIS:'梅森', GS:'阿岳' },
-    done:['FE 串接第一週完成'],
-    wip:['本週遊戲前端串接第二週'],
-    barStart:'2026-03-01', barEnd:'2026-04-30'
+    done:['本週 COCOS 串接'],
+    wip:['Internal Preview 4/1～4/13','QA 進測 4/13','5/13 完成測試','5/20 上線'],
+    barStart:'2026-03-23', barEnd:'2026-05-20'
   },
   {
-    kind:'game',
-    id:'ACE', emoji:'🂡', name:'Ace', en:'Ace',
-    color:'#086058', status:'art', statusLabel:'美術 W3', progress:15,
-    qa:'2026-05-04', ship:'2026-06-10', live:null,
-    team:{},
+    kind:'game', id:'929', emoji:'🎣', name:'Big Bass', en:'Big Bass',
+    color:'#1A4870', status:'survey', statusLabel:'開發中', progress:15,
+    qa:'2026-05-04', ship:'2026-06-03', live:'2026-06-10',
+    team:{ GP:'曉藝', FE:'大瑞', Info:'未分配', HIS:'未分配', GS:'阿岳' },
     done:[],
-    wip:['本週美術製作第三週'],
-    barStart:'2026-03-01', barEnd:'2026-04-30'
+    wip:['5/4 QA 進測','6/3 完成測試','6/10 上線'],
+    barStart:'2026-04-01', barEnd:'2026-06-10'
+  },
+  {
+    kind:'game', id:'ACE', emoji:'🔥', name:'Flaming Ace', en:'Flaming Ace',
+    color:'#C03010', status:'art', statusLabel:'美術製作中', progress:20,
+    qa:'2026-05-11', ship:'2026-06-10', live:'2026-06-24',
+    team:{ GP:'毛哥', FE:'大瑞', Info:'未分配', HIS:'未分配', GS:'Louis' },
+    done:[],
+    wip:['3/27 美術提交所有素材','COCOS 開發中','5/11 QA 進測','6/10 完成測試','6/24 上線'],
+    barStart:'2026-03-23', barEnd:'2026-06-24'
   },
 ];
 
+// ── 技術專案（依出貨日由近到遠）──
 const TECH = [
   {
-    kind:'tech',
-    icon:'🎮', name:'COCOS 引擎升級', en:'Engine · 埃及之書',
-    color:'#5A2880', status:'tech', statusLabel:'Engine',
-    qa:null, ship:'2026-03-10', prod:'2026-03-11',
+    kind:'tech', icon:'🧪', name:'DAL Testing', en:'Testing',
+    color:'#185858', status:'tech', statusLabel:'QA 測試中',
+    qa:'2026-03-24', ship:'2026-04-02', prod:'2026-04-08',
     team:{},
-    barStart:'2026-03-01', barEnd:'2026-03-11',
+    barStart:'2026-03-24', barEnd:'2026-04-08',
     rows:[
-      { k:'出貨',            v:'03/10 完成', cls:'ok'  },
-      { k:'UAT/Stage/Prod', v:'03/11 更新中', cls:'warn'},
+      { k:'QA 測試',        v:'03/24 進行中',    cls:'warn'},
+      { k:'完成測試',        v:'04/02',           cls:''   },
+      { k:'UAT&Stage 更新', v:'04/07',            cls:''   },
+      { k:'Prod 上線',      v:'04/08',            cls:''   },
     ]
   },
   {
-    kind:'tech',
-    icon:'🔗', name:'Free Round API', en:'API',
-    color:'#1A4898', status:'tech', statusLabel:'API',
-    qa:'2026-03-09', ship:'2026-03-20', prod:'2026-03-25',
-    team:{},
-    barStart:'2026-03-09', barEnd:'2026-03-25',
-    rows:[
-      { k:'QA 進測',   v:'3/11 已送測 🔴', cls:'ok'  },
-      { k:'出貨',       v:'03/20',          cls:''    },
-      { k:'UAT/Stage', v:'03/23',           cls:'warn'},
-      { k:'Prod 更新', v:'03/25',           cls:'ok'  },
-    ]
-  },
-  {
-    kind:'tech',
-    icon:'🧪', name:'DAL Testing', en:'Testing',
-    color:'#185858', status:'tech', statusLabel:'Testing',
-    qa:'2026-03-23', ship:'2026-04-02', prod:'2026-04-08',
-    team:{},
-    barStart:'2026-03-23', barEnd:'2026-04-08',
-    rows:[
-      { k:'QA + 壓測', v:'03/23', cls:'warn'},
-      { k:'出貨',       v:'04/02', cls:''    },
-      { k:'UAT/Stage', v:'04/07', cls:''    },
-      { k:'Prod 更新', v:'04/08', cls:'ok'  },
-    ]
-  },
-  {
-    kind:'tech',
-    icon:'🏆', name:'FRB Max Win 優化', en:'FE優化',
+    kind:'tech', icon:'🏆', name:'FRB Max Win 優化', en:'FE優化',
     color:'#684010', status:'tech', statusLabel:'FE優化',
     qa:'2026-04-06', ship:'2026-04-17', prod:'2026-04-20',
     team:{},
     barStart:'2026-04-06', barEnd:'2026-04-20',
     rows:[
       { k:'QA 進測',        v:'04/06', cls:''  },
-      { k:'出貨',            v:'04/17', cls:''  },
-      { k:'UAT/Stage/Prod', v:'04/20', cls:'ok'},
+      { k:'完成測試',        v:'04/17', cls:''  },
+      { k:'UAT&Stage/Prod', v:'04/20', cls:''  },
     ]
   },
 ];
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
-   Render Engine
+   Utils
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
 const TRACK_START    = new Date(COLS[0].start);
 const TRACK_END      = new Date(COLS[COLS.length-1].end);
-const TOTAL_TRACK_MS = TRACK_END - TRACK_START;
-const TOTAL_TRACK_PX = COLS.reduce((s,c)=>s+c.px, 0);
+const TOTAL_TRACK_MS = +TRACK_END - +TRACK_START;
+const TOTAL_TRACK_PX = COLS.reduce((s,c)=>s+c.px, 0); // 560px
+const LBL_W = 200; // label column px
 
 function dateToPx(ds) {
   const d = new Date(ds);
   const cl = Math.max(+TRACK_START, Math.min(+TRACK_END, +d));
-  return Math.round((cl - TRACK_START) / TOTAL_TRACK_MS * TOTAL_TRACK_PX);
+  return Math.round((cl - +TRACK_START) / TOTAL_TRACK_MS * TOTAL_TRACK_PX);
 }
-function daysLeft(ds) {
-  return Math.round((new Date(ds) - TODAY) / 86400000);
-}
+function daysLeft(ds) { return Math.round((new Date(ds) - TODAY) / 86400000); }
 function cdStr(ds) {
   const d = daysLeft(ds);
   return d < 0 ? '已完成' : d === 0 ? '今天' : `剩 ${d} 天`;
 }
-function nearestMs(item) {
-  const keys = [item.qa, item.ship||item.barEnd, item.live, item.prod];
-  const all = keys.filter(Boolean).map(d=>new Date(d));
-  const fut = all.filter(d=>d>=TODAY);
-  return fut.length ? Math.min(...fut.map(d=>+d)) : Math.max(...all.map(d=>+d));
-}
-
-// Sort all by nearest milestone (ship date priority)
 function shipDate(item) {
   const s = item.ship || item.prod;
-  return s ? +new Date(s) : nearestMs(item);
+  return s ? +new Date(s) : +new Date(item.barEnd);
 }
-const allItems = [
-  ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
-  ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
-];
 
-const PILL = {
-  final:'pill-final', qa:'pill-qa', survey:'pill-survey',
-  audio:'pill-audio', fe:'pill-fe', art:'pill-art', tech:'pill-tech'
-};
+const PILL = { final:'pill-final', qa:'pill-qa', survey:'pill-survey', audio:'pill-audio', fe:'pill-fe', art:'pill-art', tech:'pill-tech' };
 
-/* ── Gantt ── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   QA Board — Drag / Add / Edit / Delete
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+let qaState = QA_ITEMS.map(x=>({...x}));
+let dragId = null;
+let editId = null;   // null = 新增模式，有值 = 編輯模式
+let idSeq  = QA_ITEMS.length + 1;
+
+function renderQA() {
+  const todo = qaState.filter(x=>!x.done);
+  const done = qaState.filter(x=> x.done);
+  document.getElementById('todo-count').textContent = todo.length;
+  document.getElementById('done-count').textContent = done.length;
+
+  function chip(item) {
+    const cls = item.done ? 'done-item' : '';
+    return `<div class="qa-chip ${cls}" draggable="true" data-id="${item.id}"
+      ondragstart="onDragStart(event,'${item.id}')"
+      ondragend="onDragEnd(event)">
+      <span class="drag-handle">⠿</span>
+      <span class="chip-text">${item.text}</span>
+      <div class="qa-chip-actions">
+        <button class="qa-act-btn edit" title="編輯" onclick="openModal('${item.id}');event.stopPropagation();">✎</button>
+        <button class="qa-act-btn del"  title="刪除" onclick="deleteItem('${item.id}');event.stopPropagation();">✕</button>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('qa-todo').innerHTML =
+    todo.map(chip).join('') ||
+    '<div style="padding:8px 10px;font-size:0.75rem;color:var(--ink-4);font-family:var(--mono)">— 沒有待處理項目 —</div>';
+
+  document.getElementById('qa-done').innerHTML =
+    done.map(chip).join('') ||
+    '<div style="padding:8px 10px;font-size:0.75rem;color:var(--ink-4);font-family:var(--mono)">— 拖曳到此標記完成 —</div>';
+}
+
+/* ── drag ── */
+function onDragStart(e, id) {
+  dragId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(()=>{ const el = document.querySelector(`[data-id="${id}"]`); if(el) el.classList.add('dragging'); }, 0);
+}
+function onDragEnd(e) {
+  document.querySelectorAll('.qa-chip').forEach(el=>el.classList.remove('dragging'));
+  document.querySelectorAll('.qa-list').forEach(el=>el.classList.remove('drag-over'));
+}
+function onDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect='move'; e.currentTarget.classList.add('drag-over'); }
+function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function onDrop(e, col) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!dragId) return;
+  const item = qaState.find(x=>x.id===dragId);
+  if (item) item.done = (col==='done');
+  dragId = null;
+  renderQA();
+}
+
+/* ── modal (新增 / 編輯) ── */
+function openModal(id) {
+  editId = id || null;
+  const modal = document.getElementById('qa-modal');
+  const titleEl = document.getElementById('modal-title');
+  const input   = document.getElementById('modal-text');
+  if (editId) {
+    titleEl.textContent = '編輯項目';
+    input.value = qaState.find(x=>x.id===editId)?.text || '';
+  } else {
+    titleEl.textContent = '新增關注項目';
+    input.value = '';
+  }
+  modal.classList.add('open');
+  setTimeout(()=>input.focus(), 80);
+}
+function closeModal() {
+  document.getElementById('qa-modal').classList.remove('open');
+  editId = null;
+}
+function onBackdropClick(e) { if(e.target===e.currentTarget) closeModal(); }
+function saveModal() {
+  const text = document.getElementById('modal-text').value.trim();
+  if (!text) return;
+  if (editId) {
+    const item = qaState.find(x=>x.id===editId);
+    if (item) item.text = text;
+  } else {
+    qaState.push({ id:`qa${++idSeq}`, text, done:false });
+  }
+  closeModal();
+  renderQA();
+}
+
+/* ── delete ── */
+function deleteItem(id) {
+  if (!confirm('確定要刪除此項目？')) return;
+  qaState = qaState.filter(x=>x.id!==id);
+  renderQA();
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   Gantt
+━━━━━━━━━━━━━━━━━━━━━━━━ */
 function renderGantt() {
-  // Update header: mark NOW_COL
-  const ths = document.querySelectorAll('.g-th:not(.lbl-th)');
-  ths.forEach((th, i) => {
-    if (i === NOW_COL) {
-      th.classList.add('now');
-      th.textContent = COLS[i].label + ' ▪ 本週';
+  // 1. Mark NOW_COL in header
+  document.querySelectorAll('.g-th[data-ci]').forEach(th => {
+    const ci = parseInt(th.dataset.ci);
+    if (ci === NOW_COL) {
+      th.classList.add('now-hd');
+      th.textContent = COLS[ci].label + ' ▪ 本週';
     }
   });
+
+  // 2. Build tbody rows (grid only — no bar rendering)
+  const sortedG = [...GAMES].sort((a,b)=>shipDate(a)-shipDate(b));
+  const sortedT = [...TECH].sort((a,b)=>shipDate(a)-shipDate(b));
 
   let html = '';
-  // Games
-  const sortedG = [...GAMES].sort((a,b)=>shipDate(a)-shipDate(b));
-  html += `<tr class="g-sec"><td colspan="8">🎮 &nbsp;遊戲專案</td></tr>`;
-  sortedG.forEach((g,i) => html += makeRow(g.name, g.color, g.emoji,
-    `#${g.id} · ${g.en}`, null, g.barStart, g.barEnd, g.qa, g.ship, g.live, null, i));
-
-  // Tech
-  const sortedT = [...TECH].sort((a,b)=>shipDate(a)-shipDate(b));
-  html += `<tr class="g-sec"><td colspan="8">🔧 &nbsp;技術 / API 專案</td></tr>`;
-  sortedT.forEach((t,i) => html += makeRow(t.name, t.color, t.icon,
-    t.en, t.en, t.barStart, t.barEnd, t.qa, t.ship, null, t.prod, sortedG.length+i));
-
+  html += `<tr class="g-sec"><td colspan="10">🎮 &nbsp;遊戲專案</td></tr>`;
+  sortedG.forEach(g => html += makeGridRow(g.name, g.emoji, `#${g.id} · ${g.en}`, null));
+  html += `<tr class="g-sec"><td colspan="10">🔧 &nbsp;技術 / API 專案</td></tr>`;
+  sortedT.forEach(t => html += makeGridRow(t.name, t.icon, t.en, t.en));
   document.getElementById('gantt-body').innerHTML = html;
+
+  // 3. Now measure row heights and build bar overlay
+  buildBarLayer([...sortedG, ...sortedT]);
 }
 
-function makeRow(name, color, emoji, subLine, typeLabel, barStart, barEnd, qa, ship, live, prod, idx) {
-  const bL = dateToPx(barStart);
-  const bR = dateToPx(barEnd);
-  const bW = Math.max(bR - bL, 4);
-
-  const daysToEnd = daysLeft(barEnd);
-  const isUrgent  = daysToEnd > -3 && daysToEnd < 14;
-
-  // Milestones with hover tooltip
-  const msDefs = [];
-  if (qa)   msDefs.push({ px:dateToPx(qa),    color:'var(--red)',   label:'QA 進測', date:qa   });
-  if (ship) msDefs.push({ px:dateToPx(ship),   color:'var(--amber)', label:'出貨',    date:ship  });
-  if (live) msDefs.push({ px:dateToPx(live),   color:'var(--green)', label:'上線',    date:live  });
-  if (prod) msDefs.push({ px:dateToPx(prod),   color:'var(--green)', label:'Prod',    date:prod  });
-
-  const withOffset = [];
-  msDefs.forEach(m => {
-    let offsetY = 0;
-    withOffset.forEach(prev => {
-      if (Math.abs(m.px - prev.m.px) < 14)
-        offsetY = Math.max(offsetY, prev.offsetY + 17);
-    });
-    withOffset.push({ m, offsetY });
-  });
-
-  const msHTML = withOffset.map(({m, offsetY}) => {
-    const dl = daysLeft(m.date);
-    const tip = `${m.label}　${m.date.slice(5)}　${cdStr(m.date)}`;
-    return `<div class="ms-flag" style="left:${m.px}px;top:${30+offsetY}px">
-      <div class="ms-dot" style="background:${m.color};color:${m.color}"></div>
-      <span class="ms-txt" style="color:${m.color}">${m.label}</span>
-      <span class="ms-tip">${tip}</span>
-    </div>`;
-  }).join('');
-
-  const urgentStyle = isUrgent ? `border:2px solid ${color}80 !important;` : '';
-
-  const trackCells = COLS.map((_, ci) => {
-    const isNow = ci === NOW_COL;
+function makeGridRow(name, emoji, subLine, typeLabel) {
+  // Track cells — col 0 has position:relative for row height reference
+  const cells = COLS.map((_, ci) => {
     let cls = 'g-track-cell';
-    if (ci % 2 === 1) cls += ' even';
-    if (isNow) cls += ' now-col';
-    if (ci === 0) {
-      return `<td class="${cls}" style="position:relative;overflow:visible">
-        <div class="g-track-overlay" style="width:${TOTAL_TRACK_PX}px">
-          <div class="g-bar${isUrgent?' urgent':''}"
-            style="left:${bL}px;width:${bW}px;
-                   background:${color}18;border:1.5px solid ${color}55;
-                   ${urgentStyle}
-                   animation:barIn 0.45s ${idx*0.05}s ease both">
-          </div>
-          ${msHTML}
-        </div>
-      </td>`;
-    }
+    if (ci % 2 === 1) cls += ' alt';
+    if (ci === NOW_COL) cls += ' now-td';
     return `<td class="${cls}"></td>`;
   }).join('');
 
@@ -757,11 +695,107 @@ function makeRow(name, color, emoji, subLine, typeLabel, barStart, barEnd, qa, s
         </div>
       </div>
     </td>
-    ${trackCells}
+    ${cells}
   </tr>`;
 }
 
-/* ── Cards ── */
+function buildBarLayer(items) {
+  // Wait for DOM paint then measure rows
+  requestAnimationFrame(() => {
+    const ganttRel = document.getElementById('gantt-rel');
+    const tableRect = ganttRel.getBoundingClientRect();
+    const rows = document.querySelectorAll('#gantt-body .g-row');
+
+    // Remove any existing bar layer
+    const old = document.getElementById('bars-layer');
+    if (old) old.remove();
+
+    const layer = document.createElement('div');
+    layer.id = 'bars-layer';
+    layer.className = 'gantt-bars-layer';
+    layer.style.pointerEvents = 'none';
+    ganttRel.appendChild(layer);
+
+    // Skip section rows — match data rows only
+    let itemIdx = 0;
+    rows.forEach(row => {
+      const item = items[itemIdx++];
+      if (!item) return;
+
+      const rowRect = row.getBoundingClientRect();
+      const rowTop  = rowRect.top - tableRect.top;
+      const rowH    = rowRect.height;
+
+      // bar — auto-extend barEnd to the latest milestone date to prevent cutoff
+      const allMsDates = [item.qa, item.ship, item.live, item.prod]
+        .filter(Boolean).map(d => +new Date(d));
+      const latestMs = allMsDates.length ? Math.max(...allMsDates) : 0;
+      const effectiveEnd = latestMs > +new Date(item.barEnd)
+        ? new Date(latestMs).toISOString().slice(0,10)
+        : item.barEnd;
+
+      const bL = LBL_W + dateToPx(item.barStart);
+      const bR = LBL_W + dateToPx(effectiveEnd);
+      const bW = Math.max(bR - bL, 4);
+      const barTop = rowTop + Math.round((rowH - 14) / 2);
+
+      const daysToEnd = daysLeft(effectiveEnd);
+      const isUrgent  = daysToEnd > -3 && daysToEnd < 14;
+      const urgentStyle = isUrgent ? `box-shadow:0 0 0 2px ${item.color}30;border-width:2px!important;` : '';
+
+      const barDiv = document.createElement('div');
+      barDiv.className = 'g-bar' + (isUrgent ? ' urgent' : '');
+      barDiv.style.cssText = `left:${bL}px;top:${barTop}px;width:${bW}px;` +
+        `background:${item.color}18;border:1.5px solid ${item.color}55;${urgentStyle}`;
+      layer.appendChild(barDiv);
+
+      // milestones
+      const qa   = item.qa;
+      const ship = item.ship;
+      const live = item.live;
+      const prod = item.prod;
+      const msDefs = [];
+      if (qa)   msDefs.push({ date:qa,   color:'var(--red)',   label:'QA 進測' });
+      if (ship) msDefs.push({ date:ship,  color:'var(--amber)', label:'出貨'    });
+      if (live) msDefs.push({ date:live,  color:'var(--green)', label:'上線'    });
+      if (prod) msDefs.push({ date:prod,  color:'var(--green)', label:'Prod'    });
+
+      const withOffset = [];
+      msDefs.forEach(m => {
+        const mpx = LBL_W + dateToPx(m.date);
+        let offsetY = 0;
+        withOffset.forEach(prev => {
+          if (Math.abs(mpx - prev.px) < 16) offsetY = Math.max(offsetY, prev.offsetY + 16);
+        });
+        withOffset.push({ ...m, px:mpx, offsetY });
+      });
+
+      withOffset.forEach(({date, color, label, px: mpx, offsetY}) => {
+        const msTop = barTop + 18 + offsetY;
+        const tip = `${label}　${date.slice(5)}　${cdStr(date)}`;
+
+        const flag = document.createElement('div');
+        flag.className = 'ms-flag';
+        flag.style.cssText = `left:${mpx}px;top:${msTop}px;pointer-events:auto;`;
+        flag.innerHTML = `
+          <div class="ms-dot" style="background:${color};color:${color}"></div>
+          <span class="ms-txt" style="color:${color}">${label}</span>
+          <span class="ms-tip">${tip}</span>`;
+        layer.appendChild(flag);
+      });
+
+      // animate bar
+      barDiv.animate(
+        [{clipPath:'inset(0 100% 0 0)',opacity:0},{clipPath:'inset(0 0% 0 0)',opacity:1}],
+        {duration:450, delay:itemIdx*40, fill:'both', easing:'ease'}
+      );
+    });
+  });
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   Cards
+━━━━━━━━━━━━━━━━━━━━━━━━ */
 function renderCards() {
   function dateCell(label, ds, hot) {
     if (!ds) return `<div class="pc-date empty"><div class="pcd-lbl">${label}</div><div class="pcd-val" style="color:var(--ink-4)">—</div></div>`;
@@ -778,92 +812,66 @@ function renderCards() {
   function teamBack(item) {
     const entries = Object.entries(item.team||{});
     const teamGrid = entries.length
-      ? `<div class="back-team">${entries.map(([r,n])=>`
-          <div class="bt-item">
-            <span class="bt-role">${r}</span>
-            <span class="bt-name">${n}</span>
-          </div>`).join('')}
-        </div>`
+      ? `<div class="back-team">${entries.map(([r,n])=>`<div class="bt-item"><span class="bt-role">${r}</span><span class="bt-name">${n}</span></div>`).join('')}</div>`
       : `<div class="back-no-team">— 負責人資料待補 —</div>`;
-    const sub = item.kind === 'game' ? `${item.en} · #${item.id}` : item.en;
+    const sub = item.kind==='game' ? `${item.en} · #${item.id}` : item.en;
     return `<div class="flip-back">
-      <div class="back-hint">TEAM</div>
+      <div class="back-hint">TEAM MEMBERS</div>
       <div class="back-name">${item.name}</div>
       <div class="back-sub">${sub}</div>
       ${teamGrid}
     </div>`;
   }
 
-  function gameFront(g, i) {
+  function gameFront(g) {
     const done = g.done.map(t=>`<div class="pc-upd"><div class="upd-pip" style="background:var(--green)"></div><span>${t}</span></div>`).join('');
     const wip  = g.wip.map(t=>`<div class="pc-upd"><div class="upd-pip" style="background:var(--amber)"></div><span>${t}</span></div>`).join('');
     return `<div class="flip-front" style="--pc-color:${g.color}">
-      <div class="pc-top">
-        <span class="pc-ico">${g.emoji}</span>
-        <span class="pc-pill ${PILL[g.status]}">${g.statusLabel}</span>
-      </div>
+      <div class="pc-top"><span class="pc-ico">${g.emoji}</span><span class="pc-pill ${PILL[g.status]}">${g.statusLabel}</span></div>
       <div class="pc-name">${g.name}</div>
       <div class="pc-sub">${g.en} · #${g.id}</div>
-      <div class="pc-prog-row">
-        <span class="pc-prog-lbl">PROGRESS</span>
-        <span class="pc-prog-pct" style="color:${g.color}">${g.progress}%</span>
-      </div>
+      <div class="pc-prog-row"><span class="pc-prog-lbl">PROGRESS</span><span class="pc-prog-pct" style="color:${g.color}">${g.progress}%</span></div>
       <div class="pc-bar-track"><div class="pc-bar-fill" style="width:${g.progress}%;background:${g.color}"></div></div>
       <div class="pc-dates">
-        ${dateCell('QA 進測', g.qa, true)}
-        ${dateCell('出貨', g.ship, true)}
-        ${dateCell('上線', g.live, false)}
+        ${dateCell('QA 進測',g.qa,true)}
+        ${dateCell('出貨',g.ship,true)}
+        ${dateCell('上線',g.live,false)}
       </div>
       <div class="pc-updates">${done}${wip}</div>
-      <span class="flip-hint">▷ 翻轉查看負責人</span>
+      <span class="flip-hint">▷ hover 翻轉查看負責人</span>
     </div>`;
   }
 
   function techFront(t) {
-    const rows = t.rows.map(r=>`<div class="tc-row">
-      <span class="tc-k">${r.k}</span>
-      <span class="tc-v ${r.cls}">${r.v}</span>
-    </div>`).join('');
-    const shipDs = t.ship || t.prod;
+    const rows = t.rows.map(r=>`<div class="tc-row"><span class="tc-k">${r.k}</span><span class="tc-v ${r.cls}">${r.v}</span></div>`).join('');
     return `<div class="flip-front" style="--pc-color:${t.color}">
-      <div class="pc-top">
-        <span class="pc-ico">${t.icon}</span>
-        <span class="pc-pill pill-tech">${t.statusLabel}</span>
-      </div>
+      <div class="pc-top"><span class="pc-ico">${t.icon}</span><span class="pc-pill pill-tech">${t.statusLabel}</span></div>
       <div class="pc-name">${t.name}</div>
       <div class="pc-sub">${t.en}</div>
       <div class="pc-dates">
-        ${dateCell('QA 進測', t.qa, true)}
-        ${dateCell('出貨', t.ship, true)}
-        ${dateCell('Prod', t.prod, false)}
+        ${dateCell('QA 進測',t.qa,true)}
+        ${dateCell('出貨',t.ship,true)}
+        ${dateCell('Prod',t.prod,false)}
       </div>
       <div class="tc-rows">${rows}</div>
-      <span class="flip-hint">▷ 翻轉查看負責人</span>
+      <span class="flip-hint">▷ hover 翻轉查看負責人</span>
     </div>`;
   }
 
-  // Merge & sort all
-  const gamesSorted = [...GAMES].sort((a,b)=>shipDate(a)-shipDate(b));
-  const techSorted  = [...TECH].sort((a,b)=>shipDate(a)-shipDate(b));
-  const all = [...gamesSorted, ...techSorted];
-
-  document.getElementById('all-cards').innerHTML = all.map((item, i) => {
-    const front = item.kind === 'game' ? gameFront(item, i) : techFront(item);
-    const back  = teamBack(item);
+  const all = [
+    ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
+    ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
+  ];
+  document.getElementById('all-cards').innerHTML = all.map((item,i)=>{
+    const front = item.kind==='game' ? gameFront(item) : techFront(item);
     return `<div class="flip-card" style="animation-delay:${i*0.05}s">
-      <div class="flip-inner">${front}${back}</div>
+      <div class="flip-inner">${front}${teamBack(item)}</div>
     </div>`;
   }).join('');
 }
 
-// Bar animation
-const s = document.createElement('style');
-s.textContent = `@keyframes barIn {
-  from { opacity:0; clip-path:inset(0 100% 0 0) }
-  to   { opacity:1; clip-path:inset(0 0% 0 0) }
-}`;
-document.head.appendChild(s);
-
+/* ── Init ── */
+renderQA();
 renderGantt();
 renderCards();
 </script>
