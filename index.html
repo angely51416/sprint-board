@@ -517,90 +517,92 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
    每週更新區 — 只改這裡
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 /* DATA_START */
-const DB_DATA = {"today":"2026-03-30","games":[{"kind":"game","id":"99934","name":"狂野霸盜","en":"Bandito Returns","emoji":"🤠","status":"final","statusLabel":"final test","progress":0.9,"qa":"2026-03-24","testDone":"2026-04-01","ship":null,"live":"2026-04-22","done":["QA測項"],"wip":["final test"],"color":"#542080","team":{"GP":"曉藝","FE":"賽門哥","Info":"阿竹","HIS":"梅森","GS":"阿岳"}},{"kind":"game","id":"99931","name":"阿波羅","en":"Olympus Apollo","emoji":"⚡","status":"survey","statusLabel":"內部Preview","progress":0.5,"qa":"2026-03-24","testDone":"2026-04-22","ship":null,"live":"2026-05-06","done":["第一階段demo"],"wip":["內部Preview"],"color":"#9a5010","team":{"GP":"毛哥","FE":"Liyi","Info":"梅森","HIS":"阿竹","GS":"Louis"}},{"kind":"game","id":"99928","name":"墨西哥狂歡1000","en":"Pinata 1000","emoji":"🪅","status":"fe","statusLabel":"COCOS串接","progress":0.5,"qa":"2026-04-13","testDone":"2026-05-13","ship":null,"live":"2026-05-20","done":["無"],"wip":["COCOS串接"],"color":"#A01450","team":{"GP":"曉藝","FE":"大瑞","Info":"阿竹","HIS":"阿竹","GS":"阿岳"}},{"kind":"game","id":"99929","name":"舞獅進寶","en":"Fortune Lion","emoji":"🦁","status":"art","statusLabel":"美術製作中","progress":0.2,"qa":"2026-05-04","testDone":"2026-06-03","ship":null,"live":"2026-06-10","done":["無"],"wip":["美術製作中"],"color":"#1A4870","team":{"GP":"曉藝","FE":"Liyi","Info":"梅森","HIS":"梅森","GS":"Louis"}},{"kind":"game","id":"99945","name":"皇家王牌","en":"Super Ace Royal","emoji":"♠️","status":"fe","statusLabel":"COCOS串接","progress":0.3,"qa":"2026-05-11","testDone":"2026-06-10","ship":null,"live":"2026-06-24","done":["無"],"wip":["COCOS串接"],"color":"#C03010","team":{"GP":"毛哥","FE":"賽門哥","Info":"阿竹","HIS":"梅森","GS":"Louis"}},{"kind":"game","id":"99927","name":"荒野槍客2","en":"Wild Bounty 2","emoji":"🔫","status":"art","statusLabel":"美術製作中","progress":0.05,"qa":"2026-04-25","testDone":"2026-06-24","ship":null,"live":"2026-07-08","done":["無"],"wip":["美術製作中"],"color":"#D2E9FF","team":{"GP":"毛哥","FE":"大瑞","Info":"梅森","HIS":"阿竹","GS":"Louis"}}],"techs":[{"kind":"tech","name":"DAL testing","en":"DAL testing","icon":"🧪","status":"tech","statusLabel":"QA測試中","qa":"2026-03-24","testDone":"2026-04-02","ship":null,"prod":"2026-04-07","color":"#888888","team":{},"rows":[{"k":"Wed Apr 08 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#18585818","cls":""}]},{"kind":"tech","name":"錦標賽","en":"Tournament","icon":"🏆","status":"tech","statusLabel":"待開發","qa":"2026-05-04","testDone":"2026-05-22","ship":null,"prod":"2026-05-25","color":"#888888","team":{},"rows":[{"k":"Wed May 27 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#68401018","cls":""}]}],"qaItems":[{"id":"qa1","text":"DAL 測試","done":false},{"id":"qa2","text":"狂野霸盜final test","done":false},{"id":"qa3","text":"錦標賽test case","done":false}]};
-const TODAY_STR = DB_DATA.today;
+const TODAY_STR = '2026-03-30';
 const TODAY = new Date(TODAY_STR);
-const GAMES = DB_DATA.games;
-const TECH = DB_DATA.techs;
-const QA_ITEMS = DB_DATA.qaItems;
 
-  var COLS = [];
-  (function(){
-    const start = new Date(TODAY_STR);
-    const end = new Date(start); 
-    end.setDate(end.getDate() + 91);
-    const wkd = ['日','一','二','三','四','五','六'];
-    for(let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const wd = d.getDay();
-      if(wd === 0 || wd === 6) continue;
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      const label = Number(m) + '/' + Number(dd) + '（週' + wkd[wd] + '）';
-      const s = y + '-' + m + '-' + dd;
-      const nx = new Date(d);
-      nx.setDate(nx.getDate() + 1);
-      while(nx.getDay() === 0 || nx.getDay() === 6) nx.setDate(nx.getDate() + 1);
-      const nm = String(nx.getMonth() + 1).padStart(2, '0');
-      const ndd = String(nx.getDate()).padStart(2, '0');
-      COLS.push({ label, start: s, end: nx.getFullYear() + '-' + nm + '-' + ndd, px: 14 });
-    }
-  })();
-  var NOW_COL = COLS.findIndex(c => new Date(TODAY_STR) >= new Date(c.start) && new Date(TODAY_STR) < new Date(c.end));
-  
+const COLS = [];
+(function(){
+  const start = new Date('2026-03-30');
+  const end = new Date(start); end.setDate(end.getDate()+91);
+  const wkd=['日','一','二','三','四','五','六'];
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+    const wd=d.getDay(); if(wd===0||wd===6) continue;
+    const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+    const label=Number(m)+'/'+Number(dd)+'（週'+wkd[wd]+'）';
+    const s=y+'-'+m+'-'+dd;
+    const nx=new Date(d); nx.setDate(nx.getDate()+1);
+    while(nx.getDay()===0||nx.getDay()===6) nx.setDate(nx.getDate()+1);
+    const nm=String(nx.getMonth()+1).padStart(2,'0'),ndd=String(nx.getDate()).padStart(2,'0');
+    COLS.push({label,start:s,end:nx.getFullYear()+'-'+nm+'-'+ndd,px:14});
+  }
+})();
+const NOW_COL=COLS.findIndex(c=>TODAY>=new Date(c.start)&&TODAY<new Date(c.end));
 
-  (function() {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      /* ① 移除左側專案名稱列 */
-      .gantt-container .left-side, .gantt-left { display: none !important; }
-      .gantt-container .right-side { width: 100% !important; margin-left: 0 !important; }
-      
-      /* ② 日期與月份顏色加深 */
-      .gantt .grid-header .lower-text { fill: #1A1816 !important; font-weight: bold; }
-      .gantt .grid-header .upper-text { fill: #3A3530 !important; font-weight: 900; font-size: 14px; }
-      
-      /* 隱藏原生 Quarter 空間 */
-      .gantt .grid-header [data-header-label="quarter"] { display: none !important; }
-    `;
-    
-    // 動態著色邏輯
-    DB_DATA.games.forEach(g => {
-      if (g.color) {
-        style.innerHTML += `.gantt .bar-wrapper[data-id="${g.id}"] .bar { fill: ${g.color} !important; } `;
-        style.innerHTML += `.gantt .bar-wrapper[data-id="${g.id}"] .bar-progress { fill: ${g.color} !important; opacity: 0.6; } `;
-      }
-    });
-    document.head.appendChild(style);
-  })();
-  
+const QA_ITEMS = [
+  { id:"qa1", text:"DAL 測試", done:false },
+  { id:"qa2", text:"狂野霸盜final test", done:false },
+  { id:"qa3", text:"錦標賽test case", done:false }
+];
 
-  (function() {
-    const d = new Date(TODAY_STR);
-    const mon = new Date(d.setDate(d.getDate() - (d.getDay() === 0 ? 6 : d.getDay() - 1)));
-    const fri = new Date(new Date(mon).setDate(mon.getDate() + 4));
-    const fmt = (date) => date.getFullYear() + '.' + String(date.getMonth()+1).padStart(2,'0') + '.' + String(date.getDate()).padStart(2,'0');
-    const rangeText = fmt(mon) + ' - ' + fmt(fri);
+const GAMES = [
+  {
+    kind:'game', id:"99934", emoji:"🤠", name:"狂野霸盜", en:"Bandito Returns",
+    color:"#542080", status:"final", statusLabel:"final test", progress:0.9,
+    qa:"2026-03-24", testDone:"2026-04-01", ship:null, live:"2026-04-22",
+    team:{ GP:"曉藝", FE:"賽門哥", Info:"阿竹", HIS:"梅森", GS:"阿岳" },
+    done:["QA測項"], wip:["final test"]
+  },
+  {
+    kind:'game', id:"99931", emoji:"⚡", name:"阿波羅", en:"Olympus Apollo",
+    color:"#9a5010", status:"survey", statusLabel:"內部Preview", progress:0.5,
+    qa:"2026-03-24", testDone:"2026-04-22", ship:null, live:"2026-05-06",
+    team:{ GP:"毛哥", FE:"Liyi", Info:"梅森", HIS:"阿竹", GS:"Louis" },
+    done:["第一階段demo"], wip:["內部Preview"]
+  },
+  {
+    kind:'game', id:"99928", emoji:"🪅", name:"墨西哥狂歡1000", en:"Pinata 1000",
+    color:"#A01450", status:"fe", statusLabel:"COCOS串接", progress:0.5,
+    qa:"2026-04-13", testDone:"2026-05-13", ship:null, live:"2026-05-20",
+    team:{ GP:"曉藝", FE:"大瑞", Info:"阿竹", HIS:"阿竹", GS:"阿岳" },
+    done:["無"], wip:["COCOS串接"]
+  },
+  {
+    kind:'game', id:"99929", emoji:"🦁", name:"舞獅進寶", en:"Fortune Lion",
+    color:"#1A4870", status:"art", statusLabel:"美術製作中", progress:0.2,
+    qa:"2026-05-04", testDone:"2026-06-03", ship:null, live:"2026-06-10",
+    team:{ GP:"曉藝", FE:"Liyi", Info:"梅森", HIS:"梅森", GS:"Louis" },
+    done:["無"], wip:["美術製作中"]
+  },
+  {
+    kind:'game', id:"99945", emoji:"♠️", name:"皇家王牌", en:"Super Ace Royal",
+    color:"#C03010", status:"fe", statusLabel:"COCOS串接", progress:0.3,
+    qa:"2026-05-11", testDone:"2026-06-10", ship:null, live:"2026-06-24",
+    team:{ GP:"毛哥", FE:"賽門哥", Info:"阿竹", HIS:"梅森", GS:"Louis" },
+    done:["無"], wip:["COCOS串接"]
+  },
+  {
+    kind:'game', id:"99927", emoji:"🔫", name:"荒野槍客2", en:"Wild Bounty 2",
+    color:"#D2E9FF", status:"art", statusLabel:"美術製作中", progress:0.05,
+    qa:"2026-04-25", testDone:"2026-06-24", ship:null, live:"2026-07-08",
+    team:{ GP:"毛哥", FE:"大瑞", Info:"梅森", HIS:"阿竹", GS:"Louis" },
+    done:["無"], wip:["美術製作中"]
+  }
+];
 
-    const cleanupUI = () => {
-      // 更新標題
-      const headerP = document.querySelector('header p') || document.querySelector('.sub-header');
-      if (headerP) headerP.innerText = rangeText + '  ·  SLOT STUDIO';
-      
-      // 徹底移除包含 "Week" 的所有文字標籤 (含 SVG text)
-      document.querySelectorAll('div, span, p, text').forEach(el => {
-        if (el.textContent.includes('Week')) {
-          el.innerHTML = ''; 
-          el.style.display = 'none';
-        }
-      });
-    };
-    
-    // 多次檢查確保 Frappe Gantt 渲染完畢後移除
-    setTimeout(cleanupUI, 500);
-    setTimeout(cleanupUI, 1500);
-  })();
-  
+const TECH = [
+  {
+    kind:'tech', icon:"🧪", name:"DAL testing", en:"DAL testing",
+    color:"#888888", status:'tech', statusLabel:"QA測試中",
+    qa:"2026-03-24", testDone:"2026-04-02", ship:null, prod:"2026-04-07",
+    team:{}, rows:[{"k":"Wed Apr 08 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#18585818","cls":""}]
+  },
+  {
+    kind:'tech', icon:"🏆", name:"錦標賽", en:"Tournament",
+    color:"#888888", status:'tech', statusLabel:"待開發",
+    qa:"2026-05-04", testDone:"2026-05-22", ship:null, prod:"2026-05-25",
+    team:{}, rows:[{"k":"Wed May 27 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#68401018","cls":""}]
+  }
+];
 /* DATA_END */
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
