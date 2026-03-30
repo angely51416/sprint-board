@@ -5,14 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sprint Board · 2026 W13</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.css">
 <style>
 :root {
-  --bg:        #F5F2ED;
-  --surface:   #FFFFFF;
-  --panel:     #F0EDE8;
-  --panel-b:   #E8E4DD;
-  --border:    #DDD9D2;
-  --border-dk: #C4C0B8;
+  --bg:        #EDE7DD;
+  --surface:   #F4EFE6;
+  --panel:     #E8E1D6;
+  --panel-b:   #DDD5C8;
+  --border:    #CFC6B8;
+  --border-dk: #B7AD9E;
   --ink:   #1A1816;
   --ink-2: #4C4840;
   --ink-3: #8C887F;
@@ -149,7 +150,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
    overlay 掛在 gantt-rel 上，不掛在第一個 td 裡
    table 只負責格線，bar 用 absolute 覆蓋
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.gantt-outer{overflow-x:auto;border:1px solid var(--border-dk);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
+.gantt-outer{border:1px solid var(--border-dk);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
 .gantt-rel{position:relative;}           /* bar 的定位父層 */
 .gantt-table{width:100%;min-width:820px;border-collapse:collapse;table-layout:fixed;}
 .col-lbl{width:200px;}
@@ -250,12 +251,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 }
 .ms-flag:hover .ms-tip{display:block;}
 
-/* legend */
-.g-legend{display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding:9px 16px;background:var(--panel);border-top:1px solid var(--border);}
-.g-legend-ttl{font-family:var(--mono);font-size:0.59rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-4);}
-.leg-i{display:flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--ink-3);}
-.leg-dot{width:7px;height:7px;border-radius:50%;}
-.leg-wk{display:inline-block;width:12px;height:10px;background:var(--blu-bg);border:1px solid var(--blue);border-radius:1px;}
+/* legend removed */
 
 /* ━━━━━━━━ CARDS ━━━━━━━━ */
 .all-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border-dk);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
@@ -314,6 +310,112 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 .pill-survey{background:var(--amb-bg);color:var(--amber);} .pill-audio{background:#EDE8F5;color:#3A2060;}
 .pill-fe{background:#E4EFF0;color:#0C3840;} .pill-art{background:#F2EAE5;color:#4E2818;}
 .pill-tech{background:#EAE8F2;color:#2A2060;}
+
+/* ── Frappe Gantt ── */
+#gantt-chart{min-width:1100px;}
+.gantt-split{
+  display:grid;
+  grid-template-columns:240px minmax(0,1fr);
+  border-top:1px solid var(--border);
+}
+.gantt-left{
+  border-right:1px solid var(--border);
+  background:#ECE4D7;
+}
+.gantt-left-hd{
+  padding:9px 12px;
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);
+  font-size:0.62rem;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#6F665A;
+}
+.gantt-label-list{list-style:none;margin:0;padding:0;}
+.gantt-label-spacer{height:0;border-bottom:1px solid #D8CFC2;}
+.gantt-label-item{
+  min-height:44px; /* allow syncGanttLabelRows() to set exact height */
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  border-bottom:1px solid #D8CFC2;
+  color:#3F3A33;
+  font-size:0.82rem;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.gantt-right{
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+/* ── VIEW TOGGLE — left side of section header ── */
+.view-toggle{display:flex;gap:2px;background:var(--panel-b);border:1px solid var(--border-dk);border-radius:3px;padding:2px;flex-shrink:0;}
+.vt-btn{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;padding:3px 11px;border:none;border-radius:2px;cursor:pointer;background:transparent;color:var(--ink-3);transition:background 0.12s,color 0.12s;}
+.vt-btn.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.vt-btn:hover:not(.active){background:var(--panel);color:var(--ink-2);}
+
+/* ── 三層 HEADER ── */
+.g-hd-quarter{
+  display:flex;border-bottom:1px solid rgba(255,255,255,0.12);
+  background:var(--ink);
+}
+.g-hd-quarter-lbl{
+  flex-shrink:0;width:240px;
+  padding:5px 12px;
+  font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.12em;
+  text-transform:uppercase;color:rgba(255,255,255,0.35);
+  border-right:1px solid rgba(255,255,255,0.12);
+}
+.g-hd-quarter-cells{flex:1;display:flex;overflow:hidden;}
+.g-hd-q-cell{
+  font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.12em;
+  text-transform:uppercase;color:#FFF;text-align:center;
+  padding:5px 0;border-right:1px solid rgba(255,255,255,0.12);
+  white-space:nowrap;overflow:hidden;
+}
+.g-hd-month{display:flex;border-bottom:1px solid var(--border);}
+.g-hd-month-lbl{
+  flex-shrink:0;width:240px;
+  border-right:1px solid var(--border-dk);background:var(--panel-b);
+}
+.g-hd-month-cells{flex:1;display:flex;overflow:hidden;}
+.g-hd-m-cell{
+  font-family:var(--mono);font-size:0.7rem;font-weight:500;
+  color:#2A2520;text-align:center;padding:5px 0;
+  border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;
+  background:var(--panel-b);
+}
+.g-hd-m-cell.now-month{color:var(--blue);background:#EBF0F8;}
+.g-hd-m-cell:last-child{border-right:none;}
+
+/* ── 當前時間線 ── */
+.now-line-overlay{
+  position:absolute;top:0;bottom:0;
+  width:1.5px;background:var(--red);opacity:0.75;
+  pointer-events:none;z-index:50;
+}
+
+/* ── BAR LABEL in Frappe ── */
+.gantt .bar-label{display:block !important;fill:#FFF;font-size:9.5px;font-family:var(--mono);font-weight:500;}
+
+.gantt-toolbar{
+  display:none; /* 移除舊 toolbar，改由 sh 內切換 */
+}
+
+.gantt .bar-label{display:none;}
+.gantt .grid-header,.gantt .grid-row{fill:#F4EFE6;}
+.gantt .row-line,.gantt .lower-text,.gantt .upper-text{stroke:#D3C9BA;fill:#6C6358;}
+.gantt .tick{stroke:#D5CCBF;}
+.gantt .today-highlight{fill:#E4DBCD;}
+.gantt .bar{fill:#AFA087;stroke:#94866F;}
+.gantt .bar-progress{fill:#AFA087;}
+.gantt-container{padding:0;}
+.gantt-tag-tri{stroke:none;}
+.gantt-tag-tri.qa{fill:#943020;}
+.gantt-tag-tri.done{fill:#7A4E18;}
+.gantt-tag-bg{fill:#F6F1E8;stroke:#CFC6B8;stroke-width:1;rx:3;ry:3;}
+.gantt-tag-text{fill:#3F3A33;font-family:var(--mono);font-size:10.5px;}
 </style>
 </head>
 <body>
@@ -335,10 +437,10 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 <!-- HEADER -->
 <header class="pg-hd">
   <div>
-    <div class="pg-title"><span>専案週報</span><span>Sprint Board</span></div>
-    <div class="pg-meta">Week 13 &nbsp;·&nbsp; 2026.03.23 – 03.29 &nbsp;·&nbsp; Slot Studio</div>
+    <div class="pg-title"><span>QA専案週報</span><span>Sprint Board</span></div>
+    <div class="pg-meta">Week 13 &nbsp;·&nbsp; 2026.03.23 – 03.27 &nbsp;·&nbsp; Slot Studio</div>
   </div>
-  <div class="pg-badge">W13 · 2026</div>
+  <div class="pg-badge">3月Week 3 · 2026</div>
 </header>
 
 <!-- QA BOARD -->
@@ -366,43 +468,38 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 
 <!-- GANTT -->
 <div class="sh">
+  <div class="view-toggle">
+    <button class="vt-btn active" id="vt-Day"   onclick="setGanttView('Day',event)">日</button>
+    <button class="vt-btn"        id="vt-Week"  onclick="setGanttView('Week',event)">週</button>
+    <button class="vt-btn"        id="vt-Month" onclick="setGanttView('Month',event)">月</button>
+  </div>
   <span class="sh-title">全專案時間軸</span>
   <div class="sh-line"></div>
-  <span class="sh-note">3月 – 6月 &nbsp;｜&nbsp; hover 里程碑可見日期</span>
+  <span class="sh-note">3月 – 6月 &nbsp;｜&nbsp; 可拖曳長條調整時程</span>
 </div>
-<div class="gantt-outer">
-  <div class="gantt-rel" id="gantt-rel">
-    <table class="gantt-table" id="gantt-table">
-      <colgroup>
-        <col class="col-lbl">
-        <col class="col-t"><col class="col-t"><col class="col-t">
-        <col class="col-t"><col class="col-t"><col class="col-t">
-        <col class="col-t"><col class="col-t"><col class="col-t">
-      </colgroup>
-      <thead id="g-thead">
-        <tr>
-          <th class="g-th lbl-th">專案名稱</th>
-          <th class="g-th" data-ci="0">3/23–31</th>
-          <th class="g-th" data-ci="1">4/1–7</th>
-          <th class="g-th" data-ci="2">4/8–14</th>
-          <th class="g-th" data-ci="3">4/15–21</th>
-          <th class="g-th" data-ci="4">4/22–30</th>
-          <th class="g-th" data-ci="5">5/4–15</th>
-          <th class="g-th" data-ci="6">5/18–29</th>
-          <th class="g-th" data-ci="7">6/1–12</th>
-          <th class="g-th" data-ci="8">6/15–30</th>
-        </tr>
-      </thead>
-      <tbody id="gantt-body"></tbody>
-    </table>
-    <!-- bar layer is injected here by JS -->
+<div class="gantt-outer" style="overflow:hidden;">
+  <!-- 季度列 -->
+  <div class="g-hd-quarter" id="g-hd-quarter">
+    <div class="g-hd-quarter-lbl">QUARTER</div>
+    <div class="g-hd-quarter-cells" id="g-hd-q-cells"></div>
   </div>
-  <div class="g-legend">
-    <span class="g-legend-ttl">圖例</span>
-    <span class="leg-i"><span class="leg-dot" style="background:var(--red)"></span>QA 進測</span>
-    <span class="leg-i"><span class="leg-dot" style="background:var(--amber)"></span>出貨</span>
-    <span class="leg-i"><span class="leg-dot" style="background:var(--green)"></span>上線 / Prod</span>
-    <span class="leg-i"><span class="leg-wk"></span>本週</span>
+  <!-- 月份列 -->
+  <div class="g-hd-month" id="g-hd-month">
+    <div class="g-hd-month-lbl"></div>
+    <div class="g-hd-month-cells" id="g-hd-m-cells"></div>
+  </div>
+  <!-- Frappe Gantt split -->
+  <div class="gantt-split" style="position:relative;">
+    <div class="gantt-left">
+      <div class="gantt-left-hd">專案名稱</div>
+      <div class="gantt-label-spacer" id="gantt-label-spacer"></div>
+      <ul class="gantt-label-list" id="gantt-label-list"></ul>
+    </div>
+    <div class="gantt-right" id="gantt-right" style="position:relative;">
+      <div class="gantt-container">
+        <svg id="gantt-chart"></svg>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -414,108 +511,151 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 </div>
 <div class="all-cards-grid" id="all-cards"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
 <script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   每週更新區 — 只改這裡
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 /* DATA_START */
-const TODAY_STR = '2026-03-30';
+const TODAY_STR = '2026-03-24';
 const TODAY = new Date(TODAY_STR);
 
 const COLS = [];
 (function(){
-  const start = new Date('2026-03-30');
-  const end = new Date(start); end.setDate(end.getDate()+91);
-  const wkd=['日','一','二','三','四','五','六'];
-  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
-    const wd=d.getDay(); if(wd===0||wd===6) continue;
-    const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
-    const label=Number(m)+'/'+Number(dd)+'（週'+wkd[wd]+'）';
-    const s=y+'-'+m+'-'+dd;
-    const nx=new Date(d); nx.setDate(nx.getDate()+1);
-    while(nx.getDay()===0||nx.getDay()===6) nx.setDate(nx.getDate()+1);
-    const nm=String(nx.getMonth()+1).padStart(2,'0'),ndd=String(nx.getDate()).padStart(2,'0');
-    COLS.push({label,start:s,end:nx.getFullYear()+'-'+nm+'-'+ndd,px:14});
+  const start = new Date('2026-03-24');
+  const end = new Date('2026-06-26');
+  const weekdays = ['日','一','二','三','四','五','六'];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+    const wd = d.getDay();
+    if (wd === 0 || wd === 6) continue; // skip Sat/Sun
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const label = `${Number(m)}/${Number(dd)}（週${weekdays[wd]}）`;
+    const startIso = `${y}-${m}-${dd}`;
+    const next = new Date(d); next.setDate(next.getDate()+1);
+    while (next.getDay() === 0 || next.getDay() === 6) next.setDate(next.getDate()+1);
+    const nm = String(next.getMonth()+1).padStart(2,'0');
+    const ndd = String(next.getDate()).padStart(2,'0');
+    const endIso = `${next.getFullYear()}-${nm}-${ndd}`;
+    COLS.push({label,start:startIso,end:endIso,px:14});
   }
 })();
-const NOW_COL=COLS.findIndex(c=>TODAY>=new Date(c.start)&&TODAY<new Date(c.end));
+const NOW_COL = COLS.findIndex(c => TODAY >= new Date(c.start) && TODAY < new Date(c.end));
 
+// W13 QA 重點關注
 const QA_ITEMS = [
-  { id:"qa1", text:"DAL 測試", done:false },
-  { id:"qa2", text:"狂野霸盜final test", done:false },
-  { id:"qa3", text:"錦標賽test case", done:false }
+  { id:'qa2', text:'🧪 DAL 3/24 QA進測', done:false },
+  { id:'qa3', text:'🤠 狂野霸盜 QA 最後一周測試', done:false },
+  { id:'qa4', text:'⚡ 阿波羅 3/24第一階段Demo', done:false },
 ];
 
+// ── 遊戲專案（依 QA 進測日由近到遠）──
 const GAMES = [
   {
-    kind:'game', id:"99934", emoji:"🤠", name:"狂野霸盜", en:"Bandito Returns",
-    color:"#888888", status:"final", statusLabel:"final test", progress:0.9,
-    qa:"2026-03-24", testDone:"2026-04-01", ship:null, live:"2026-04-22",
-    team:{ GP:"阿竹", FE:"梅森", Info:"阿岳", HIS:"", GS:"" },
-    done:["#54208018"], wip:["曉藝"]
+    kind:'game', id:'934', emoji:'🤠', name:'狂野霸盜', en:'Bandito Returns',
+    color:'#542080', status:'qa', statusLabel:'QA 進測', progress:70,
+    qa:'2026-03-24', testDone:'2026-04-01', ship:null, live:null,
+    team:{ GP:'曉藝', FE:'賽門', Info:'阿竹', HIS:'梅森', GS:'阿岳' },
+    done:['3/10 問卷截止','3/13 DEMO 彙整（提前）','QA 進測中'],
+    wip:['3/24 QA測試','4/1 完成測試']
   },
   {
-    kind:'game', id:"99931", emoji:"⚡", name:"阿波羅", en:"Olympus Apollo",
-    color:"#888888", status:"survey", statusLabel:"內部Preview", progress:0.5,
-    qa:"2026-03-24", testDone:"2026-04-22", ship:null, live:"2026-05-06",
-    team:{ GP:"梅森", FE:"阿竹", Info:"Louis", HIS:"", GS:"" },
-    done:["#9a501018"], wip:["毛哥"]
+    kind:'game', id:'931', emoji:'⚡', name:'奧林匹斯 阿波羅', en:'Olympus Apollo',
+    color:'#9A5010', status:'qa', statusLabel:'第一階段打磨', progress:50,
+    qa:'2026-03-24', testDone:'2026-04-22', ship:null, live:'2026-05-06',
+    team:{ GP:'毛哥', FE:'Liyi', Info:'梅森', HIS:'阿竹', GS:'Louis' },
+    done:['Game Info 排版完成','美術歷史紀錄小圖已提交','CC 開發完成','4/2 數學定版'],
+    wip:['3/24 QA 進測','4/22 完成測試','5/6 上線']
   },
   {
-    kind:'game', id:"99928", emoji:"🪅", name:"墨西哥狂歡1000", en:"Pinata 1000",
-    color:"#888888", status:"fe", statusLabel:"COCOS串接", progress:0.5,
-    qa:"2026-04-13", testDone:"2026-05-13", ship:null, live:"2026-05-20",
-    team:{ GP:"阿竹", FE:"阿竹", Info:"阿岳", HIS:"", GS:"" },
-    done:["#A0145018"], wip:["曉藝"]
+    kind:'game', id:'928', emoji:'🪅', name:'墨西哥狂歡 1000', en:'Piñata 1000',
+    color:'#A01450', status:'fe', statusLabel:'CC 開發中', progress:30,
+    qa:'2026-04-13', testDone:'2026-05-13', ship:null, live:'2026-05-20',
+    team:{ GP:'曉藝', FE:'大瑞', Info:'阿竹', HIS:'梅森', GS:'阿岳' },
+    done:['本週 COCOS 串接'],
+    wip:['Internal Preview 4/1-4/13','QA 進測 4/13','5/13 完成測試','5/20 上線']
   },
   {
-    kind:'game', id:"99929", emoji:"🦁", name:"舞獅進寶", en:"Fortune Lion",
-    color:"#888888", status:"art", statusLabel:"美術製作中", progress:0.2,
-    qa:"2026-05-04", testDone:"2026-06-03", ship:null, live:"2026-06-10",
-    team:{ GP:"梅森", FE:"梅森", Info:"Louis", HIS:"", GS:"" },
-    done:["#1A487018"], wip:["曉藝"]
+    kind:'game', id:'929', emoji:'🎣', name:'Big Bass', en:'Big Bass',
+    color:'#1A4870', status:'survey', statusLabel:'開發中', progress:15,
+    qa:'2026-05-04', testDone:'2026-06-03', ship:null, live:'2026-06-10',
+    team:{ GP:'曉藝', FE:'Liyi', Info:'未分配', HIS:'未分配', GS:'阿岳' },
+    done:[],
+    wip:['5/4 QA 進測','6/3 完成測試','6/10 上線']
   },
   {
-    kind:'game', id:"99945", emoji:"♠️", name:"皇家王牌", en:"Super Ace Royal",
-    color:"#888888", status:"fe", statusLabel:"COCOS串接", progress:0.3,
-    qa:"2026-05-11", testDone:"2026-06-10", ship:null, live:"2026-06-24",
-    team:{ GP:"阿竹", FE:"梅森", Info:"Louis", HIS:"", GS:"" },
-    done:["#C0301018"], wip:["毛哥"]
+    kind:'game', id:'ACE', emoji:'🔥', name:'Flaming Ace', en:'Flaming Ace',
+    color:'#C03010', status:'art', statusLabel:'美術製作中', progress:20,
+    qa:'2026-05-11', testDone:'2026-06-10', ship:null, live:'2026-06-24',
+    team:{ GP:'毛哥', FE:'大瑞', Info:'未分配', HIS:'未分配', GS:'Louis' },
+    done:[],
+    wip:['3/27 美術提交所有素材','COCOS 開發中','5/11 QA 進測','6/10 完成測試','6/24 上線']
   },
-  {
-    kind:'game', id:"99927", emoji:"🔫", name:"荒野槍客2", en:"Wild Bounty 2",
-    color:"#888888", status:"art", statusLabel:"美術製作中", progress:0.05,
-    qa:"2026-04-25", testDone:"2026-06-24", ship:null, live:"2026-07-08",
-    team:{ GP:"梅森", FE:"阿竹", Info:"Louis", HIS:"", GS:"" },
-    done:["#D2E9FF"], wip:["毛哥"]
-  }
 ];
 
+// ── 技術專案（依出貨日由近到遠）──
 const TECH = [
   {
-    kind:'tech', icon:"🧪", name:"DAL testing", en:"DAL testing",
-    color:"#888888", status:'tech', statusLabel:"QA測試中",
-    qa:"2026-03-24", testDone:"2026-04-02", ship:null, prod:"2026-04-07",
-    team:{}, rows:[{"k":"Wed Apr 08 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#18585818","cls":""}]
+    kind:'tech', icon:'🧪', name:'DAL Testing', en:'Testing',
+    color:'#185858', status:'tech', statusLabel:'QA 測試中',
+    qa:'2026-03-24', testDone:'2026-04-02', ship:null, prod:'2026-04-08',
+    team:{},
+    rows:[
+      { k:'QA 測試',        v:'03/24 進行中',    cls:'warn'},
+      { k:'完成測試',        v:'04/02',           cls:''   },
+      { k:'UAT&Stage 更新', v:'04/07',            cls:''   },
+      { k:'Prod 上線',      v:'04/08',            cls:''   },
+    ]
   },
   {
-    kind:'tech', icon:"🏆", name:"錦標賽", en:"Tournament",
-    color:"#888888", status:'tech', statusLabel:"待開發",
-    qa:"2026-05-04", testDone:"2026-05-22", ship:null, prod:"2026-05-25",
-    team:{}, rows:[{"k":"Wed May 27 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#68401018","cls":""}]
-  }
+    kind:'tech', icon:'🏆', name:'FRB Max Win 優化', en:'FE優化',
+    color:'#684010', status:'tech', statusLabel:'FE優化',
+    qa:'2026-04-06', testDone:'2026-04-17', ship:null, prod:null,
+    team:{},
+    rows:[
+      { k:'QA 進測',        v:'04/06', cls:''  },
+      { k:'完成測試',        v:'04/17', cls:''  },
+      { k:'UAT&Stage 更新', v:'04/20', cls:''  },
+    ]
+  },
 ];
 /* DATA_END */
+
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
    Utils
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
-const TRACK_START    = new Date(COLS[0].start);
-const TRACK_END      = new Date(COLS[COLS.length-1].end);
-const TOTAL_TRACK_MS = +TRACK_END - +TRACK_START;
-const TOTAL_TRACK_PX = COLS.reduce((s,c)=>s+c.px, 0); // 560px
 const LBL_W = 200; // label column px
+
+// Build cumulative px offsets per column
+const COL_PX_START = [];
+let _acc = 0;
+COLS.forEach(c => { COL_PX_START.push(_acc); _acc += c.px; });
+const TOTAL_TRACK_PX = _acc;
 
 function dateToPx(ds) {
   const d = new Date(ds);
-  const cl = Math.max(+TRACK_START, Math.min(+TRACK_END, +d));
-  return Math.round((cl - +TRACK_START) / TOTAL_TRACK_MS * TOTAL_TRACK_PX);
+  const trackStart = new Date(COLS[0].start);
+  const trackEnd   = new Date(COLS[COLS.length-1].end);
+  if (d <= trackStart) return 0;
+  if (d >= trackEnd)   return TOTAL_TRACK_PX;
+
+  // Find which column this date falls in
+  for (let i = 0; i < COLS.length; i++) {
+    const cs = new Date(COLS[i].start);
+    const ce = new Date(COLS[i].end);
+    if (d >= cs && d < ce) {
+      const ratio = (+d - +cs) / (+ce - +cs);
+      return Math.round(COL_PX_START[i] + ratio * COLS[i].px);
+    }
+  }
+  // Between columns (weekend gap) — snap to next column start
+  for (let i = 0; i < COLS.length - 1; i++) {
+    const ce = new Date(COLS[i].end);
+    const ns = new Date(COLS[i+1].start);
+    if (d >= ce && d < ns) return COL_PX_START[i+1];
+  }
+  return TOTAL_TRACK_PX;
 }
 function daysLeft(ds) { return Math.round((new Date(ds) - TODAY) / 86400000); }
 function cdStr(ds) {
@@ -524,10 +664,30 @@ function cdStr(ds) {
 }
 function shipDate(item) {
   const s = item.ship || item.prod;
-  return s ? +new Date(s) : +new Date(item.barEnd);
+  return s ? +new Date(s) : +new Date(getTimelineEnd(item));
+}
+
+function getTimelineStart(item) {
+  return item.qa || item.barStart;
+}
+
+function getTimelineEnd(item) {
+  return item.testDone || item.barEnd || item.ship || item.live || item.prod || item.qa;
+}
+
+// dateToColIndex 目前不再作為 bar 直接定位，僅保留給週訊息需求（可移除或保留）
+function dateToColIndex(ds) {
+  const px = dateToPx(ds);
+  for (let i = COLS.length - 1; i >= 0; i--) {
+    if (px >= COL_PX_START[i]) return i;
+  }
+  return 0;
 }
 
 const PILL = { final:'pill-final', qa:'pill-qa', survey:'pill-survey', audio:'pill-audio', fe:'pill-fe', art:'pill-art', tech:'pill-tech' };
+let ganttInstance = null;
+let currentGanttView = 'Day';
+let taskMetaById = {};
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
    QA Board — Drag / Add / Edit / Delete
@@ -633,145 +793,432 @@ function deleteItem(id) {
    Gantt
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
 function renderGantt() {
-  // 1. Mark NOW_COL in header
-  document.querySelectorAll('.g-th[data-ci]').forEach(th => {
-    const ci = parseInt(th.dataset.ci);
-    if (ci === NOW_COL) {
-      th.classList.add('now-hd');
-      th.textContent = COLS[ci].label + ' ▪ 本週';
+  const allItems = [
+    ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
+    ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
+  ];
+
+  const tasks = allItems
+    .map((item, idx) => {
+      const start = getTimelineStart(item);
+      const end = getTimelineEnd(item);
+      if (!start || !end) return null;
+      const launchDate = item.live || item.prod;
+      const launchText = launchDate ? `<div>上線/Prod：${launchDate}</div>` : '';
+      const dispName = item.kind === 'game' ? item.name : item.name;
+      return {
+        id: `task-${idx}`,
+        name: dispName,
+        start,
+        end,
+        progress: 100,
+        custom_class: item.kind === 'game' ? 'gantt-game' : 'gantt-tech',
+        _color: item.color,
+        _meta: { start, end, launchText }
+      };
+    })
+    .filter(Boolean);
+
+  taskMetaById = Object.fromEntries(
+    tasks.map(t => [t.id, { start: t.start, end: t.end }])
+  );
+
+  const labelList = document.getElementById('gantt-label-list');
+  labelList.innerHTML = allItems.map(item => {
+    const nm = item.kind === 'game' ? `${item.emoji} ${item.name}` : `${item.icon} ${item.name}`;
+    return `<li class="gantt-label-item" title="${nm}">${nm}</li>`;
+  }).join('');
+
+  const ganttTarget = document.getElementById('gantt-chart');
+  ganttTarget.innerHTML = '';
+
+  ganttInstance = new Gantt('#gantt-chart', tasks, {
+    view_mode: currentGanttView,
+    language: 'zh',
+    date_format: 'YYYY-MM-DD',
+    bar_height: 20,
+    padding: 22,
+    custom_popup_html: (task) => {
+      const m = task._meta || {};
+      return `<div style="padding:10px 12px;font-family:var(--sans);line-height:1.5">
+        <div style="font-weight:700;margin-bottom:6px">${task.name}</div>
+        <div>QA進測：${m.start || '-'}</div>
+        <div>完成測試：${m.end || '-'}</div>
+        ${m.launchText || ''}
+      </div>`;
+    },
+    on_date_change: (task, start, end) => {
+      // reflect drag back into data
+      const idx = parseInt(task.id.replace('task-',''));
+      const allSorted = [
+        ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
+        ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
+      ];
+      const item = allSorted[idx];
+      if (item) {
+        item.qa = start.toISOString().slice(0,10);
+        item.testDone = end.toISOString().slice(0,10);
+        taskMetaById[task.id] = { start: item.qa, end: item.testDone };
+      }
+      requestAnimationFrame(() => { applyBarColors(); drawBarMilestones(); drawNowLine(); buildExtraHeaders(); });
     }
   });
 
-  // 2. Build tbody rows (grid only — no bar rendering)
-  const sortedG = [...GAMES].sort((a,b)=>shipDate(a)-shipDate(b));
-  const sortedT = [...TECH].sort((a,b)=>shipDate(a)-shipDate(b));
-
-  let html = '';
-  html += `<tr class="g-sec"><td colspan="10">🎮 &nbsp;遊戲專案</td></tr>`;
-  sortedG.forEach(g => html += makeGridRow(g.name, g.emoji, `#${g.id} · ${g.en}`, null));
-  html += `<tr class="g-sec"><td colspan="10">🔧 &nbsp;技術 / API 專案</td></tr>`;
-  sortedT.forEach(t => html += makeGridRow(t.name, t.icon, t.en, t.en));
-  document.getElementById('gantt-body').innerHTML = html;
-
-  // 3. Now measure row heights and build bar overlay
-  buildBarLayer([...sortedG, ...sortedT]);
-}
-
-function makeGridRow(name, emoji, subLine, typeLabel) {
-  // Track cells — col 0 has position:relative for row height reference
-  const cells = COLS.map((_, ci) => {
-    let cls = 'g-track-cell';
-    if (ci % 2 === 1) cls += ' alt';
-    if (ci === NOW_COL) cls += ' now-td';
-    return `<td class="${cls}"></td>`;
-  }).join('');
-
-  return `<tr class="g-row">
-    <td class="g-lbl-cell">
-      <div class="g-lbl-inner">
-        <span class="g-ico">${emoji}</span>
-        <div>
-          <div class="g-nm">${name}</div>
-          <div class="g-sub">${subLine}</div>
-          ${typeLabel ? `<span class="g-type">${typeLabel}</span>` : ''}
-        </div>
-      </div>
-    </td>
-    ${cells}
-  </tr>`;
-}
-
-function buildBarLayer(items) {
-  // Wait for DOM paint then measure rows
   requestAnimationFrame(() => {
-    const ganttRel = document.getElementById('gantt-rel');
-    const tableRect = ganttRel.getBoundingClientRect();
-    const rows = document.querySelectorAll('#gantt-body .g-row');
+    syncGanttLabelRows();
+    decorateDayHeader();
+    applyBarColors();
+    drawBarMilestones();
+    drawNowLine();
+    buildExtraHeaders();
+  });
+  setTimeout(() => {
+    syncGanttLabelRows();
+    decorateDayHeader();
+    applyBarColors();
+    drawBarMilestones();
+    drawNowLine();
+    buildExtraHeaders();
+  }, 150);
+}
 
-    // Remove any existing bar layer
-    const old = document.getElementById('bars-layer');
-    if (old) old.remove();
-
-    const layer = document.createElement('div');
-    layer.id = 'bars-layer';
-    layer.className = 'gantt-bars-layer';
-    layer.style.pointerEvents = 'none';
-    ganttRel.appendChild(layer);
-
-    // Skip section rows — match data rows only
-    let itemIdx = 0;
-    rows.forEach(row => {
-      const item = items[itemIdx++];
-      if (!item) return;
-
-      const rowRect = row.getBoundingClientRect();
-      const rowTop  = rowRect.top - tableRect.top;
-      const rowH    = rowRect.height;
-
-      // bar — auto-extend barEnd to the latest milestone date to prevent cutoff
-      const allMsDates = [item.qa, item.ship, item.live, item.prod]
-        .filter(Boolean).map(d => +new Date(d));
-      const latestMs = allMsDates.length ? Math.max(...allMsDates) : 0;
-      const effectiveEnd = latestMs > +new Date(item.barEnd)
-        ? new Date(latestMs).toISOString().slice(0,10)
-        : item.barEnd;
-
-      const bL = LBL_W + dateToPx(item.barStart);
-      const bR = LBL_W + dateToPx(effectiveEnd);
-      const bW = Math.max(bR - bL, 4);
-      const barTop = rowTop + Math.round((rowH - 14) / 2);
-
-      const daysToEnd = daysLeft(effectiveEnd);
-      const isUrgent  = daysToEnd > -3 && daysToEnd < 14;
-      const urgentStyle = isUrgent ? `box-shadow:0 0 0 2px ${item.color}30;border-width:2px!important;` : '';
-
-      const barDiv = document.createElement('div');
-      barDiv.className = 'g-bar' + (isUrgent ? ' urgent' : '');
-      barDiv.style.cssText = `left:${bL}px;top:${barTop}px;width:${bW}px;` +
-        `background:${item.color}18;border:1.5px solid ${item.color}55;${urgentStyle}`;
-      layer.appendChild(barDiv);
-
-      // milestones
-      const qa   = item.qa;
-      const ship = item.ship;
-      const live = item.live;
-      const prod = item.prod;
-      const msDefs = [];
-      if (qa)   msDefs.push({ date:qa,   color:'var(--red)',   label:'QA 進測' });
-      if (ship) msDefs.push({ date:ship,  color:'var(--amber)', label:'出貨'    });
-      if (live) msDefs.push({ date:live,  color:'var(--green)', label:'上線'    });
-      if (prod) msDefs.push({ date:prod,  color:'var(--green)', label:'Prod'    });
-
-      const withOffset = [];
-      msDefs.forEach(m => {
-        const mpx = LBL_W + dateToPx(m.date);
-        let offsetY = 0;
-        withOffset.forEach(prev => {
-          if (Math.abs(mpx - prev.px) < 16) offsetY = Math.max(offsetY, prev.offsetY + 16);
-        });
-        withOffset.push({ ...m, px:mpx, offsetY });
-      });
-
-      withOffset.forEach(({date, color, label, px: mpx, offsetY}) => {
-        const msTop = barTop + 18 + offsetY;
-        const tip = `${label}　${date.slice(5)}　${cdStr(date)}`;
-
-        const flag = document.createElement('div');
-        flag.className = 'ms-flag';
-        flag.style.cssText = `left:${mpx}px;top:${msTop}px;pointer-events:auto;`;
-        flag.innerHTML = `
-          <div class="ms-dot" style="background:${color};color:${color}"></div>
-          <span class="ms-txt" style="color:${color}">${label}</span>
-          <span class="ms-tip">${tip}</span>`;
-        layer.appendChild(flag);
-      });
-
-      // animate bar
-      barDiv.animate(
-        [{clipPath:'inset(0 100% 0 0)',opacity:0},{clipPath:'inset(0 0% 0 0)',opacity:1}],
-        {duration:450, delay:itemIdx*40, fill:'both', easing:'ease'}
-      );
+function setGanttView(mode, evt) {
+  currentGanttView = mode;
+  // update toggle buttons
+  ['Day','Week','Month'].forEach(k => {
+    const btn = document.getElementById('vt-'+k);
+    if (btn) btn.classList.toggle('active', k === mode);
+  });
+  if (ganttInstance) {
+    ganttInstance.change_view_mode(mode);
+    requestAnimationFrame(() => {
+      syncGanttLabelRows(); decorateDayHeader();
+      applyBarColors(); drawBarMilestones(); drawNowLine(); buildExtraHeaders();
     });
+    setTimeout(() => {
+      syncGanttLabelRows(); decorateDayHeader();
+      applyBarColors(); drawBarMilestones(); drawNowLine(); buildExtraHeaders();
+    }, 150);
+  } else {
+    renderGantt();
+  }
+  if (evt && evt.currentTarget) evt.currentTarget.blur();
+}
+
+// ── 套用各專案顏色到 bar ─────────────────────────────────────
+function applyBarColors() {
+  const allItems = [
+    ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
+    ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
+  ];
+  const svg = document.querySelector('#gantt-chart .gantt');
+  if (!svg) return;
+  const wrappers = svg.querySelectorAll('.bar-wrapper');
+  wrappers.forEach((w, i) => {
+    const item = allItems[i];
+    if (!item) return;
+    const bar = w.querySelector('.bar');
+    const prog = w.querySelector('.bar-progress');
+    if (bar) { bar.setAttribute('fill', item.color+'33'); bar.setAttribute('stroke', item.color+'99'); }
+    if (prog) prog.setAttribute('fill', item.color+'55');
+    // bar label
+    const lbl = w.querySelector('.bar-label');
+    if (lbl) {
+      lbl.setAttribute('fill', item.color);
+      // truncate if needed
+      const barW = parseFloat(bar?.getAttribute('width') || 0);
+      const fullName = item.name;
+      if (barW < 60) lbl.textContent = '';
+      else if (barW < 120) lbl.textContent = fullName.slice(0,4)+'…';
+      else lbl.textContent = fullName;
+    }
+  });
+}
+
+// ── 當前時間線 ───────────────────────────────────────────────
+function drawNowLine() {
+  const ganttRight = document.getElementById('gantt-right');
+  if (!ganttRight) return;
+  ganttRight.querySelectorAll('.now-line-overlay').forEach(n=>n.remove());
+
+  const svg = document.querySelector('#gantt-chart .gantt');
+  if (!svg || !ganttInstance?.gantt_start) return;
+
+  // Find today's x position via the today-highlight rect in SVG
+  const todayRect = svg.querySelector('.today-highlight');
+  if (!todayRect) return;
+  const tx = parseFloat(todayRect.getAttribute('x') || 0);
+  const tw = parseFloat(todayRect.getAttribute('width') || 0);
+  const svgEl = document.getElementById('gantt-chart');
+  const svgRect = svgEl.getBoundingClientRect();
+  const rightRect = ganttRight.getBoundingClientRect();
+
+  // Convert SVG x to screen x relative to gantt-right
+  const svgViewBox = svgEl.viewBox?.baseVal;
+  let scaleX = 1;
+  if (svgViewBox && svgViewBox.width > 0) {
+    scaleX = svgRect.width / svgViewBox.width;
+  }
+  const screenX = tx * scaleX + (svgRect.left - rightRect.left);
+  const centerX = screenX + tw * scaleX / 2;
+
+  const line = document.createElement('div');
+  line.className = 'now-line-overlay';
+  line.style.left = centerX + 'px';
+  ganttRight.appendChild(line);
+}
+
+// ── 建立季度 + 月份 header ───────────────────────────────────
+function buildExtraHeaders() {
+  const svg = document.querySelector('#gantt-chart .gantt');
+  if (!svg || !ganttInstance?.gantt_start) return;
+
+  const ganttRight = document.getElementById('gantt-right');
+  const svgEl = document.getElementById('gantt-chart');
+  const svgRect = svgEl.getBoundingClientRect();
+  const rightRect = ganttRight.getBoundingClientRect();
+
+  const svgViewBox = svgEl.viewBox?.baseVal;
+  let scaleX = 1;
+  if (svgViewBox && svgViewBox.width > 0) scaleX = svgRect.width / svgViewBox.width;
+
+  // Collect upper-text positions (month/week headers in Frappe)
+  const upperTexts = svg.querySelectorAll('.upper-text');
+  if (!upperTexts.length) return;
+
+  // Build month segments from upper-text
+  const segments = [];
+  upperTexts.forEach(el => {
+    const x = parseFloat(el.getAttribute('x') || 0);
+    const screenX = x * scaleX + (svgRect.left - rightRect.left);
+    const label = el.textContent.trim();
+    segments.push({ x: screenX, label });
+  });
+
+  // Total width = rightRect.width
+  const totalW = rightRect.width;
+
+  // ── Month row ──
+  const mCells = document.getElementById('g-hd-m-cells');
+  mCells.innerHTML = '';
+  mCells.style.position = 'relative';
+  mCells.style.height = '28px';
+
+  segments.forEach((seg, i) => {
+    const nextX = i < segments.length-1 ? segments[i+1].x : totalW;
+    const w = Math.max(0, nextX - seg.x);
+    const isNow = seg.label.includes(String(TODAY.getMonth()+1)) ||
+                  seg.label.toLowerCase() === (TODAY.getMonth()+1)+'月';
+    const cell = document.createElement('div');
+    cell.style.cssText = `position:absolute;left:${seg.x}px;width:${w}px;height:28px;` +
+      `display:flex;align-items:center;justify-content:center;` +
+      `font-family:var(--mono);font-size:0.7rem;font-weight:500;` +
+      `color:${isNow?'var(--blue)':'#2A2520'};` +
+      `background:${isNow?'#EBF0F8':'var(--panel-b)'};` +
+      `border-right:1px solid var(--border);overflow:hidden;white-space:nowrap;`;
+    cell.textContent = seg.label;
+    mCells.appendChild(cell);
+  });
+
+  // ── Quarter row ──
+  const qCells = document.getElementById('g-hd-q-cells');
+  qCells.innerHTML = '';
+  qCells.style.position = 'relative';
+  qCells.style.height = '26px';
+
+  // Group months into quarters
+  function monthToQ(label) {
+    // label could be "Mar", "3月", "2026 Mar", etc.
+    const monthMap = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+    const m = label.replace(/\d{4}/g,'').replace(/[^a-z月]/gi,'').toLowerCase().trim();
+    const num = parseInt(label.match(/\d+/)?.[0] || 0);
+    let mNum = num || monthMap[m.slice(0,3)] || 0;
+    if (mNum >= 1 && mNum <= 3) return 'Q1';
+    if (mNum >= 4 && mNum <= 6) return 'Q2';
+    if (mNum >= 7 && mNum <= 9) return 'Q3';
+    return 'Q4';
+  }
+
+  const qGroups = [];
+  segments.forEach((seg, i) => {
+    const q = monthToQ(seg.label);
+    const nextX = i < segments.length-1 ? segments[i+1].x : totalW;
+    if (!qGroups.length || qGroups[qGroups.length-1].q !== q) {
+      qGroups.push({ q, x: seg.x, endX: nextX });
+    } else {
+      qGroups[qGroups.length-1].endX = nextX;
+    }
+  });
+
+  qGroups.forEach(grp => {
+    const w = Math.max(0, grp.endX - grp.x);
+    const cell = document.createElement('div');
+    cell.style.cssText = `position:absolute;left:${grp.x}px;width:${w}px;height:26px;` +
+      `display:flex;align-items:center;justify-content:center;` +
+      `font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.12em;` +
+      `color:#FFF;border-right:1px solid rgba(255,255,255,0.15);` +
+      `overflow:hidden;white-space:nowrap;`;
+    cell.textContent = grp.q;
+    qCells.appendChild(cell);
+  });
+}
+
+function syncGanttLabelRows() {
+  const labels = document.querySelectorAll('.gantt-label-item');
+  const svg = document.querySelector('#gantt-chart .gantt');
+  if (!svg || !labels.length) return;
+  const gridRows = svg.querySelectorAll('.grid-row');
+  const gridHeader = svg.querySelector('.grid-header');
+  const leftHeader = document.querySelector('.gantt-left-hd');
+  const spacer = document.getElementById('gantt-label-spacer');
+  if (!gridRows.length || !gridHeader || !leftHeader || !spacer) return;
+
+  const getY = (el) => {
+    const a = el.getAttribute('y');
+    if (a != null && a !== '') return parseFloat(a);
+    const bb = el.getBBox();
+    return bb && Number.isFinite(bb.y) ? bb.y : 0;
+  };
+
+  const headerY = getY(gridHeader);
+  const firstY = getY(gridRows[0]);
+  const headerH = Math.max(26, Math.round(firstY - headerY));
+  leftHeader.style.height = `${headerH}px`;
+  leftHeader.style.display = 'flex';
+  leftHeader.style.alignItems = 'center';
+  spacer.style.height = '0px';
+
+  gridRows.forEach((row, idx) => {
+    if (!labels[idx]) return;
+    const y = getY(row);
+    let h = 0;
+    if (idx < gridRows.length - 1) {
+      const nextY = getY(gridRows[idx + 1]);
+      h = Math.round(nextY - y);
+    }
+    if (!h || h < 1) h = Math.round(row.getBBox().height);
+    // 左側 label 使用 border-bottom:1px，減掉 1px 以避免後續列累積漂移。
+    h = Math.max(32, h - 1);
+    labels[idx].style.height = `${h}px`;
+  });
+}
+
+function decorateDayHeader() {
+  if (currentGanttView !== 'Day' || !ganttInstance?.gantt_start) return;
+  const weekdays = ['日','一','二','三','四','五','六'];
+  const lowerTexts = document.querySelectorAll('#gantt-chart .lower-text');
+  lowerTexts.forEach((el, idx) => {
+    const d = new Date(ganttInstance.gantt_start);
+    d.setDate(d.getDate() + idx);
+    const day = d.getDate();
+    el.textContent = `${day}(${weekdays[d.getDay()]})`;
+  });
+}
+
+function shortDate(dateStr) {
+  if (!dateStr) return '--/--';
+  const d = new Date(dateStr);
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${m}/${day}`;
+}
+
+function drawBarMilestones() {
+  const svg = document.querySelector('#gantt-chart .gantt');
+  if (!svg) return;
+  svg.querySelectorAll('.gantt-ms-tag').forEach(n => n.remove());
+
+  const bars = svg.querySelectorAll('.bar-wrapper');
+  const placedRects = [];
+
+  function overlaps(a, b, gap = 4) {
+    return !(
+      a.x + a.w + gap < b.x ||
+      b.x + b.w + gap < a.x ||
+      a.y + a.h + gap < b.y ||
+      b.y + b.h + gap < a.y
+    );
+  }
+
+  function createTag(x, y, kind, text, align, place = 'top') {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'gantt-ms-tag');
+
+    const tri = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    tri.setAttribute('class', `gantt-tag-tri ${kind}`);
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('class', 'gantt-tag-bg');
+
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('class', 'gantt-tag-text');
+    txt.textContent = text;
+
+    const w = Math.max(74, text.length * 6.6 + 12);
+    const h = 18;
+    const triW = 6;
+    const triH = 7;
+    const by = place === 'top' ? (y - h - triH - 4) : (y + triH + 4);
+    const bx = align === 'right' ? x - w : x;
+
+    rect.setAttribute('x', String(bx));
+    rect.setAttribute('y', String(by));
+    rect.setAttribute('width', String(w));
+    rect.setAttribute('height', String(h));
+
+    txt.setAttribute('x', String(bx + 6));
+    txt.setAttribute('y', String(by + 12));
+
+    tri.setAttribute(
+      'points',
+      place === 'top'
+        ? (align === 'right'
+            ? `${x},${y} ${x - triW},${y - triH} ${x - triW * 2},${y - triH}`
+            : `${x},${y} ${x + triW},${y - triH} ${x + triW * 2},${y - triH}`)
+        : (align === 'right'
+            ? `${x},${y} ${x - triW},${y + triH} ${x - triW * 2},${y + triH}`
+            : `${x},${y} ${x + triW},${y + triH} ${x + triW * 2},${y + triH}`)
+    );
+
+    g.appendChild(rect);
+    g.appendChild(tri);
+    g.appendChild(txt);
+    return { g, rect: { x: bx, y: by, w, h } };
+  }
+
+  function placeTagAvoidOverlap(x, y, kind, text, align) {
+    const attempts = ['top', 'bottom', 'top', 'bottom'];
+    const yOffsets = [0, 0, -12, 12];
+    for (let i = 0; i < attempts.length; i++) {
+      const candidate = createTag(x, y + yOffsets[i], kind, text, align, attempts[i]);
+      const collision = placedRects.some(r => overlaps(candidate.rect, r));
+      if (!collision) {
+        placedRects.push(candidate.rect);
+        return candidate.g;
+      }
+    }
+    const fallback = createTag(x, y - 18, kind, text, align, 'top');
+    placedRects.push(fallback.rect);
+    return fallback.g;
+  }
+
+  bars.forEach(wrapper => {
+    const taskId = wrapper.getAttribute('data-id');
+    const meta = taskMetaById[taskId];
+    if (!meta) return;
+    const bar = wrapper.querySelector('.bar');
+    if (!bar) return;
+
+    const x = parseFloat(bar.getAttribute('x')) || 0;
+    const y = parseFloat(bar.getAttribute('y')) || 0;
+    const w = parseFloat(bar.getAttribute('width')) || 0;
+    const h = parseFloat(bar.getAttribute('height')) || 0;
+    if (w <= 0) return;
+    const topAnchor = y + 1;
+    const qaTag = placeTagAvoidOverlap(x, topAnchor, 'qa', `QA ${shortDate(meta.start)}`, 'left');
+    const doneTag = placeTagAvoidOverlap(x + w, topAnchor, 'done', `完成 ${shortDate(meta.end)}`, 'right');
+    svg.appendChild(qaTag);
+    svg.appendChild(doneTag);
   });
 }
 
