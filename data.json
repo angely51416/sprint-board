@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-27T05:22:11.688Z",
+  "lastUpdated": "2026-05-27T09:27:49.126Z",
   "weekNumber": 22,
   "weekRange": "2026 W22 · 5/25 – 5/29",
   "gameProjects": [
@@ -72,7 +72,7 @@
       "blitzmode": "有",
       "FreeRoundBonus": "有",
       "FreeRoundApi": "有",
-      "Tournament": "待確認",
+      "Tournament": "有",
       "MAXWIN": "待確認"
     },
     {
@@ -192,7 +192,7 @@
       "blitzmode": "有",
       "FreeRoundBonus": "有",
       "FreeRoundApi": "有",
-      "Tournament": "待確認",
+      "Tournament": "有",
       "MAXWIN": "10000X"
     }
   ],
