@@ -3,424 +3,248 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprint Board · 2026 W13</title>
+<title>衝刺看板</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.css">
 <style>
 :root {
-  --bg:        #EDE7DD;
-  --surface:   #F4EFE6;
-  --panel:     #E8E1D6;
-  --panel-b:   #DDD5C8;
-  --border:    #CFC6B8;
-  --border-dk: #B7AD9E;
-  --ink:   #1A1816;
-  --ink-2: #4C4840;
-  --ink-3: #8C887F;
-  --ink-4: #B8B4AB;
-  --red:    #943020; --red-bg:  #F5ECEB;
-  --amber:  #7A4E18; --amb-bg:  #F5EDDF;
-  --green:  #2A5E38; --grn-bg:  #E8F0E8;
-  --blue:   #1E3F6A; --blu-bg:  #DDE6F0;
+  /* ── Palette ── */
+  --bg:         #F5F2EC;
+  --surface:    #FFFFFF;
+  --panel:      #EDE7D8;
+  --panel-b:    #E3D9C4;
+  --border:     #D4C49C;
+  --border-dk:  #B8A070;
+  --ink:        #1E1C18;
+  --ink-2:      #4A4840;
+  --ink-3:      #847E72;
+  --ink-4:      #B0AA9E;
+  --red:        #8C2A1C;
+  --red-bg:    #F6EDEB;
+  --amber:      #8A5C10; --amb-bg:    #FBF0DC;
+  --green:      #244F30; --grn-bg:    #E4EFE6;
+  --blue:       #1A3860;
+  --blu-bg:    #DDE5F2;
+  --teal:       #0D4A44; --teal-bg:   #DCF0EE;
+  --purple:     #3A1E60; --pur-bg:    #EAE4F5;
+  --accent:     #C89840;
+  --accent-2:   #E8B458;
+  --dark:       #3A3830;
+  --today-hl:   rgba(200,152,64,0.18);
+  --today-line: #C89840;
+  --week-hl:    rgba(200,152,64,0.09);
+  --month-hl:   rgba(200,152,64,0.10);
+  /* ── Type ── */
   --mono:  'DM Mono', monospace;
   --sans:  'Noto Sans TC', sans-serif;
   --serif: 'Noto Serif TC', serif;
-  --radius: 3px;
-  --shadow: 0 2px 8px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  /* ── Shape ── */
+  --radius: 4px;
+  --radius-lg: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:15px;}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:40px 44px 100px;}
-::-webkit-scrollbar{width:4px;height:4px;}
+html{font-size:18px;}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:36px 44px 100px;}
+::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-dk);border-radius:2px;}
+::-webkit-scrollbar-thumb{background:var(--border-dk);border-radius:3px;}
 
 /* ── HEADER ── */
-.pg-hd{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:20px;margin-bottom:32px;border-bottom:1.5px solid var(--border-dk);}
-.pg-title{font-family:var(--serif);font-size:2rem;font-weight:700;letter-spacing:-0.025em;line-height:1.08;color:var(--ink);}
+.pg-hd{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;padding-bottom:20px;margin-bottom:32px;border-bottom:2px solid var(--border-dk);}
+.pg-title{font-family:var(--serif);font-size:2.1rem;font-weight:700;letter-spacing:-0.03em;line-height:1.07;color:var(--ink);}
 .pg-title span{display:block;}
-.pg-meta{margin-top:7px;font-family:var(--mono);font-size:0.7rem;letter-spacing:0.1em;color:var(--ink-3);text-transform:uppercase;}
-.pg-badge{font-family:var(--mono);font-size:0.76rem;font-weight:500;letter-spacing:0.1em;color:var(--ink-2);border:1.5px solid var(--border-dk);padding:8px 18px;border-radius:var(--radius);background:var(--surface);}
+.pg-title span:last-child{color:var(--accent);}
+.pg-meta{margin-top:7px;font-family:var(--mono);font-size:0.68rem;letter-spacing:0.09em;color:var(--ink-3);}
+.pg-badge{font-family:var(--mono);font-size:0.76rem;font-weight:500;letter-spacing:0.07em;color:var(--ink-2);border:1.5px solid var(--border-dk);padding:8px 18px;border-radius:var(--radius);background:var(--surface);}
 
 /* ── QA BOARD ── */
-.qa-board{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:40px;}
-.qa-col{background:var(--surface);border:1px solid var(--border-dk);border-radius:4px;overflow:hidden;box-shadow:var(--shadow);}
-.qa-col-hd{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 14px;border-bottom:1px solid var(--border);
-  font-family:var(--mono);font-size:0.65rem;font-weight:500;
-  letter-spacing:0.14em;text-transform:uppercase;
-}
+.qa-board{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:40px;}
+.qa-col{background:var(--surface);border:1px solid var(--border-dk);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
+.qa-col-hd{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.64rem;font-weight:500;letter-spacing:0.10em;}
 .qa-col-hd.todo{color:var(--amber);background:var(--amb-bg);}
 .qa-col-hd.done{color:var(--green);background:var(--grn-bg);}
-.qa-col-hd .col-count{margin-left:auto;font-family:var(--mono);font-size:0.72rem;font-weight:500;color:inherit;opacity:0.7;}
+.qa-col-hd .col-count{margin-left:auto;font-size:0.72rem;opacity:0.7;}
 .qa-list{min-height:60px;padding:8px;display:flex;flex-direction:column;gap:6px;}
-.qa-list.drag-over{background:rgba(30,63,106,0.04);border-radius:3px;}
-
-.qa-chip{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 10px;border-radius:4px;
-  font-size:0.8rem;font-weight:500;
-  cursor:grab;user-select:none;
-  transition:box-shadow 0.15s, opacity 0.15s, transform 0.12s;
-  border:1px solid var(--border);
-  background:var(--panel);color:var(--ink-2);
-}
+.qa-list.drag-over{background:rgba(97,104,94,0.07);border-radius:4px;}
+.qa-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:5px;font-size:0.8rem;font-weight:500;cursor:grab;user-select:none;transition:box-shadow .15s,opacity .15s,transform .12s;border:1px solid var(--border);background:var(--panel);color:var(--ink-2);}
 .qa-chip:active{cursor:grabbing;}
-.qa-chip.done-item{background:var(--grn-bg);border-color:#A8C8B0;color:var(--green);opacity:0.8;}
-.qa-chip.dragging{opacity:0.35;transform:scale(0.97);}
-.qa-chip .drag-handle{color:var(--ink-4);font-size:0.75rem;flex-shrink:0;}
+.qa-chip.done-item{background:var(--grn-bg);border-color:#A0C4A8;color:var(--green);opacity:0.8;}
+.qa-chip.dragging{opacity:0.32;transform:scale(0.97);}
+.qa-chip .drag-handle{color:var(--ink-4);font-size:0.74rem;flex-shrink:0;}
 .qa-chip .chip-text{flex:1;min-width:0;}
-.qa-chip-actions{display:flex;gap:3px;flex-shrink:0;opacity:0;transition:opacity 0.15s;}
+.qa-chip-actions{display:flex;gap:3px;flex-shrink:0;opacity:0;transition:opacity .15s;}
 .qa-chip:hover .qa-chip-actions{opacity:1;}
-.qa-act-btn{
-  width:22px;height:22px;border:none;border-radius:3px;
-  background:transparent;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.7rem;color:var(--ink-3);
-  transition:background 0.1s, color 0.1s;
-}
-.qa-act-btn:hover.edit{background:#E8EEF5;color:var(--blue);}
+.qa-act-btn{width:22px;height:22px;border:none;border-radius:3px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--ink-3);transition:background .1s,color .1s;}
+.qa-act-btn:hover.edit{background:#E4EBF5;color:var(--blue);}
 .qa-act-btn:hover.del{background:var(--red-bg);color:var(--red);}
-
-/* 新增按鈕 */
-.qa-add-btn{
-  font-family:var(--mono);font-size:0.65rem;font-weight:500;
-  letter-spacing:0.08em;padding:5px 12px;border-radius:var(--radius);
-  background:var(--surface);border:1.5px solid var(--border-dk);
-  color:var(--ink-2);cursor:pointer;white-space:nowrap;
-  transition:background 0.1s, border-color 0.1s;
-}
-.qa-add-btn:hover{background:var(--panel);border-color:var(--blue);color:var(--blue);}
+.qa-add-btn{font-family:var(--mono);font-size:0.64rem;font-weight:500;letter-spacing:0.07em;padding:5px 14px;border-radius:var(--radius);background:var(--surface);border:1.5px solid var(--border-dk);color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:background .1s,border-color .1s;}
+.qa-add-btn:hover{background:var(--panel);border-color:var(--dark);color:var(--dark);}
 
 /* ── MODAL ── */
-.modal-backdrop{
-  display:none;position:fixed;inset:0;
-  background:rgba(26,24,22,0.45);backdrop-filter:blur(3px);
-  z-index:500;align-items:center;justify-content:center;
-}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(20,18,14,0.50);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}
 .modal-backdrop.open{display:flex;}
-.modal{
-  background:var(--surface);border:1px solid var(--border-dk);
-  border-radius:6px;padding:28px 28px 24px;
-  width:440px;max-width:90vw;
-  box-shadow:0 8px 32px rgba(0,0,0,0.18);
-  animation:modalIn 0.18s ease both;
-}
-@keyframes modalIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.modal-title{
-  font-family:var(--serif);font-size:1.05rem;font-weight:700;
-  color:var(--ink);margin-bottom:18px;
-}
-.modal-label{
-  display:block;font-family:var(--mono);font-size:0.63rem;
-  letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--ink-3);margin-bottom:5px;
-}
-.modal-input{
-  width:100%;padding:9px 12px;border-radius:3px;
-  border:1.5px solid var(--border-dk);background:var(--bg);
-  font-family:var(--sans);font-size:0.88rem;color:var(--ink);
-  outline:none;transition:border-color 0.12s;margin-bottom:16px;
-}
-.modal-input:focus{border-color:var(--blue);}
+.modal{background:var(--surface);border:1px solid var(--border-dk);border-radius:10px;padding:30px 30px 26px;width:460px;max-width:92vw;box-shadow:var(--shadow-md);animation:modalIn .18s ease both;}
+@keyframes modalIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.modal-title{font-family:var(--serif);font-size:1.08rem;font-weight:700;color:var(--ink);margin-bottom:20px;}
+.modal-label{display:block;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.09em;color:var(--ink-3);margin-bottom:6px;}
+.modal-input{width:100%;padding:10px 13px;border-radius:4px;border:1.5px solid var(--border-dk);background:var(--bg);font-family:var(--sans);font-size:0.88rem;color:var(--ink);outline:none;transition:border-color .12s;margin-bottom:18px;}
+.modal-input:focus{border-color:var(--dark);}
 .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:4px;}
-.modal-cancel{
-  font-family:var(--mono);font-size:0.7rem;padding:7px 16px;
-  border-radius:var(--radius);background:var(--panel);
-  border:1.5px solid var(--border-dk);color:var(--ink-3);cursor:pointer;
-}
+.modal-cancel{font-family:var(--mono);font-size:0.7rem;padding:8px 17px;border-radius:var(--radius);background:var(--panel);border:1.5px solid var(--border-dk);color:var(--ink-3);cursor:pointer;}
 .modal-cancel:hover{background:var(--panel-b);}
-.modal-save{
-  font-family:var(--mono);font-size:0.7rem;font-weight:500;padding:7px 18px;
-  border-radius:var(--radius);background:var(--blue);
-  border:1.5px solid var(--blue);color:#FFF;cursor:pointer;
-  transition:background 0.1s;
-}
-.modal-save:hover{background:#16305A;}
+.modal-save{font-family:var(--mono);font-size:0.7rem;font-weight:500;padding:8px 20px;border-radius:var(--radius);background:var(--dark);border:1.5px solid var(--dark);color:#FFF;cursor:pointer;transition:background .1s;}
+.modal-save:hover{background:#2A2820;}
 
 /* ── SECTION HDR ── */
-.sh{display:flex;align-items:center;gap:14px;margin:36px 0 16px;}
-.sh-title{font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;}
+.sh{display:flex;align-items:center;gap:14px;margin:36px 0 14px;}
+.sh-title{font-family:var(--mono);font-size:0.63rem;font-weight:500;letter-spacing:0.15em;color:var(--ink-3);white-space:nowrap;text-transform:uppercase;}
 .sh-line{flex:1;height:1px;background:var(--border);}
-.sh-note{font-family:var(--mono);font-size:0.63rem;color:var(--ink-4);white-space:nowrap;}
+.sh-note{font-family:var(--mono);font-size:0.62rem;color:var(--ink-4);white-space:nowrap;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   GANTT — 關鍵修正：
-   overlay 掛在 gantt-rel 上，不掛在第一個 td 裡
-   table 只負責格線，bar 用 absolute 覆蓋
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.gantt-outer{border:1px solid var(--border-dk);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);}
-.gantt-rel{position:relative;}           /* bar 的定位父層 */
-.gantt-table{width:100%;min-width:820px;border-collapse:collapse;table-layout:fixed;}
-.col-lbl{width:200px;}
-.col-t  {width:80px;}
-
-/* header */
-.g-th{
-  background:var(--panel);font-family:var(--mono);
-  font-size:0.66rem;font-weight:500;letter-spacing:0.1em;
-  text-transform:uppercase;color:var(--ink-3);
-  padding:11px 0 10px;text-align:center;
-  border-bottom:1.5px solid var(--border-dk);
-  border-right:1px solid var(--border);white-space:nowrap;
-}
-.g-th:last-child{border-right:none;}
-.g-th.lbl-th{text-align:left;padding-left:16px;border-right:1px solid var(--border-dk);}
-.g-th.now-hd{background:var(--blue);color:#FFF;font-weight:600;}
-
-/* section divider */
-.g-sec td{
-  background:var(--panel-b);padding:6px 16px;
-  font-family:var(--mono);font-size:0.62rem;font-weight:500;
-  letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-2);
-  border-top:1.5px solid var(--border-dk);border-bottom:1px solid var(--border);
-}
-
-/* data row */
-.g-row{border-bottom:1px solid var(--border);}
-.g-row:last-child{border-bottom:none;}
-.g-row:hover td{background:#F8F6F2 !important;}
-/* 本週欄底色 */
-.now-td{background:var(--blu-bg)!important;}
-
-/* label cell */
-.g-lbl-cell{padding:10px 14px;border-right:1px solid var(--border-dk);vertical-align:middle;background:var(--surface);}
-.g-lbl-inner{display:flex;align-items:center;gap:9px;}
-.g-ico{font-size:15px;flex-shrink:0;}
-.g-nm{font-size:0.84rem;font-weight:700;color:var(--ink);line-height:1.25;}
-.g-sub{font-family:var(--mono);font-size:0.62rem;color:var(--ink-3);margin-top:1px;}
-.g-type{display:inline-block;margin-top:3px;font-family:var(--mono);font-size:0.55rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;padding:2px 5px;border-radius:2px;background:var(--panel-b);color:var(--ink-3);}
-
-/* track cell — pure grid, no overlay logic */
-.g-track-cell{
-  position:relative;padding:0;border-right:1px solid var(--border);
-  vertical-align:top;height:62px;overflow:visible;background:var(--surface);
-}
-.g-track-cell:last-child{border-right:none;}
-.g-track-cell.alt{background:#FDFCFA;}
-
-/* ── BAR LAYER — sits above table via gantt-rel ── */
-/* Each row's bars are rendered as absolutely positioned divs
-   injected by JS into .gantt-bars-layer which is a sibling of the table */
-.gantt-bars-layer{
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  pointer-events:none;
-  z-index:10;
-  overflow:visible;
-}
-.g-bar-row{
-  position:absolute;left:0;right:0;
-  pointer-events:none;
-}
-.g-bar{
-  position:absolute;height:14px;
-  border-radius:2px;pointer-events:auto;
-  transition:filter 0.12s;cursor:default;
-}
-.g-bar:hover{filter:brightness(0.88);box-shadow:0 2px 6px rgba(0,0,0,0.12);}
-.g-bar.urgent{box-shadow:0 0 0 2px rgba(148,48,32,0.18);}
-
-/* milestone */
-.ms-flag{
-  position:absolute;display:flex;align-items:center;gap:2px;
-  transform:translateX(-50%);white-space:nowrap;pointer-events:auto;cursor:default;
-}
-.ms-dot{
-  width:7px;height:7px;border-radius:50%;flex-shrink:0;
-  border:1.5px solid #FFF;box-shadow:0 0 0 1px currentColor;
-  transition:transform 0.1s;
-}
-.ms-flag:hover .ms-dot{transform:scale(1.5);}
-.ms-txt{font-family:var(--mono);font-size:0.58rem;font-weight:500;line-height:1;}
-
-/* milestone tooltip */
-.ms-tip{
-  display:none;position:absolute;
-  bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
-  background:var(--ink);color:#FFF;
-  font-family:var(--mono);font-size:0.64rem;line-height:1.5;
-  padding:5px 10px;border-radius:3px;white-space:nowrap;
-  pointer-events:none;z-index:200;
-  box-shadow:0 4px 12px rgba(0,0,0,0.22);
-}
-.ms-tip::after{
-  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
-  border:4px solid transparent;border-top-color:var(--ink);
-}
-.ms-flag:hover .ms-tip{display:block;}
-
-/* legend removed */
-
-/* ━━━━━━━━ CARDS ━━━━━━━━ */
-.all-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border-dk);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
-
-.flip-card{height:300px;perspective:1000px;animation:rise 0.35s ease both;}
-@keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 0.42s cubic-bezier(0.4,0,0.2,1);}
-.flip-card:hover .flip-inner{transform:rotateY(180deg);}
-
-.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:17px 17px 14px;display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
-.flip-back{transform:rotateY(180deg);background:var(--ink);color:#FFF;justify-content:center;}
-.flip-front::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--pc-color,var(--border));}
-
-.pc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
-.pc-ico{font-size:18px;}
-.pc-pill{font-family:var(--mono);font-size:0.57rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
-.pc-name{font-size:0.93rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:1px;}
-.pc-sub{font-family:var(--mono);font-size:0.65rem;color:var(--ink-4);margin-bottom:10px;}
-.pc-prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.pc-prog-lbl{font-family:var(--mono);font-size:0.61rem;letter-spacing:0.1em;color:var(--ink-4);}
-.pc-prog-pct{font-family:var(--mono);font-size:0.9rem;font-weight:500;}
-.pc-bar-track{height:2px;background:var(--panel-b);margin-bottom:12px;border-radius:1px;overflow:hidden;}
-.pc-bar-fill{height:100%;border-radius:1px;}
-
-.pc-dates{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px;}
-.pc-date{background:var(--panel);padding:6px 8px;}
-.pc-date.empty{background:var(--bg);}
-.pcd-lbl{font-family:var(--mono);font-size:0.53rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:2px;}
-.pcd-val{font-family:var(--mono);font-size:0.8rem;font-weight:500;color:var(--ink);line-height:1;}
-.pcd-cnt{font-family:var(--mono);font-size:0.59rem;color:var(--ink-3);margin-top:2px;}
-.pcd-cnt.hot{color:var(--red);}
-
-.pc-updates{display:flex;flex-direction:column;gap:3px;margin-top:auto;overflow:hidden;flex-shrink:1;min-height:0;}
-.pc-upd{display:flex;gap:7px;align-items:flex-start;font-size:0.75rem;color:var(--ink-2);line-height:1.4;}
-.upd-pip{width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:7px;}
-
-.tc-rows{display:flex;flex-direction:column;gap:5px;margin-top:auto;overflow:hidden;flex-shrink:1;min-height:0;}
-.tc-row{display:flex;justify-content:space-between;gap:8px;}
-.tc-k{font-family:var(--mono);font-size:0.69rem;color:var(--ink-3);}
-.tc-v{font-family:var(--mono);font-size:0.69rem;font-weight:500;color:var(--ink-2);text-align:right;}
-.tc-v.hot{color:var(--red);} .tc-v.warn{color:var(--amber);} .tc-v.ok{color:var(--green);}
-
-.back-hint{font-family:var(--mono);font-size:0.57rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;}
-.back-name{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:#FFF;margin-bottom:2px;line-height:1.2;}
-.back-sub{font-family:var(--mono);font-size:0.63rem;color:rgba(255,255,255,0.4);margin-bottom:16px;}
-.back-team{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;}
-.bt-item{display:flex;flex-direction:column;gap:1px;}
-.bt-role{font-family:var(--mono);font-size:0.57rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);}
-.bt-name{font-size:0.82rem;font-weight:700;color:#FFF;}
-.back-no-team{font-family:var(--mono);font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:8px;}
-
-.flip-hint{position:absolute;bottom:8px;right:11px;font-family:var(--mono);font-size:0.54rem;letter-spacing:0.07em;color:var(--ink-4);opacity:0.75;pointer-events:none;}
-
-/* pills */
-.pill-final{background:#E6EDF5;color:#1A3A6A;} .pill-qa{background:var(--red-bg);color:var(--red);}
-.pill-survey{background:var(--amb-bg);color:var(--amber);} .pill-audio{background:#EDE8F5;color:#3A2060;}
-.pill-fe{background:#E4EFF0;color:#0C3840;} .pill-art{background:#F2EAE5;color:#4E2818;}
-.pill-tech{background:#EAE8F2;color:#2A2060;}
-
-/* ── Frappe Gantt ── */
-#gantt-chart{min-width:1100px;}
-.gantt-split{
-  display:grid;
-  grid-template-columns:240px minmax(0,1fr);
-  border-top:1px solid var(--border);
-}
-.gantt-left{
-  border-right:1px solid var(--border);
-  background:#ECE4D7;
-}
-.gantt-left-hd{
-  padding:9px 12px;
-  border-bottom:1px solid var(--border);
-  font-family:var(--mono);
-  font-size:0.62rem;
-  letter-spacing:0.09em;
-  text-transform:uppercase;
-  color:#6F665A;
-}
-.gantt-label-list{list-style:none;margin:0;padding:0;}
-.gantt-label-spacer{height:0;border-bottom:1px solid #D8CFC2;}
+/* ── GANTT OUTER ── */
+.gantt-outer{border:1px solid var(--border-dk);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow);overflow:hidden;}
+.gantt-split{display:grid;grid-template-columns:260px minmax(0,1fr);border-top:1px solid var(--border);}
+.gantt-left{border-right:1px solid var(--border);background:var(--panel);overflow:hidden;display:block;}
+.gantt-left-hd{padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.61rem;letter-spacing:0.07em;color:var(--ink-3);display:flex;align-items:center;box-sizing:border-box;}
+.gantt-label-list{list-style:none;margin:0;padding:0;position:relative;}
 .gantt-label-item{
-  min-height:44px; /* allow syncGanttLabelRows() to set exact height */
-  display:flex;
-  align-items:center;
-  padding:0 12px;
-  border-bottom:1px solid #D8CFC2;
-  color:#3F3A33;
-  font-size:0.82rem;
-  white-space:nowrap;
+  display:flex;align-items:center;gap:8px;padding:0 12px;
+  border-bottom:1px solid var(--border);color:var(--ink-2);
+  font-size:0.81rem;font-weight:500;
+  cursor:grab;transition:background .1s;
+  position:absolute;left:0;right:0;box-sizing:border-box;
   overflow:hidden;
-  text-overflow:ellipsis;
 }
-.gantt-right{
-  overflow-x:auto;
-  overflow-y:hidden;
-}
-/* ── VIEW TOGGLE — left side of section header ── */
-.view-toggle{display:flex;gap:2px;background:var(--panel-b);border:1px solid var(--border-dk);border-radius:3px;padding:2px;flex-shrink:0;}
-.vt-btn{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;padding:3px 11px;border:none;border-radius:2px;cursor:pointer;background:transparent;color:var(--ink-3);transition:background 0.12s,color 0.12s;}
-.vt-btn.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.gantt-label-item:hover{background:rgba(200,152,64,0.12);}
+.gantt-label-item.row-dragging{opacity:0.35;}
+.gantt-label-item.row-drag-over{border-top:2px solid var(--accent)!important;}
+.gantt-drag-hdl{color:var(--ink-4);font-size:0.7rem;flex-shrink:0;cursor:grab;}
+.gantt-label-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;}
+.gantt-right{overflow-x:auto;overflow-y:hidden;position:relative;}
+
+/* ── VIEW TOGGLE ── */
+.view-toggle{display:flex;gap:2px;background:var(--panel-b);border:1px solid var(--border-dk);border-radius:4px;padding:2px;flex-shrink:0;}
+.vt-btn{font-family:var(--mono);font-size:0.61rem;font-weight:500;letter-spacing:0.07em;padding:4px 12px;border:none;border-radius:3px;cursor:pointer;background:transparent;color:var(--ink-3);transition:background .12s,color .12s;}
+.vt-btn.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,0.10);}
 .vt-btn:hover:not(.active){background:var(--panel);color:var(--ink-2);}
 
-/* ── 三層 HEADER ── */
-.g-hd-quarter{
-  display:flex;border-bottom:1px solid rgba(255,255,255,0.12);
-  background:var(--ink);
-}
-.g-hd-quarter-lbl{
-  flex-shrink:0;width:240px;
-  padding:5px 12px;
-  font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.12em;
-  text-transform:uppercase;color:rgba(255,255,255,0.35);
-  border-right:1px solid rgba(255,255,255,0.12);
-}
-.g-hd-quarter-cells{flex:1;display:flex;overflow:hidden;}
-.g-hd-q-cell{
-  font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.12em;
-  text-transform:uppercase;color:#FFF;text-align:center;
-  padding:5px 0;border-right:1px solid rgba(255,255,255,0.12);
-  white-space:nowrap;overflow:hidden;
-}
+/* ── 季度/月份 header ── */
+.g-hd-quarter{display:flex;border-bottom:1px solid rgba(255,255,255,0.08);background:var(--dark);}
+.g-hd-quarter-lbl{flex-shrink:0;width:260px;padding:5px 14px;font-family:var(--mono);font-size:0.59rem;font-weight:500;letter-spacing:0.07em;color:rgba(255,255,255,0.4);border-right:1px solid rgba(255,255,255,0.08);box-sizing:border-box;}
+.g-hd-quarter-cells{flex:1;position:relative;height:26px;overflow:hidden;}
+.g-hd-q-cell{position:absolute;height:26px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.61rem;font-weight:500;letter-spacing:0.08em;color:#FFF;border-right:1px solid rgba(255,255,255,0.10);white-space:nowrap;overflow:hidden;box-sizing:border-box;}
+
 .g-hd-month{display:flex;border-bottom:1px solid var(--border);}
-.g-hd-month-lbl{
-  flex-shrink:0;width:240px;
-  border-right:1px solid var(--border-dk);background:var(--panel-b);
-}
-.g-hd-month-cells{flex:1;display:flex;overflow:hidden;}
-.g-hd-m-cell{
-  font-family:var(--mono);font-size:0.7rem;font-weight:500;
-  color:#2A2520;text-align:center;padding:5px 0;
-  border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;
-  background:var(--panel-b);
-}
-.g-hd-m-cell.now-month{color:var(--blue);background:#EBF0F8;}
-.g-hd-m-cell:last-child{border-right:none;}
+.g-hd-month-lbl{flex-shrink:0;width:260px;border-right:1px solid var(--border-dk);background:var(--panel-b);box-sizing:border-box;}
+.g-hd-month-cells{flex:1;position:relative;height:28px;overflow:hidden;}
+.g-hd-m-cell{position:absolute;height:28px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.69rem;font-weight:500;color:var(--ink-2);background:var(--panel-b);border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;box-sizing:border-box;transition:background .2s;}
+.g-hd-m-cell.now-month{color:var(--dark);background:#E8D5A0;font-weight:700;}
 
-/* ── 當前時間線 ── */
-.now-line-overlay{
-  position:absolute;top:0;bottom:0;
-  width:1.5px;background:var(--red);opacity:0.75;
-  pointer-events:none;z-index:50;
-}
+/* ── 時間線高亮 ── */
+.now-line{position:absolute;top:0;bottom:0;width:2px;background:var(--today-line);opacity:1;pointer-events:none;z-index:50;}
+.now-line::after{content:'▼';position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--today-line);line-height:1;}
+/* 週高亮帶 */
+.week-band{position:absolute;top:0;bottom:0;background:var(--week-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(200,152,64,0.4);border-right:1.5px dashed rgba(200,152,64,0.4);}
+/* 月高亮帶 */
+.month-band{position:absolute;top:0;bottom:0;background:var(--month-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(200,152,64,0.4);border-right:1.5px dashed rgba(200,152,64,0.4);}
 
-/* ── BAR LABEL in Frappe ── */
-.gantt .bar-label{display:block !important;fill:#FFF;font-size:9.5px;font-family:var(--mono);font-weight:500;}
-
-.gantt-toolbar{
-  display:none; /* 移除舊 toolbar，改由 sh 內切換 */
-}
-
+/* ── Frappe overrides ── */
 .gantt .bar-label{display:none;}
-.gantt .grid-header,.gantt .grid-row{fill:#F4EFE6;}
-.gantt .row-line,.gantt .lower-text,.gantt .upper-text{stroke:#D3C9BA;fill:#6C6358;}
-.gantt .tick{stroke:#D5CCBF;}
-.gantt .today-highlight{fill:#E4DBCD;}
-.gantt .bar{fill:#AFA087;stroke:#94866F;}
-.gantt .bar-progress{fill:#AFA087;}
+.gantt .grid-header,.gantt .grid-row{fill:var(--surface);}
+.gantt .row-line{stroke:var(--border);}
+.gantt .lower-text,.gantt .upper-text{fill:var(--ink-3);}
+.gantt .tick{stroke:var(--border);}
+.gantt .today-highlight{fill:var(--accent);opacity:0.13;}
+.gantt .bar{fill:#C4B090;stroke:#A89060;}
+.gantt .bar-progress{fill:#C4B090;}
 .gantt-container{padding:0;}
+.range-ph .bar,.range-ph .bar-progress{opacity:0!important;}
 .gantt-tag-tri{stroke:none;}
-.gantt-tag-tri.qa{fill:#943020;}
-.gantt-tag-tri.done{fill:#7A4E18;}
-.gantt-tag-bg{fill:#F6F1E8;stroke:#CFC6B8;stroke-width:1;rx:3;ry:3;}
-.gantt-tag-text{fill:#3F3A33;font-family:var(--mono);font-size:10.5px;}
+.gantt-tag-tri.qa{fill:#8C2A1C;}
+.gantt-tag-tri.done{fill:#8A5C10;}
+.gantt-tag-bg{fill:var(--surface);stroke:var(--border-dk);stroke-width:1;}
+.gantt-tag-text{fill:var(--ink-2);font-family:'DM Mono',monospace;font-size:13px;}
+
+/* ── Filter bar ── */
+.filter-bar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
+.filter-btn{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.05em;padding:4px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border-dk);background:var(--surface);color:var(--ink-3);transition:all .12s;white-space:nowrap;}
+.filter-btn:hover{border-color:var(--dark);color:var(--dark);background:var(--panel);}
+.filter-btn.active{background:var(--dark);border-color:var(--dark);color:#FFF;}
+
+/* ── CARDS GRID ── */
+.all-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(296px,1fr));gap:1px;background:var(--border);border:1px solid var(--border-dk);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
+.flip-card{height:420px;perspective:1000px;animation:rise .35s ease both;}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .44s cubic-bezier(0.4,0,0.2,1);}
+.flip-card:hover .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:17px 17px 13px;display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
+.flip-back{transform:rotateY(180deg);background:var(--dark);color:#FFF;justify-content:center;}
+.flip-front::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pc-color,var(--border));}
+.pc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.pc-ico{font-size:23px;}
+.pc-pill{font-family:var(--mono);font-size:0.55rem;font-weight:500;letter-spacing:0.05em;padding:3px 8px;border-radius:3px;}
+.pc-name{font-size:0.94rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:1px;}
+.pc-sub{font-family:var(--mono);font-size:0.63rem;color:var(--ink-4);margin-bottom:8px;}
+.pc-prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.pc-prog-lbl{font-family:var(--mono);font-size:0.60rem;letter-spacing:0.08em;color:var(--ink-4);}
+.pc-prog-pct{font-family:var(--mono);font-size:0.88rem;font-weight:500;}
+.pc-bar-track{height:2px;background:var(--panel-b);margin-bottom:10px;border-radius:1px;overflow:hidden;}
+.pc-bar-fill{height:100%;border-radius:1px;}
+.pc-dates{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:8px;}
+.pc-date{background:var(--panel);padding:6px 8px;}
+.pc-date.empty{background:var(--bg);}
+.pcd-lbl{font-family:var(--mono);font-size:0.52rem;font-weight:500;letter-spacing:0.07em;color:var(--ink-4);margin-bottom:2px;}
+.pcd-val{font-family:var(--mono);font-size:0.78rem;font-weight:500;color:var(--ink);line-height:1;}
+.pcd-cnt{font-family:var(--mono);font-size:0.58rem;color:var(--ink-3);margin-top:2px;}
+.pcd-cnt.hot{color:var(--red);}
+.pc-updates{display:flex;flex-direction:column;gap:3px;overflow:hidden;flex-shrink:1;min-height:0;}
+.pc-upd{display:flex;gap:7px;align-items:flex-start;font-size:0.73rem;color:var(--ink-2);line-height:1.38;}
+.upd-pip{width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.tc-rows{display:flex;flex-direction:column;gap:5px;overflow:hidden;flex-shrink:1;min-height:0;}
+.tc-row{display:flex;justify-content:space-between;gap:8px;}
+.tc-k{font-family:var(--mono);font-size:0.68rem;color:var(--ink-3);}
+.tc-v{font-family:var(--mono);font-size:0.68rem;font-weight:500;color:var(--ink-2);text-align:right;}
+.tc-v.hot{color:var(--red);} .tc-v.warn{color:var(--amber);} .tc-v.ok{color:var(--green);}
+
+/* ── 遊戲機制標籤 ── */
+.mech-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;margin-bottom:4px;}
+.mech-tag{font-family:var(--mono);font-size:0.50rem;font-weight:500;letter-spacing:0.04em;padding:2px 6px;border-radius:3px;white-space:nowrap;border:1px solid transparent;}
+.mech-tag.y {background:#E4F0E8;color:#1E4A2A;border-color:#A8D0B0;}
+.mech-tag.n {background:#F2F0EC;color:#908C84;border-color:#D4CEC4;}
+.mech-tag.na{background:var(--bg);color:var(--ink-4);border-color:var(--border);opacity:0.7;}
+
+/* ── Back side ── */
+.back-hint{font-family:var(--mono);font-size:0.61rem;letter-spacing:0.06em;color:rgba(255,255,255,0.40);margin-bottom:11px;}
+.back-name{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:#FFF;margin-bottom:2px;line-height:1.2;}
+.back-sub{font-family:var(--mono);font-size:0.62rem;color:rgba(255,255,255,0.38);margin-bottom:14px;}
+.back-team{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;}
+.bt-item{display:flex;flex-direction:column;gap:1px;}
+.bt-role{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.06em;color:rgba(255,255,255,0.33);}
+.bt-name{font-size:0.82rem;font-weight:700;color:#FFF;}
+.back-no-team{font-family:var(--mono);font-size:0.7rem;color:rgba(255,255,255,0.28);margin-top:8px;}
+.flip-hint{position:absolute;bottom:8px;right:11px;font-family:var(--mono);font-size:0.53rem;letter-spacing:0.05em;color:var(--ink-4);opacity:0.7;pointer-events:none;}
+
+/* ── Pill colours ── */
+.pill-final {background:#E4EDF6;color:#1A3A6A;}
+.pill-qa    {background:var(--red-bg);color:var(--red);}
+.pill-survey{background:var(--amb-bg);color:var(--amber);}
+.pill-audio {background:#EDE6F6;color:#3A1E60;}
+.pill-fe    {background:#E2EFF1;color:#0A3840;}
+.pill-art   {background:#F1E9E4;color:#4C2616;}
+.pill-tech  {background:var(--panel-b);color:var(--ink-2);}
+
+@media(max-width:900px){
+  body{padding:20px 16px 60px;}
+  .qa-board{grid-template-columns:1fr;}
+  .gantt-split{grid-template-columns:180px minmax(0,1fr);}
+  .g-hd-quarter-lbl,.g-hd-month-lbl{width:180px;}
+}
 </style>
 </head>
 <body>
 
-<!-- MODAL -->
 <div class="modal-backdrop" id="qa-modal" onclick="onBackdropClick(event)">
   <div class="modal">
     <div class="modal-title" id="modal-title">新增關注項目</div>
@@ -434,16 +258,14 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
   </div>
 </div>
 
-<!-- HEADER -->
 <header class="pg-hd">
   <div>
-    <div class="pg-title"><span>QA専案週報</span><span>Sprint Board</span></div>
-    <div class="pg-meta">Week 13 &nbsp;·&nbsp; 2026.03.23 – 03.27 &nbsp;·&nbsp; Slot Studio</div>
+    <div class="pg-title"><span>QA 專案週報</span><span>衝刺看板</span></div>
+    <div class="pg-meta" id="pg-meta">—</div>
   </div>
-  <div class="pg-badge">3月Week 3 · 2026</div>
+  <div class="pg-badge" id="pg-badge">—</div>
 </header>
 
-<!-- QA BOARD -->
 <div class="sh">
   <span class="sh-title">本週 QA 重點關注</span>
   <div class="sh-line"></div>
@@ -451,22 +273,15 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 </div>
 <div class="qa-board">
   <div class="qa-col">
-    <div class="qa-col-hd todo">
-      ⚡ 進行中 / 待處理
-      <span class="col-count" id="todo-count"></span>
-    </div>
+    <div class="qa-col-hd todo">⚡ 進行中 / 待處理<span class="col-count" id="todo-count"></span></div>
     <div class="qa-list" id="qa-todo" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'todo')"></div>
   </div>
   <div class="qa-col">
-    <div class="qa-col-hd done">
-      ✓ 已完成
-      <span class="col-count" id="done-count"></span>
-    </div>
+    <div class="qa-col-hd done">✓ 已完成<span class="col-count" id="done-count"></span></div>
     <div class="qa-list" id="qa-done" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'done')"></div>
   </div>
 </div>
 
-<!-- GANTT -->
 <div class="sh">
   <div class="view-toggle">
     <button class="vt-btn active" id="vt-Day"   onclick="setGanttView('Day',event)">日</button>
@@ -475,40 +290,34 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
   </div>
   <span class="sh-title">全專案時間軸</span>
   <div class="sh-line"></div>
-  <span class="sh-note">3月 – 6月 &nbsp;｜&nbsp; 可拖曳長條調整時程</span>
+  <span class="sh-note" id="gantt-note">— 可拖曳長條調整時程</span>
 </div>
-<div class="gantt-outer" style="overflow:hidden;">
-  <!-- 季度列 -->
-  <div class="g-hd-quarter" id="g-hd-quarter">
-    <div class="g-hd-quarter-lbl">QUARTER</div>
+<div class="gantt-outer">
+  <div class="g-hd-quarter">
+    <div class="g-hd-quarter-lbl">季度</div>
     <div class="g-hd-quarter-cells" id="g-hd-q-cells"></div>
   </div>
-  <!-- 月份列 -->
-  <div class="g-hd-month" id="g-hd-month">
+  <div class="g-hd-month">
     <div class="g-hd-month-lbl"></div>
     <div class="g-hd-month-cells" id="g-hd-m-cells"></div>
   </div>
-  <!-- Frappe Gantt split -->
-  <div class="gantt-split" style="position:relative;">
+  <div class="gantt-split">
     <div class="gantt-left">
-      <div class="gantt-left-hd">專案名稱</div>
-      <div class="gantt-label-spacer" id="gantt-label-spacer"></div>
+      <div class="gantt-left-hd" id="gantt-left-hd">專案名稱</div>
       <ul class="gantt-label-list" id="gantt-label-list"></ul>
     </div>
-    <div class="gantt-right" id="gantt-right" style="position:relative;">
-      <div class="gantt-container">
-        <svg id="gantt-chart"></svg>
-      </div>
+    <div class="gantt-right" id="gantt-right">
+      <div class="gantt-container"><svg id="gantt-chart"></svg></div>
     </div>
   </div>
 </div>
 
-<!-- CARDS -->
 <div class="sh">
   <span class="sh-title">所有專案詳情</span>
   <div class="sh-line"></div>
-  <span class="sh-note">hover 翻轉查看負責人</span>
+  <span class="sh-note">滑入翻轉查看負責人</span>
 </div>
+<div class="filter-bar" id="filter-bar"></div>
 <div class="all-cards-grid" id="all-cards"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
@@ -517,761 +326,541 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
    每週更新區 — 只改這裡
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 /* DATA_START */
-const TODAY_STR = '2026-05-18';
-const TODAY = new Date(TODAY_STR);
-
-const COLS = [];
-(function(){
-  const start = new Date('2026-05-18');
-  const end = new Date(start); end.setDate(end.getDate()+91);
-  const wkd=['日','一','二','三','四','五','六'];
-  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
-    const wd=d.getDay(); if(wd===0||wd===6) continue;
-    const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
-    const label=Number(m)+'/'+Number(dd)+'（週'+wkd[wd]+'）';
-    const s=y+'-'+m+'-'+dd;
-    const nx=new Date(d); nx.setDate(nx.getDate()+1);
-    while(nx.getDay()===0||nx.getDay()===6) nx.setDate(nx.getDate()+1);
-    const nm=String(nx.getMonth()+1).padStart(2,'0'),ndd=String(nx.getDate()).padStart(2,'0');
-    COLS.push({label,start:s,end:nx.getFullYear()+'-'+nm+'-'+ndd,px:14});
-  }
-})();
-const NOW_COL=COLS.findIndex(c=>TODAY>=new Date(c.start)&&TODAY<new Date(c.end));
-
 const QA_ITEMS = [
   { id:"qa1", text:"DAL 測試", done:false },
-  { id:"qa2", text:"狂野霸盜final test", done:false },
-  { id:"qa3", text:"錦標賽test case", done:false }
+  { id:"qa2", text:"狂野霸盜 最終測試", done:false },
+  { id:"qa3", text:"錦標賽 測試案例", done:false }
 ];
-
+/* 遊戲機制欄位說明：
+   mechs: {
+     extraBet: true/false,   // 有 Extra Bet
+     blitz: true/false,      // 有 Blitz Mode
+     frb: true/false,        // 支援 FRB（Free Round Buy）
+     tournament: true/false, // 支援錦標賽
+     fra: true/false,        // 支援 FRA
+     guarantee: true/false,  // 有保底機制
+     scPayout: true/false,   // SC 有賠付
+   }
+*/
 const GAMES = [
   {
     kind:'game', id:"99928", emoji:"🪅", name:"墨西哥狂歡1000", en:"Pinata 1000",
     color:"#A01450", status:"survey", statusLabel:"基本測試完成", progress:0.9,
     qa:"2026-04-13", testDone:"2026-05-13", ship:null, live:"2026-05-20",
     team:{ GP:"曉藝", FE:"大瑞", Info:"阿竹", HIS:"阿竹", GS:"阿岳" },
-    done:["無"], wip:["等待包版"]
+    done:["無"], wip:["等待包版"],
+    mechs:{ extraBet:true, blitz:false, frb:true, tournament:false, fra:false, guarantee:true, scPayout:false }
   },
   {
     kind:'game', id:"99929", emoji:"🦁", name:"舞獅奪寶", en:"Fortune Lion",
     color:"#1A4870", status:"survey", statusLabel:"基本測試中", progress:0.2,
     qa:"2026-05-04", testDone:"2026-06-03", ship:null, live:"2026-06-10",
     team:{ GP:"曉藝", FE:"Liyi", Info:"梅森", HIS:"梅森", GS:"Louis" },
-    done:["無"], wip:["COCOS串接"]
+    done:["無"], wip:["COCOS串接"],
+    mechs:{ extraBet:false, blitz:false, frb:true, tournament:true, fra:true, guarantee:false, scPayout:true }
   },
   {
     kind:'game', id:"99945", emoji:"♠️", name:"皇家王牌", en:"Super Ace Royal",
     color:"#C03010", status:"fe", statusLabel:"COCOS串接", progress:0.3,
     qa:"2026-05-11", testDone:"2026-06-10", ship:null, live:"2026-06-24",
     team:{ GP:"毛哥", FE:"賽門哥", Info:"阿竹", HIS:"梅森", GS:"Louis" },
-    done:["無"], wip:["COCOS串接"]
+    done:["無"], wip:["COCOS串接"],
+    mechs:{ extraBet:true, blitz:true, frb:true, tournament:true, fra:false, guarantee:false, scPayout:false }
   },
   {
     kind:'game', id:"99927", emoji:"🔫", name:"荒野槍客2", en:"Wild Bounty 2",
-    color:"#D2E9FF", status:"fe", statusLabel:"COCOS串接", progress:0.05,
+    color:"#D2691E", status:"fe", statusLabel:"COCOS串接", progress:0.05,
     qa:"2026-04-25", testDone:"2026-06-24", ship:null, live:"2026-07-08",
     team:{ GP:"毛哥", FE:"大瑞", Info:"梅森", HIS:"阿竹", GS:"Louis" },
-    done:["無"], wip:["COCOS串接"]
+    done:["無"], wip:["COCOS串接"],
+    mechs:{ extraBet:false, blitz:false, frb:false, tournament:false, fra:false, guarantee:true, scPayout:true }
   }
 ];
-
 const TECH = [
   {
-    kind:'tech', icon:"🧪", name:"DAL testing", en:"DAL testing",
-    color:"#888888", status:'tech', statusLabel:"QA測試中",
+    kind:'tech', icon:"🧪", name:"DAL 測試", en:"DAL 測試",
+    color:"#939697", status:'tech', statusLabel:"QA測試中",
     qa:"2026-03-24", testDone:"2026-04-02", ship:null, prod:"2026-04-07",
-    team:{}, rows:[{"k":"Wed Apr 08 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#18585818","cls":""}]
+    team:{}, rows:[{"k":"2026-04-08","v":"#18585818","cls":""}],
+    mechs:null
   },
   {
-    kind:'tech', icon:"🏆", name:"錦標賽", en:"Tournament",
-    color:"#888888", status:'tech', statusLabel:"待開發",
+    kind:'tech', icon:"🏆", name:"錦標賽", en:"錦標賽",
+    color:"#61685E", status:'tech', statusLabel:"待開發",
     qa:"2026-05-04", testDone:"2026-05-22", ship:null, prod:"2026-05-25",
-    team:{}, rows:[{"k":"Wed May 27 2026 00:00:00 GMT+0800 (Taiwan Standard Time)","v":"#68401018","cls":""}]
+    team:{}, rows:[{"k":"2026-05-27","v":"#68401018","cls":""}],
+    mechs:null
   }
 ];
 /* DATA_END */
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
+   動態日期
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+const TODAY = new Date();
+TODAY.setHours(0,0,0,0);
+const TODAY_STR = TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+function isoWeek(d){
+  const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const day=dt.getUTCDay()||7; dt.setUTCDate(dt.getUTCDate()+4-day);
+  const y1=new Date(Date.UTC(dt.getUTCFullYear(),0,1));
+  return Math.ceil((((dt-y1)/86400000)+1)/7);
+}
+function weekStart(d){ const w=d.getDay()||7; const m=new Date(d); m.setDate(d.getDate()-w+1); return m; }
+function weekEnd(d){ const f=new Date(weekStart(d)); f.setDate(f.getDate()+6); return f; }
+function monthStart(d){ return new Date(d.getFullYear(),d.getMonth(),1); }
+function monthEnd(d){ return new Date(d.getFullYear(),d.getMonth()+1,0); }
+function fmtMD(d){ return String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
+function toStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+function updateHeader(){
+  const wn=isoWeek(TODAY),ws=weekStart(TODAY),we=weekEnd(TODAY);
+  const mn=TODAY.getMonth()+1,yr=TODAY.getFullYear(),mw=Math.ceil(TODAY.getDate()/7);
+  document.getElementById('pg-meta').innerHTML=`第 ${wn} 週 &nbsp;·&nbsp; ${yr}.${fmtMD(ws)} – ${fmtMD(we)} &nbsp;·&nbsp; Slot Studio`;
+  document.getElementById('pg-badge').textContent=`${mn}月 第${mw}週 · ${yr}`;
+  document.title=`衝刺看板 · ${yr} 第${wn}週`;
+  const mNames=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const rS=new Date(yr,mn-2,1),rE=new Date(yr,mn+3,0);
+  document.getElementById('gantt-note').textContent=`${mNames[rS.getMonth()]} – ${mNames[rE.getMonth()]} ｜ 可拖曳長條調整時程`;
+}
+
+const RANGE_S=new Date(TODAY.getFullYear(),TODAY.getMonth()-1,1);
+const RANGE_E=new Date(TODAY.getFullYear(),TODAY.getMonth()+4,0);
+const RANGE_S_STR=toStr(RANGE_S);
+const RANGE_E_STR=toStr(RANGE_E);
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
    Utils
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
-const LBL_W = 200; // label column px
+const PILL={final:'pill-final',qa:'pill-qa',survey:'pill-survey',audio:'pill-audio',fe:'pill-fe',art:'pill-art',tech:'pill-tech'};
+let ganttInst=null, curView='Day', taskMeta={};
+let projOrder=[];
 
-// Build cumulative px offsets per column
-const COL_PX_START = [];
-let _acc = 0;
-COLS.forEach(c => { COL_PX_START.push(_acc); _acc += c.px; });
-const TOTAL_TRACK_PX = _acc;
-
-function dateToPx(ds) {
-  const d = new Date(ds);
-  const trackStart = new Date(COLS[0].start);
-  const trackEnd   = new Date(COLS[COLS.length-1].end);
-  if (d <= trackStart) return 0;
-  if (d >= trackEnd)   return TOTAL_TRACK_PX;
-
-  // Find which column this date falls in
-  for (let i = 0; i < COLS.length; i++) {
-    const cs = new Date(COLS[i].start);
-    const ce = new Date(COLS[i].end);
-    if (d >= cs && d < ce) {
-      const ratio = (+d - +cs) / (+ce - +cs);
-      return Math.round(COL_PX_START[i] + ratio * COLS[i].px);
-    }
-  }
-  // Between columns (weekend gap) — snap to next column start
-  for (let i = 0; i < COLS.length - 1; i++) {
-    const ce = new Date(COLS[i].end);
-    const ns = new Date(COLS[i+1].start);
-    if (d >= ce && d < ns) return COL_PX_START[i+1];
-  }
-  return TOTAL_TRACK_PX;
+function initOrder(){
+  projOrder=[...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b))];
 }
-function daysLeft(ds) { return Math.round((new Date(ds) - TODAY) / 86400000); }
-function cdStr(ds) {
-  const d = daysLeft(ds);
-  return d < 0 ? '已完成' : d === 0 ? '今天' : `剩 ${d} 天`;
-}
-function shipDate(item) {
-  const s = item.ship || item.prod;
-  return s ? +new Date(s) : +new Date(getTimelineEnd(item));
-}
-
-function getTimelineStart(item) {
-  return item.qa || item.barStart;
-}
-
-function getTimelineEnd(item) {
-  return item.testDone || item.barEnd || item.ship || item.live || item.prod || item.qa;
-}
-
-// dateToColIndex 目前不再作為 bar 直接定位，僅保留給週訊息需求（可移除或保留）
-function dateToColIndex(ds) {
-  const px = dateToPx(ds);
-  for (let i = COLS.length - 1; i >= 0; i--) {
-    if (px >= COL_PX_START[i]) return i;
-  }
-  return 0;
-}
-
-const PILL = { final:'pill-final', qa:'pill-qa', survey:'pill-survey', audio:'pill-audio', fe:'pill-fe', art:'pill-art', tech:'pill-tech' };
-let ganttInstance = null;
-let currentGanttView = 'Day';
-let taskMetaById = {};
+function daysLeft(ds){ return Math.round((new Date(ds)-TODAY)/86400000); }
+function shortDate(ds){ if(!ds)return'--/--'; const d=new Date(ds); return String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0'); }
+function shipDate(it){ const s=it.ship||it.prod; return s?+new Date(s):+new Date(tlEnd(it)); }
+function tlStart(it){ return it.qa||it.barStart; }
+function tlEnd(it){ return it.testDone||it.barEnd||it.ship||it.live||it.prod||it.qa; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
-   QA Board — Drag / Add / Edit / Delete
+   QA Board
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
-let qaState = QA_ITEMS.map(x=>({...x}));
-let dragId = null;
-let editId = null;   // null = 新增模式，有值 = 編輯模式
-let idSeq  = QA_ITEMS.length + 1;
+let qaState=QA_ITEMS.map(x=>({...x})), dragId=null, editId=null, idSeq=QA_ITEMS.length+1;
 
-function renderQA() {
-  const todo = qaState.filter(x=>!x.done);
-  const done = qaState.filter(x=> x.done);
-  document.getElementById('todo-count').textContent = todo.length;
-  document.getElementById('done-count').textContent = done.length;
-
-  function chip(item) {
-    const cls = item.done ? 'done-item' : '';
-    return `<div class="qa-chip ${cls}" draggable="true" data-id="${item.id}"
-      ondragstart="onDragStart(event,'${item.id}')"
-      ondragend="onDragEnd(event)">
-      <span class="drag-handle">⠿</span>
-      <span class="chip-text">${item.text}</span>
+function renderQA(){
+  const todo=qaState.filter(x=>!x.done), done=qaState.filter(x=>x.done);
+  document.getElementById('todo-count').textContent=todo.length;
+  document.getElementById('done-count').textContent=done.length;
+  
+  function chip(item){
+    return`<div class="qa-chip ${item.done?'done-item':''}" draggable="true" data-id="${item.id}" ondragstart="onDragStart(event,'${item.id}')" ondragend="onDragEnd(event)">
+      <span class="drag-handle">⠿</span> <span class="chip-text">${item.text}</span>
       <div class="qa-chip-actions">
-        <button class="qa-act-btn edit" title="編輯" onclick="openModal('${item.id}');event.stopPropagation();">✎</button>
-        <button class="qa-act-btn del"  title="刪除" onclick="deleteItem('${item.id}');event.stopPropagation();">✕</button>
-      </div>
-    </div>`;
+        <button class="qa-act-btn edit" onclick="openModal('${item.id}');event.stopPropagation();">✎</button>
+        <button class="qa-act-btn del" onclick="deleteItem('${item.id}');event.stopPropagation();">✕</button>
+      </div></div>`;
   }
-
-  document.getElementById('qa-todo').innerHTML =
-    todo.map(chip).join('') ||
-    '<div style="padding:8px 10px;font-size:0.75rem;color:var(--ink-4);font-family:var(--mono)">— 沒有待處理項目 —</div>';
-
-  document.getElementById('qa-done').innerHTML =
-    done.map(chip).join('') ||
-    '<div style="padding:8px 10px;font-size:0.75rem;color:var(--ink-4);font-family:var(--mono)">— 拖曳到此標記完成 —</div>';
+  document.getElementById('qa-todo').innerHTML=todo.map(chip).join('')||'<div style="padding:8px 10px;font-size:0.75rem;color:var(--ink-4);font-family:var(--mono)">— 沒有待處理項目 —</div>';
+  document.getElementById('qa-done').innerHTML=done.map(chip).join('')||'<div style="padding:8px 10px;font-size:0.75rem;color:var(--ink-4);font-family:var(--mono)">— 沒有已完成項目 —</div>';
 }
 
-/* ── drag ── */
-function onDragStart(e, id) {
-  dragId = id;
-  e.dataTransfer.effectAllowed = 'move';
-  setTimeout(()=>{ const el = document.querySelector(`[data-id="${id}"]`); if(el) el.classList.add('dragging'); }, 0);
-}
-function onDragEnd(e) {
-  document.querySelectorAll('.qa-chip').forEach(el=>el.classList.remove('dragging'));
-  document.querySelectorAll('.qa-list').forEach(el=>el.classList.remove('drag-over'));
-}
-function onDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect='move'; e.currentTarget.classList.add('drag-over'); }
-function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-function onDrop(e, col) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  if (!dragId) return;
-  const item = qaState.find(x=>x.id===dragId);
-  if (item) item.done = (col==='done');
-  dragId = null;
-  renderQA();
-}
+function onDragStart(e,id){ dragId=id; e.currentTarget.classList.add('dragging'); }
+function onDragEnd(e){ e.currentTarget.classList.remove('dragging'); dragId=null; document.querySelectorAll('.qa-list').forEach(l=>l.classList.remove('drag-over')); }
+function onDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function onDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+function onDrop(e,targetCol){ e.preventDefault(); if(!dragId)return; const item=qaState.find(x=>x.id===dragId); if(item){ item.done=(targetCol==='done'); renderQA(); } }
 
-/* ── modal (新增 / 編輯) ── */
-function openModal(id) {
-  editId = id || null;
-  const modal = document.getElementById('qa-modal');
-  const titleEl = document.getElementById('modal-title');
-  const input   = document.getElementById('modal-text');
-  if (editId) {
-    titleEl.textContent = '編輯項目';
-    input.value = qaState.find(x=>x.id===editId)?.text || '';
-  } else {
-    titleEl.textContent = '新增關注項目';
-    input.value = '';
+function openModal(id=null){
+  editId=id;
+  const m=document.getElementById('qa-modal');
+  const t=document.getElementById('modal-text');
+  if(id){
+    document.getElementById('modal-title').textContent="編輯關注項目";
+    t.value=qaState.find(x=>x.id===id).text;
+  }else{
+    document.getElementById('modal-title').textContent="新增關注項目";
+    t.value="";
   }
-  modal.classList.add('open');
-  setTimeout(()=>input.focus(), 80);
+  m.classList.add('open'); setTimeout(()=>t.focus(),60);
 }
-function closeModal() {
-  document.getElementById('qa-modal').classList.remove('open');
-  editId = null;
+function closeModal(){ document.getElementById('qa-modal').classList.remove('open'); editId=null; }
+function onBackdropClick(e){ if(e.target.classList.contains('modal-backdrop'))closeModal(); }
+function saveModal(){
+  const t=document.getElementById('modal-text').value.trim();
+  if(!t){ closeModal(); return; }
+  if(editId){ const x=qaState.find(it=>it.id===editId); if(x)x.text=t; }
+  else{ qaState.push({id:'qa_'+(idSeq++),text:t,done:false}); }
+  renderQA(); closeModal();
 }
-function onBackdropClick(e) { if(e.target===e.currentTarget) closeModal(); }
-function saveModal() {
-  const text = document.getElementById('modal-text').value.trim();
-  if (!text) return;
-  if (editId) {
-    const item = qaState.find(x=>x.id===editId);
-    if (item) item.text = text;
-  } else {
-    qaState.push({ id:`qa${++idSeq}`, text, done:false });
+function deleteItem(id){ qaState=qaState.filter(x=>x.id!==id); renderQA(); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   Gantt & Timeline Custom Headers
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+function getQ(m){ if(m<=2)return'Q1'; if(m<=5)return'Q2'; if(m<=8)return'Q3'; return'Q4'; }
+function renderTimelineHeaders(){
+  const qCells=document.getElementById('g-hd-q-cells');
+  const mCells=document.getElementById('g-hd-m-cells');
+  qCells.innerHTML=''; mCells.innerHTML='';
+  
+  let totalDays=Math.round((RANGE_E-RANGE_S)/86400000)+1;
+  let pxPerDay=0;
+  if(curView==='Day') pxPerDay=60;
+  else if(curView==='Week') pxPerDay=140/7;
+  else pxPerDay=120/30;
+  
+  // Months Loop
+  let curr=new Date(RANGE_S);
+  while(curr<=RANGE_E){
+    let ms=monthStart(curr), me=monthEnd(curr);
+    if(ms<RANGE_S) ms=new Date(RANGE_S);
+    if(me>RANGE_E) me=new Date(RANGE_E);
+    let days=(me-ms)/86400000+1;
+    let w=days*pxPerDay;
+    let l=Math.round((ms-RANGE_S)/86400000)*pxPerDay;
+    
+    let isNow=(curr.getFullYear()===TODAY.getFullYear()&&curr.getMonth()===TODAY.getMonth());
+    let mNames=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    let d=document.createElement('div'); d.className=`g-hd-m-cell ${isNow?'now-month':''}`;
+    d.style.left=l+'px'; d.style.width=w+'px';
+    d.textContent=`${curr.getFullYear()} ${mNames[curr.getMonth()]}`;
+    mCells.appendChild(d);
+    
+    curr.setMonth(curr.getMonth()+1);
   }
-  closeModal();
-  renderQA();
+  
+  // Quarters Loop
+  curr=new Date(RANGE_S);
+  while(curr<=RANGE_E){
+    let q=getQ(curr.getMonth());
+    let yr=curr.getFullYear();
+    let qS=new Date(yr, q==='Q1'?0:q==='Q2'?3:q==='Q3'?6:9, 1);
+    let qE=new Date(yr, q==='Q1'?2:q==='Q2'?5:q==='Q3'?8:11, 31);
+    if(qS<RANGE_S) qS=new Date(RANGE_S);
+    if(qE>RANGE_E) qE=new Date(RANGE_E);
+    let days=(qE-qS)/86400000+1;
+    let w=days*pxPerDay;
+    let l=Math.round((qS-RANGE_S)/86400000)*pxPerDay;
+    
+    let d=document.createElement('div'); d.className='g-hd-q-cell';
+    d.style.left=l+'px'; d.style.width=w+'px';
+    d.textContent=`${yr} ${q}`;
+    qCells.appendChild(d);
+    
+    curr.setMonth(curr.getMonth()+3);
+  }
 }
 
-/* ── delete ── */
-function deleteItem(id) {
-  if (!confirm('確定要刪除此項目？')) return;
-  qaState = qaState.filter(x=>x.id!==id);
-  renderQA();
+function syncCustomBands(){
+  const container=document.getElementById('gantt-right');
+  document.querySelectorAll('.now-line, .week-band, .month-band').forEach(el=>el.remove());
+  
+  let pxPerDay=0;
+  if(curView==='Day') pxPerDay=60;
+  else if(curView==='Week') pxPerDay=140/7;
+  else pxPerDay=120/30;
+  
+  const totalDays=Math.round((RANGE_E-RANGE_S)/86400000)+1;
+  const gw=totalDays*pxPerDay;
+  
+  // Now Line
+  if(TODAY>=RANGE_S&&TODAY<=RANGE_E){
+    let left=Math.round((TODAY-RANGE_S)/86400000)*pxPerDay;
+    let nl=document.createElement('div'); nl.className='now-line'; nl.style.left=left+'px';
+    container.appendChild(nl);
+  }
+  
+  // Week Band (Current Week)
+  let wS=weekStart(TODAY), wE=weekEnd(TODAY);
+  if(!(wE<RANGE_S || wS>RANGE_E)){
+    let clipS=wS<RANGE_S?RANGE_S:wS, clipE=wE>RANGE_E?RANGE_E:wE;
+    let left=Math.round((clipS-RANGE_S)/86400000)*pxPerDay;
+    let w=((clipE-clipS)/86400000+1)*pxPerDay;
+    let wb=document.createElement('div'); wb.className='week-band'; wb.style.left=left+'px'; wb.style.width=w+'px';
+    container.appendChild(wb);
+  }
+  
+  // Month Band (Current Month)
+  let mS=monthStart(TODAY), mE=monthEnd(TODAY);
+  if(!(mE<RANGE_S || mS>RANGE_E)){
+    let clipS=mS<RANGE_S?RANGE_S:mS, clipE=mE>RANGE_E?RANGE_E:mE;
+    let left=Math.round((clipS-RANGE_S)/86400000)*pxPerDay;
+    let w=((clipE-clipS)/86400000+1)*pxPerDay;
+    let mb=document.createElement('div'); mb.className='month-band'; mb.style.left=left+'px'; mb.style.width=w+'px';
+    container.appendChild(mb);
+  }
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
-   Gantt
+   Gantt Core Functions
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
-function renderGantt() {
-  const allItems = [
-    ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
-    ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
-  ];
+function makeTasks(){
+  taskMeta={};
+  return projOrder.map((it, idx)=>{
+    let s=tlStart(it), e=tlEnd(it);
+    if(new Date(s)>new Date(e)) e=s;
+    let tId='t_'+idx;
+    taskMeta[tId]=it;
+    return {
+      id: tId, name: it.name, start: s, end: e, progress: Math.round((it.progress||0)*100),
+      dependencies: '', custom_class: it.kind==='tech'?'range-ph':''
+    };
+  });
+}
 
-  const tasks = allItems
-    .map((item, idx) => {
-      const start = getTimelineStart(item);
-      const end = getTimelineEnd(item);
-      if (!start || !end) return null;
-      const launchDate = item.live || item.prod;
-      const launchText = launchDate ? `<div>上線/Prod：${launchDate}</div>` : '';
-      const dispName = item.kind === 'game' ? item.name : item.name;
-      return {
-        id: `task-${idx}`,
-        name: dispName,
-        start,
-        end,
-        progress: 100,
-        custom_class: item.kind === 'game' ? 'gantt-game' : 'gantt-tech',
-        _color: item.color,
-        _meta: { start, end, launchText }
+function syncLeftLabelPositions(){
+  setTimeout(()=>{
+    const svg=document.getElementById('gantt-chart');
+    if(!svg)return;
+    const rows=svg.querySelectorAll('.grid-row');
+    const list=document.getElementById('gantt-label-list');
+    list.innerHTML='';
+    
+    rows.forEach((row, i)=>{
+      const tId='t_'+i;
+      const it=taskMeta[tId];
+      if(!it)return;
+      const rTop=row.getAttribute('y')||0;
+      const rH=row.getAttribute('height')||0;
+      
+      let li=document.createElement('li');
+      li.className='gantt-label-item';
+      li.style.top=rTop+'px';
+      li.style.height=rH+'px';
+      li.setAttribute('draggable','true');
+      li.setAttribute('data-idx', i);
+      
+      li.ondragstart=(e)=>{
+        e.dataTransfer.setData('text/plain', i);
+        li.classList.add('row-dragging');
       };
-    })
-    .filter(Boolean);
-
-  taskMetaById = Object.fromEntries(
-    tasks.map(t => [t.id, { start: t.start, end: t.end }])
-  );
-
-  const labelList = document.getElementById('gantt-label-list');
-  labelList.innerHTML = allItems.map(item => {
-    const nm = item.kind === 'game' ? `${item.emoji} ${item.name}` : `${item.icon} ${item.name}`;
-    return `<li class="gantt-label-item" title="${nm}">${nm}</li>`;
-  }).join('');
-
-  const ganttTarget = document.getElementById('gantt-chart');
-  ganttTarget.innerHTML = '';
-
-  ganttInstance = new Gantt('#gantt-chart', tasks, {
-    view_mode: currentGanttView,
-    language: 'zh',
-    date_format: 'YYYY-MM-DD',
-    bar_height: 20,
-    padding: 22,
-    custom_popup_html: (task) => {
-      const m = task._meta || {};
-      return `<div style="padding:10px 12px;font-family:var(--sans);line-height:1.5">
-        <div style="font-weight:700;margin-bottom:6px">${task.name}</div>
-        <div>QA進測：${m.start || '-'}</div>
-        <div>完成測試：${m.end || '-'}</div>
-        ${m.launchText || ''}
-      </div>`;
-    },
-    on_date_change: (task, start, end) => {
-      // reflect drag back into data
-      const idx = parseInt(task.id.replace('task-',''));
-      const allSorted = [
-        ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
-        ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
-      ];
-      const item = allSorted[idx];
-      if (item) {
-        item.qa = start.toISOString().slice(0,10);
-        item.testDone = end.toISOString().slice(0,10);
-        taskMetaById[task.id] = { start: item.qa, end: item.testDone };
-      }
-      requestAnimationFrame(() => { applyBarColors(); drawBarMilestones(); drawNowLine(); buildExtraHeaders(); });
-    }
-  });
-
-  requestAnimationFrame(() => {
-    syncGanttLabelRows();
-    decorateDayHeader();
-    applyBarColors();
-    drawBarMilestones();
-    drawNowLine();
-    buildExtraHeaders();
-  });
-  setTimeout(() => {
-    syncGanttLabelRows();
-    decorateDayHeader();
-    applyBarColors();
-    drawBarMilestones();
-    drawNowLine();
-    buildExtraHeaders();
-  }, 150);
-}
-
-function setGanttView(mode, evt) {
-  currentGanttView = mode;
-  // update toggle buttons
-  ['Day','Week','Month'].forEach(k => {
-    const btn = document.getElementById('vt-'+k);
-    if (btn) btn.classList.toggle('active', k === mode);
-  });
-  if (ganttInstance) {
-    ganttInstance.change_view_mode(mode);
-    requestAnimationFrame(() => {
-      syncGanttLabelRows(); decorateDayHeader();
-      applyBarColors(); drawBarMilestones(); drawNowLine(); buildExtraHeaders();
+      li.ondragend=()=>{ li.classList.remove('row-dragging'); document.querySelectorAll('.gantt-label-item').forEach(el=>el.classList.remove('row-drag-over')); };
+      li.ondragover=(e)=>{ e.preventDefault(); li.classList.add('row-drag-over'); };
+      li.ondragleave=()=>{ li.classList.remove('row-drag-over'); };
+      li.ondrop=(e)=>{
+        e.preventDefault();
+        let fromIdx=parseInt(e.dataTransfer.getData('text/plain'),10);
+        let toIdx=i;
+        if(fromIdx!==toIdx){
+          let moved=projOrder.splice(fromIdx,1)[0];
+          projOrder.splice(toIdx,0,moved);
+          initGantt();
+        }
+      };
+      
+      let ico=it.kind==='game'?(it.emoji||'🎮'):(it.icon||'⚙️');
+      li.innerHTML=`<span class="gantt-drag-hdl">⠿</span><span style="font-size:15px;flex-shrink:0;">${ico}</span><span class="gantt-label-name">${it.name}</span>`;
+      list.appendChild(li);
     });
-    setTimeout(() => {
-      syncGanttLabelRows(); decorateDayHeader();
-      applyBarColors(); drawBarMilestones(); drawNowLine(); buildExtraHeaders();
-    }, 150);
-  } else {
-    renderGantt();
+    
+    const sH=svg.getAttribute('height')||'auto';
+    document.querySelector('.gantt-left').style.height=sH+'px';
+  }, 50);
+}
+
+function initGantt(){
+  const tks=makeTasks();
+  if(!tks.length){
+    document.getElementById('gantt-chart').innerHTML='';
+    document.getElementById('gantt-label-list').innerHTML='';
+    return;
   }
-  if (evt && evt.currentTarget) evt.currentTarget.blur();
-}
-
-// ── 套用各專案顏色到 bar ─────────────────────────────────────
-function applyBarColors() {
-  const allItems = [
-    ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
-    ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
-  ];
-  const svg = document.querySelector('#gantt-chart .gantt');
-  if (!svg) return;
-  const wrappers = svg.querySelectorAll('.bar-wrapper');
-  wrappers.forEach((w, i) => {
-    const item = allItems[i];
-    if (!item) return;
-    const bar = w.querySelector('.bar');
-    const prog = w.querySelector('.bar-progress');
-    if (bar) { bar.setAttribute('fill', item.color+'33'); bar.setAttribute('stroke', item.color+'99'); }
-    if (prog) prog.setAttribute('fill', item.color+'55');
-    // bar label
-    const lbl = w.querySelector('.bar-label');
-    if (lbl) {
-      lbl.setAttribute('fill', item.color);
-      // truncate if needed
-      const barW = parseFloat(bar?.getAttribute('width') || 0);
-      const fullName = item.name;
-      if (barW < 60) lbl.textContent = '';
-      else if (barW < 120) lbl.textContent = fullName.slice(0,4)+'…';
-      else lbl.textContent = fullName;
-    }
-  });
-}
-
-// ── 當前時間線 ───────────────────────────────────────────────
-function drawNowLine() {
-  const ganttRight = document.getElementById('gantt-right');
-  if (!ganttRight) return;
-  ganttRight.querySelectorAll('.now-line-overlay').forEach(n=>n.remove());
-
-  const svg = document.querySelector('#gantt-chart .gantt');
-  if (!svg || !ganttInstance?.gantt_start) return;
-
-  // Find today's x position via the today-highlight rect in SVG
-  const todayRect = svg.querySelector('.today-highlight');
-  if (!todayRect) return;
-  const tx = parseFloat(todayRect.getAttribute('x') || 0);
-  const tw = parseFloat(todayRect.getAttribute('width') || 0);
-  const svgEl = document.getElementById('gantt-chart');
-  const svgRect = svgEl.getBoundingClientRect();
-  const rightRect = ganttRight.getBoundingClientRect();
-
-  // Convert SVG x to screen x relative to gantt-right
-  const svgViewBox = svgEl.viewBox?.baseVal;
-  let scaleX = 1;
-  if (svgViewBox && svgViewBox.width > 0) {
-    scaleX = svgRect.width / svgViewBox.width;
-  }
-  const screenX = tx * scaleX + (svgRect.left - rightRect.left);
-  const centerX = screenX + tw * scaleX / 2;
-
-  const line = document.createElement('div');
-  line.className = 'now-line-overlay';
-  line.style.left = centerX + 'px';
-  ganttRight.appendChild(line);
-}
-
-// ── 建立季度 + 月份 header ───────────────────────────────────
-function buildExtraHeaders() {
-  const svg = document.querySelector('#gantt-chart .gantt');
-  if (!svg || !ganttInstance?.gantt_start) return;
-
-  const ganttRight = document.getElementById('gantt-right');
-  const svgEl = document.getElementById('gantt-chart');
-  const svgRect = svgEl.getBoundingClientRect();
-  const rightRect = ganttRight.getBoundingClientRect();
-
-  const svgViewBox = svgEl.viewBox?.baseVal;
-  let scaleX = 1;
-  if (svgViewBox && svgViewBox.width > 0) scaleX = svgRect.width / svgViewBox.width;
-
-  // Collect upper-text positions (month/week headers in Frappe)
-  const upperTexts = svg.querySelectorAll('.upper-text');
-  if (!upperTexts.length) return;
-
-  // Build month segments from upper-text
-  const segments = [];
-  upperTexts.forEach(el => {
-    const x = parseFloat(el.getAttribute('x') || 0);
-    const screenX = x * scaleX + (svgRect.left - rightRect.left);
-    const label = el.textContent.trim();
-    segments.push({ x: screenX, label });
-  });
-
-  // Total width = rightRect.width
-  const totalW = rightRect.width;
-
-  // ── Month row ──
-  const mCells = document.getElementById('g-hd-m-cells');
-  mCells.innerHTML = '';
-  mCells.style.position = 'relative';
-  mCells.style.height = '28px';
-
-  segments.forEach((seg, i) => {
-    const nextX = i < segments.length-1 ? segments[i+1].x : totalW;
-    const w = Math.max(0, nextX - seg.x);
-    const isNow = seg.label.includes(String(TODAY.getMonth()+1)) ||
-                  seg.label.toLowerCase() === (TODAY.getMonth()+1)+'月';
-    const cell = document.createElement('div');
-    cell.style.cssText = `position:absolute;left:${seg.x}px;width:${w}px;height:28px;` +
-      `display:flex;align-items:center;justify-content:center;` +
-      `font-family:var(--mono);font-size:0.7rem;font-weight:500;` +
-      `color:${isNow?'var(--blue)':'#2A2520'};` +
-      `background:${isNow?'#EBF0F8':'var(--panel-b)'};` +
-      `border-right:1px solid var(--border);overflow:hidden;white-space:nowrap;`;
-    cell.textContent = seg.label;
-    mCells.appendChild(cell);
-  });
-
-  // ── Quarter row ──
-  const qCells = document.getElementById('g-hd-q-cells');
-  qCells.innerHTML = '';
-  qCells.style.position = 'relative';
-  qCells.style.height = '26px';
-
-  // Group months into quarters
-  function monthToQ(label) {
-    // label could be "Mar", "3月", "2026 Mar", etc.
-    const monthMap = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
-    const m = label.replace(/\d{4}/g,'').replace(/[^a-z月]/gi,'').toLowerCase().trim();
-    const num = parseInt(label.match(/\d+/)?.[0] || 0);
-    let mNum = num || monthMap[m.slice(0,3)] || 0;
-    if (mNum >= 1 && mNum <= 3) return 'Q1';
-    if (mNum >= 4 && mNum <= 6) return 'Q2';
-    if (mNum >= 7 && mNum <= 9) return 'Q3';
-    return 'Q4';
-  }
-
-  const qGroups = [];
-  segments.forEach((seg, i) => {
-    const q = monthToQ(seg.label);
-    const nextX = i < segments.length-1 ? segments[i+1].x : totalW;
-    if (!qGroups.length || qGroups[qGroups.length-1].q !== q) {
-      qGroups.push({ q, x: seg.x, endX: nextX });
-    } else {
-      qGroups[qGroups.length-1].endX = nextX;
-    }
-  });
-
-  qGroups.forEach(grp => {
-    const w = Math.max(0, grp.endX - grp.x);
-    const cell = document.createElement('div');
-    cell.style.cssText = `position:absolute;left:${grp.x}px;width:${w}px;height:26px;` +
-      `display:flex;align-items:center;justify-content:center;` +
-      `font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.12em;` +
-      `color:#FFF;border-right:1px solid rgba(255,255,255,0.15);` +
-      `overflow:hidden;white-space:nowrap;`;
-    cell.textContent = grp.q;
-    qCells.appendChild(cell);
-  });
-}
-
-function syncGanttLabelRows() {
-  const labels = document.querySelectorAll('.gantt-label-item');
-  const svg = document.querySelector('#gantt-chart .gantt');
-  if (!svg || !labels.length) return;
-  const gridRows = svg.querySelectorAll('.grid-row');
-  const gridHeader = svg.querySelector('.grid-header');
-  const leftHeader = document.querySelector('.gantt-left-hd');
-  const spacer = document.getElementById('gantt-label-spacer');
-  if (!gridRows.length || !gridHeader || !leftHeader || !spacer) return;
-
-  const getY = (el) => {
-    const a = el.getAttribute('y');
-    if (a != null && a !== '') return parseFloat(a);
-    const bb = el.getBBox();
-    return bb && Number.isFinite(bb.y) ? bb.y : 0;
-  };
-
-  const headerY = getY(gridHeader);
-  const firstY = getY(gridRows[0]);
-  const headerH = Math.max(26, Math.round(firstY - headerY));
-  leftHeader.style.height = `${headerH}px`;
-  leftHeader.style.display = 'flex';
-  leftHeader.style.alignItems = 'center';
-  spacer.style.height = '0px';
-
-  gridRows.forEach((row, idx) => {
-    if (!labels[idx]) return;
-    const y = getY(row);
-    let h = 0;
-    if (idx < gridRows.length - 1) {
-      const nextY = getY(gridRows[idx + 1]);
-      h = Math.round(nextY - y);
-    }
-    if (!h || h < 1) h = Math.round(row.getBBox().height);
-    // 左側 label 使用 border-bottom:1px，減掉 1px 以避免後續列累積漂移。
-    h = Math.max(32, h - 1);
-    labels[idx].style.height = `${h}px`;
-  });
-}
-
-function decorateDayHeader() {
-  if (currentGanttView !== 'Day' || !ganttInstance?.gantt_start) return;
-  const weekdays = ['日','一','二','三','四','五','六'];
-  const lowerTexts = document.querySelectorAll('#gantt-chart .lower-text');
-  lowerTexts.forEach((el, idx) => {
-    const d = new Date(ganttInstance.gantt_start);
-    d.setDate(d.getDate() + idx);
-    const day = d.getDate();
-    el.textContent = `${day}(${weekdays[d.getDay()]})`;
-  });
-}
-
-function shortDate(dateStr) {
-  if (!dateStr) return '--/--';
-  const d = new Date(dateStr);
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${m}/${day}`;
-}
-
-function drawBarMilestones() {
-  const svg = document.querySelector('#gantt-chart .gantt');
-  if (!svg) return;
-  svg.querySelectorAll('.gantt-ms-tag').forEach(n => n.remove());
-
-  const bars = svg.querySelectorAll('.bar-wrapper');
-  const placedRects = [];
-
-  function overlaps(a, b, gap = 4) {
-    return !(
-      a.x + a.w + gap < b.x ||
-      b.x + b.w + gap < a.x ||
-      a.y + a.h + gap < b.y ||
-      b.y + b.h + gap < a.y
-    );
-  }
-
-  function createTag(x, y, kind, text, align, place = 'top') {
-    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    g.setAttribute('class', 'gantt-ms-tag');
-
-    const tri = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    tri.setAttribute('class', `gantt-tag-tri ${kind}`);
-
-    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rect.setAttribute('class', 'gantt-tag-bg');
-
-    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    txt.setAttribute('class', 'gantt-tag-text');
-    txt.textContent = text;
-
-    const w = Math.max(74, text.length * 6.6 + 12);
-    const h = 18;
-    const triW = 6;
-    const triH = 7;
-    const by = place === 'top' ? (y - h - triH - 4) : (y + triH + 4);
-    const bx = align === 'right' ? x - w : x;
-
-    rect.setAttribute('x', String(bx));
-    rect.setAttribute('y', String(by));
-    rect.setAttribute('width', String(w));
-    rect.setAttribute('height', String(h));
-
-    txt.setAttribute('x', String(bx + 6));
-    txt.setAttribute('y', String(by + 12));
-
-    tri.setAttribute(
-      'points',
-      place === 'top'
-        ? (align === 'right'
-            ? `${x},${y} ${x - triW},${y - triH} ${x - triW * 2},${y - triH}`
-            : `${x},${y} ${x + triW},${y - triH} ${x + triW * 2},${y - triH}`)
-        : (align === 'right'
-            ? `${x},${y} ${x - triW},${y + triH} ${x - triW * 2},${y + triH}`
-            : `${x},${y} ${x + triW},${y + triH} ${x + triW * 2},${y + triH}`)
-    );
-
-    g.appendChild(rect);
-    g.appendChild(tri);
-    g.appendChild(txt);
-    return { g, rect: { x: bx, y: by, w, h } };
-  }
-
-  function placeTagAvoidOverlap(x, y, kind, text, align) {
-    const attempts = ['top', 'bottom', 'top', 'bottom'];
-    const yOffsets = [0, 0, -12, 12];
-    for (let i = 0; i < attempts.length; i++) {
-      const candidate = createTag(x, y + yOffsets[i], kind, text, align, attempts[i]);
-      const collision = placedRects.some(r => overlaps(candidate.rect, r));
-      if (!collision) {
-        placedRects.push(candidate.rect);
-        return candidate.g;
+  
+  // Custom Triangular Tag Extension for Frappe Gantt
+  FrappeGantt.prototype.draw_triangles=function(){
+    const svg=this.$svg;
+    svg.querySelectorAll('.gantt-tag-group').forEach(el=>el.remove());
+    
+    this.tasks.forEach(task=>{
+      const meta=taskMeta[task.id];
+      if(!meta)return;
+      const bar=this.bars[task.id];
+      if(!bar)return;
+      
+      let datesToCheck=[];
+      if(meta.kind==='game'){
+        if(meta.qa) datesToCheck.push({d:meta.qa, type:'qa', lbl:'进测'});
+        if(meta.testDone) datesToCheck.push({d:meta.testDone, type:'done', lbl:'測畢'});
+      }else if(meta.kind==='tech'){
+        if(meta.qa) datesToCheck.push({d:meta.qa, type:'qa', lbl:'進測'});
+        if(meta.testDone) datesToCheck.push({d:meta.testDone, type:'done', lbl:'測畢'});
       }
+      
+      datesToCheck.forEach(node=>{
+        let days=Math.round((new Date(node.d)-this.gantt_start)/86400000);
+        let cx=days*this.options.column_width + this.options.column_width/2;
+        let cy=bar.$bar.getAttribute('y')*1 + bar.$bar.getAttribute('height')/2;
+        
+        let g=document.createElementNS('http://www.w3.org/2000/svg','g');
+        g.setAttribute('class','gantt-tag-group');
+        
+        let tri=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+        let sz=7;
+        let pts=`${cx},${cy-sz} ${cx-sz},${cy+sz} ${cx+sz},${cy+sz}`;
+        tri.setAttribute('points',pts);
+        tri.setAttribute('class',`gantt-tag-tri ${node.type}`);
+        
+        let bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        let tw=node.lbl.length*13+10, th=20;
+        bg.setAttribute('x', cx-tw/2); bg.setAttribute('y', cy+sz+3);
+        bg.setAttribute('width', tw); bg.setAttribute('height', th);
+        bg.setAttribute('rx', 3); bg.setAttribute('class', 'gantt-tag-bg');
+        
+        let txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+        txt.setAttribute('x', cx); txt.setAttribute('y', cy+sz+17);
+        txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('class', 'gantt-tag-text');
+        txt.textContent=node.lbl;
+        
+        g.appendChild(tri); g.appendChild(bg); g.appendChild(txt);
+        svg.appendChild(g);
+      });
+    });
+  };
+  
+  const origRender=FrappeGantt.prototype.render;
+  FrappeGantt.prototype.render=function(){
+    origRender.call(this);
+    this.draw_triangles();
+  };
+  
+  ganttInst=new FrappeGantt('#gantt-chart', tks, {
+    view_mode: curView,
+    column_width: curView==='Day'?60:curView==='Week'?140:120,
+    row_height: 52,
+    header_height: 0, // completely custom headers
+    start_date: RANGE_S_STR,
+    end_date: RANGE_E_STR,
+    on_date_change: (task, start, end)=>{
+      const it=taskMeta[task.id];
+      if(!it)return;
+      let diffS=Math.round((start-new Date(tlStart(it)))/86400000);
+      let diffE=Math.round((end-new Date(tlEnd(it)))/86400000);
+      
+      function shift(ds, days){ if(!ds)return null; let d=new Date(ds); d.setDate(d.getDate()+days); return toStr(d); }
+      if(it.kind==='game'){
+        it.qa=shift(it.qa, diffS); it.testDone=shift(it.testDone, diffE);
+        it.ship=shift(it.ship, diffE); it.live=shift(it.live, diffE);
+      }else{
+        it.qa=shift(it.qa, diffS); it.testDone=shift(it.testDone, diffE);
+        it.ship=shift(it.ship, diffE); it.prod=shift(it.prod, diffE);
+      }
+      ganttInst.draw_triangles();
+      renderCards();
     }
-    const fallback = createTag(x, y - 18, kind, text, align, 'top');
-    placedRects.push(fallback.rect);
-    return fallback.g;
-  }
-
-  bars.forEach(wrapper => {
-    const taskId = wrapper.getAttribute('data-id');
-    const meta = taskMetaById[taskId];
-    if (!meta) return;
-    const bar = wrapper.querySelector('.bar');
-    if (!bar) return;
-
-    const x = parseFloat(bar.getAttribute('x')) || 0;
-    const y = parseFloat(bar.getAttribute('y')) || 0;
-    const w = parseFloat(bar.getAttribute('width')) || 0;
-    const h = parseFloat(bar.getAttribute('height')) || 0;
-    if (w <= 0) return;
-    const topAnchor = y + 1;
-    const qaTag = placeTagAvoidOverlap(x, topAnchor, 'qa', `QA ${shortDate(meta.start)}`, 'left');
-    const doneTag = placeTagAvoidOverlap(x + w, topAnchor, 'done', `完成 ${shortDate(meta.end)}`, 'right');
-    svg.appendChild(qaTag);
-    svg.appendChild(doneTag);
   });
+  
+  renderTimelineHeaders();
+  syncCustomBands();
+  syncLeftLabelPositions();
+  
+  // Center chart view smoothly to current month band
+  if(curView==='Day'||curView==='Week'){
+    setTimeout(()=>{
+      const mBand=document.querySelector('.month-band');
+      const out=document.getElementById('gantt-right');
+      if(mBand&&out) out.scrollLeft = mBand.offsetLeft - out.offsetWidth/3;
+    }, 60);
+  }
+}
+
+function setGanttView(v, e){
+  curView=v;
+  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));
+  if(e) e.target.classList.add('active');
+  else document.getElementById('vt-'+v).classList.add('active');
+  initGantt();
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
-   Cards
+   Cards Details & Filters
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
-function renderCards() {
-  function dateCell(label, ds, hot) {
-    if (!ds) return `<div class="pc-date empty"><div class="pcd-lbl">${label}</div><div class="pcd-val" style="color:var(--ink-4)">—</div></div>`;
-    const dl = daysLeft(ds);
-    const cnt = dl < 0 ? '已完成' : dl === 0 ? '今天' : `剩 ${dl} 天`;
-    const hotCls = (hot && dl >= 0 && dl <= 7) ? ' hot' : '';
-    return `<div class="pc-date">
-      <div class="pcd-lbl">${label}</div>
-      <div class="pcd-val">${ds.slice(5)}</div>
-      <div class="pcd-cnt${hotCls}">${cnt}</div>
-    </div>`;
-  }
+let curFilter="";
+function initFilters(){
+  const bar=document.getElementById('filter-bar');
+  const lbls=["全部","基本測試完成","基本測試中","COCOS串接","QA測試中","待開發"];
+  bar.innerHTML=lbls.map((l,i)=>`<button class="filter-btn ${((!curFilter&&i===0)||curFilter===l)?'active':''}" onclick="setFilter('${i===0?'':l}',event)">${l}</button>`).join('');
+}
+function setFilter(f,e){
+  curFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  renderCards();
+}
 
-  function teamBack(item) {
-    const entries = Object.entries(item.team||{});
-    const teamGrid = entries.length
-      ? `<div class="back-team">${entries.map(([r,n])=>`<div class="bt-item"><span class="bt-role">${r}</span><span class="bt-name">${n}</span></div>`).join('')}</div>`
-      : `<div class="back-no-team">— 負責人資料待補 —</div>`;
-    const sub = item.kind==='game' ? `${item.en} · #${item.id}` : item.en;
-    return `<div class="flip-back">
-      <div class="back-hint">TEAM MEMBERS</div>
-      <div class="back-name">${item.name}</div>
-      <div class="back-sub">${sub}</div>
-      ${teamGrid}
-    </div>`;
-  }
+function teamBack(t){
+  if(t.kind==='tech') return`<div class="flip-back"><div class="back-hint">▷ 滑出返回正面</div><div class="back-name">${t.name}</div><div class="back-sub">${t.en}</div><div class="back-no-team">— 技術研發專案無固定人員面板 —</div></div>`;
+  const m=t.team||{};
+  const keys=[{k:'GP',n:'策劃'},{k:'FE',n:'前端'},{k:'GS',n:'服務端'},{k:'Info',n:'維運'},{k:'HIS',n:'歷史單'}];
+  const grid=keys.map(x=>`<div class="bt-item"><span class="bt-role">${x.n}</span><span class="bt-name">${m[x.k]||'--'}</span></div>`).join('');
+  return`<div class="flip-back"><div class="back-hint">▷ 滑出返回正面</div><div class="back-name">${t.name}</div><div class="back-sub">${t.en}</div><div class="back-team">${grid}</div></div>`;
+}
 
-  function gameFront(g) {
-    const done = g.done.map(t=>`<div class="pc-upd"><div class="upd-pip" style="background:var(--green)"></div><span>${t}</span></div>`).join('');
-    const wip  = g.wip.map(t=>`<div class="pc-upd"><div class="upd-pip" style="background:var(--amber)"></div><span>${t}</span></div>`).join('');
-    return `<div class="flip-front" style="--pc-color:${g.color}">
-      <div class="pc-top"><span class="pc-ico">${g.emoji}</span><span class="pc-pill ${PILL[g.status]}">${g.statusLabel}</span></div>
-      <div class="pc-name">${g.name}</div>
-      <div class="pc-sub">${g.en} · #${g.id}</div>
-      <div class="pc-prog-row"><span class="pc-prog-lbl">PROGRESS</span><span class="pc-prog-pct" style="color:${g.color}">${g.progress}%</span></div>
-      <div class="pc-bar-track"><div class="pc-bar-fill" style="width:${g.progress}%;background:${g.color}"></div></div>
-      <div class="pc-dates">
-        ${dateCell('QA 進測',g.qa,true)}
-        ${dateCell('出貨',g.ship,true)}
-        ${dateCell('上線',g.live,false)}
+function renderCards(){
+  function dateCell(title, valStr, isHotIfLeft){
+    if(!valStr) return`<div class="pc-date empty"><div class="pcd-lbl">${title}</div><div class="pcd-val" style="color:var(--ink-4)">--</div></div>`;
+    let left=daysLeft(valStr);
+    let remStr=left===0?'今天':left>0?`${left}天後`:`${Math.abs(left)}天前`;
+    let cls=(isHotIfLeft&&left<=3&&left>=0)?'hot':'';
+    return`<div class="pc-date"><div class="pcd-lbl">${title}</div><div class="pcd-val">${shortDate(valStr)}</div><div class="pcd-cnt ${cls}">${remStr}</div></div>`;
+  }
+  
+  function gameFront(t){
+    const doneL=t.done.map(x=>`<div class="pc-upd"><span class="upd-pip" style="background:var(--green)"></span><div class="chip-text">${x}</div></div>`).join('');
+    const wipL=t.wip.map(x=>`<div class="pc-upd"><span class="upd-pip" style="background:var(--accent)"></span><div class="chip-text">${x}</div></div>`).join('');
+    const m=t.mechs||{};
+    const keys=[{k:'extraBet',n:'EB'},{k:'blitz',n:'Blitz'},{k:'frb',n:'FRB'},{k:'tournament',n:'聯賽'},{k:'fra',n:'FRA'},{k:'guarantee',n:'保底'},{k:'scPayout',n:'SC'}];
+    const tags=keys.map(x=>{ let val=m[x.k]; let cls=val===true?'y':val===false?'n':'na'; return`<span class="mech-tag ${cls}">${x.n}</span>`; }).join('');
+    
+    return`<div class="flip-front" style="--pc-color:${t.color}">
+      <div class="pc-top"><span class="pc-ico">${t.emoji||'🎮'}</span><span class="pc-pill ${PILL[t.status]||'pill-tech'}">${t.statusLabel}</span></div>
+      <div class="pc-name">${t.name}</div><div class="pc-sub">#${t.id} · ${t.en}</div>
+      <div class="pc-prog-row"><span class="pc-prog-lbl">測試進度</span><span class="pc-prog-pct">${Math.round(t.progress*100)}%</span></div>
+      <div class="pc-bar-track"><div class="pc-bar-fill" style="width:${t.progress*100}%;background:${t.color}"></div></div>
+      <div class="pc-dates">${dateCell('QA進測',t.qa,true)}${dateCell('預計測畢',t.testDone,true)}${dateCell('上線日',t.live,false)}</div>
+      <div style="font-family:var(--mono);font-size:0.53rem;color:var(--ink-4);margin-bottom:2px;font-weight:500;">支援機制</div>
+      <div class="mech-row">${tags}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;overflow:hidden;flex:1;min-height:0;margin-top:2px;">
+        <div class="pc-updates"><div class="pc-prog-lbl" style="margin-bottom:2px">✓ 本週已完成</div>${doneL}</div>
+        <div class="pc-updates"><div class="pc-prog-lbl" style="margin-bottom:2px">⚡ 進行中項目</div>${wipL}</div>
       </div>
-      <div class="pc-updates">${done}${wip}</div>
-      <span class="flip-hint">▷ hover 翻轉查看負責人</span>
-    </div>`;
+      <span class="flip-hint">▷ 滑入翻轉查看負責人</span></div>`;
   }
-
-  function techFront(t) {
-    const rows = t.rows.map(r=>`<div class="tc-row"><span class="tc-k">${r.k}</span><span class="tc-v ${r.cls}">${r.v}</span></div>`).join('');
-    return `<div class="flip-front" style="--pc-color:${t.color}">
+  
+  function techFront(t){
+    const rows=(t.rows||[]).map(r=>`<div class="tc-row"><span class="tc-k">${r.k}</span><span class="tc-v ${r.cls}">${r.v}</span></div>`).join('');
+    return`<div class="flip-front" style="--pc-color:${t.color}">
       <div class="pc-top"><span class="pc-ico">${t.icon}</span><span class="pc-pill pill-tech">${t.statusLabel}</span></div>
-      <div class="pc-name">${t.name}</div>
-      <div class="pc-sub">${t.en}</div>
-      <div class="pc-dates">
-        ${dateCell('QA 進測',t.qa,true)}
-        ${dateCell('出貨',t.ship,true)}
-        ${dateCell('Prod',t.prod,false)}
-      </div>
+      <div class="pc-name">${t.name}</div><div class="pc-sub">${t.en}</div>
+      <div class="pc-dates">${dateCell('QA 進測',t.qa,true)}${dateCell('出貨',t.ship,true)}${dateCell('正式上線',t.prod,false)}</div>
       <div class="tc-rows">${rows}</div>
-      <span class="flip-hint">▷ hover 翻轉查看負責人</span>
-    </div>`;
+      <span class="flip-hint">▷ 滑入翻轉查看負責人</span></div>`;
   }
-
-  const all = [
-    ...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),
-    ...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b)),
-  ];
-  document.getElementById('all-cards').innerHTML = all.map((item,i)=>{
-    const front = item.kind==='game' ? gameFront(item) : techFront(item);
-    return `<div class="flip-card" style="animation-delay:${i*0.05}s">
-      <div class="flip-inner">${front}${teamBack(item)}</div>
-    </div>`;
-  }).join('');
+  
+  const filtered=curFilter?projOrder.filter(it=>(it.statusLabel||'').includes(curFilter)):projOrder;
+  document.getElementById('all-cards').innerHTML=filtered.map((item,i)=>{
+    const front=item.kind==='game'?gameFront(item):techFront(item);
+    return`<div class="flip-card" style="animation-delay:${i*0.05}s"><div class="flip-inner">${front}${teamBack(item)}</div></div>`;
+  }).join('')||'<div style="padding:24px;color:var(--ink-4);font-family:var(--mono);font-size:0.8rem;text-align:center;grid-column:1/-1">— 無符合條件的專案 —</div>';
 }
 
 /* ── Init ── */
+updateHeader();
+initOrder();
 renderQA();
-renderGantt();
+initFilters();
+initGantt();
 renderCards();
+
+window.addEventListener('resize', ()=>{
+  if(ganttInst){
+    renderTimelineHeaders();
+    syncCustomBands();
+    syncLeftLabelPositions();
+  }
+});
 </script>
 </body>
 </html>
