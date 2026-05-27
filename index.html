@@ -582,7 +582,7 @@ function renderGantt(){
     }
   });
   const r=()=>{syncRows();decorateDay();applyColors();drawMilestones();drawHighlights();buildHeaders();};
-  requestAnimationFrame(r);setTimeout(r,200);setTimeout(()=>{syncRows();buildHeaders();},500);
+  requestAnimationFrame(r); setTimeout(r, 300); setTimeout(r, 800); setTimeout(syncRows, 1500);
 }
 
 function buildLabelList(){
@@ -623,46 +623,71 @@ function applyColors(){
 }
 
 function syncRows(){
-  const svg=document.querySelector('#gantt-chart .gantt');if(!svg)return;
-  const gridHdr=svg.querySelector('.grid-header');if(!gridHdr)return;
+  const svgEl=document.getElementById('gantt-chart');if(!svgEl)return;
+  const svg=svgEl.querySelector('.gantt');if(!svg)return;        // [A] Frappe 在 <svg> 內部產生的 .gantt <g>
   const labels=document.querySelectorAll('.gantt-label-item');if(!labels.length)return;
-  const svgEl=document.getElementById('gantt-chart');
+ 
+  // [B] 用 getBoundingClientRect 取得 SVG 容器在頁面上的真實位置
+  //     不依賴 viewBox，避免 viewBox=0 或未設定時 scaleY 算錯
+  const svgRect=svgEl.getBoundingClientRect();
+  const ganttRight=document.getElementById('gantt-right');
+  const rightRect=ganttRight?ganttRight.getBoundingClientRect():svgRect;
+  const scrollTop=ganttRight?ganttRight.scrollTop:0;
+ 
+  // [C] header 高度：讀 .grid-header 的 SVG attr，換算成畫面像素
+  const gridHdr=svg.querySelector('.grid-header');
   const vb=svgEl.viewBox?.baseVal;
-  const scaleY=(vb&&vb.height>0)?(svgEl.clientHeight/vb.height):1;
-
-  // ── 同步 header 高度
-  const hdH=parseFloat(gridHdr.getAttribute('height')||0)*scaleY;
+  // scaleY 只用來換算 header 高度（grid-header 沒有 getBCR）
+  const scaleY=(vb&&vb.height>0&&svgRect.height>0)?(svgRect.height/vb.height):1;
+  const hdH=parseFloat(gridHdr?.getAttribute('height')||0)*scaleY;
+ 
   const leftHd=document.getElementById('gantt-left-hd');
   if(leftHd)leftHd.style.height=`${hdH}px`;
-
-  // ── 同步左欄整體高度與 SVG 一致
-  const svgH=parseFloat(svgEl.getAttribute('height')||0)*scaleY;
+ 
+  // [D] 同步左欄整體高度
   const ganttLeft=document.querySelector('.gantt-left');
-  if(ganttLeft&&svgH>0)ganttLeft.style.height=`${svgH}px`;
-
-  // ── 核心修復：直接用 .bar-wrapper 的 bar y 座標對應 label
-  // 跳過 placeholder(_ph)，剩餘 bar 順序與 projOrder 完全一致
+  if(ganttLeft&&svgRect.height>0)ganttLeft.style.height=`${svgRect.height}px`;
+ 
+  // [E] 核心：對每個 bar，用 getBoundingClientRect() 取得「真實螢幕位置」
+  //     再換算成相對於左欄頂部的偏移（扣掉 header 高度）
   const bars=[];
   svg.querySelectorAll('.bar-wrapper').forEach(w=>{
     if(w.getAttribute('data-id')==='_ph')return;
     const bar=w.querySelector('.bar');if(!bar)return;
+    const br=bar.getBoundingClientRect();           // 真實座標，不受 viewBox 影響
+    const topRelToSvg=br.top - svgRect.top;        // 相對 SVG 頂部
     bars.push({
-      y: parseFloat(bar.getAttribute('y')||0)*scaleY - hdH,
-      h: parseFloat(bar.getAttribute('height')||0)*scaleY,
+      top: topRelToSvg - hdH,                      // 扣掉 header
+      height: br.height,
     });
   });
-
+ 
+  // [F] 如果 getBCR 全部回傳 0（SVG 尚未渲染），fallback 到 viewBox 換算
+  const allZero=bars.every(b=>b.height===0);
+  if(allZero&&vb&&vb.height>0){
+    bars.length=0;
+    svg.querySelectorAll('.bar-wrapper').forEach(w=>{
+      if(w.getAttribute('data-id')==='_ph')return;
+      const bar=w.querySelector('.bar');if(!bar)return;
+      bars.push({
+        top:  parseFloat(bar.getAttribute('y')||0)*scaleY - hdH,
+        height: parseFloat(bar.getAttribute('height')||0)*scaleY,
+      });
+    });
+  }
+ 
   const list=document.getElementById('gantt-label-list');
   let maxB=0;
   bars.forEach((b,i)=>{
     const lbl=labels[i];if(!lbl)return;
-    // bar 本身偏細，撐高到整列高度（padding 補足視覺間距）
-    const rowH=Math.max(b.h+14, 36);
-    const rowTop=b.y - 7;
+    // [G] 每個 label 的 top = bar 的 top，height = 整列高（padding 讓文字不貼邊）
+    const rowPad=8;
+    const rowTop=b.top - rowPad;
+    const rowH=Math.max(b.height + rowPad*2, 38);
     lbl.style.top=`${rowTop}px`;
     lbl.style.height=`${rowH}px`;
     lbl.style.lineHeight=`${rowH}px`;
-    maxB=Math.max(maxB,rowTop+rowH);
+    maxB=Math.max(maxB, rowTop+rowH);
   });
   if(list&&maxB>0)list.style.height=`${maxB}px`;
 }
