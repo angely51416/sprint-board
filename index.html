@@ -23,7 +23,7 @@
   --shadow-md:0 4px 24px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:15px;}
+html{font-size:18px;}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:36px 44px 100px;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-thumb{background:var(--border-dk);border-radius:3px;}
@@ -644,9 +644,7 @@ function syncRows(){
   svg.querySelectorAll('.bar-wrapper').forEach(w=>{
     if(w.getAttribute('data-id')==='_ph')return;
     const bar=w.querySelector('.bar');if(!bar)return;
-    bars.push({
-      y: parseFloat(bar.getAttribute('y')||0)*scaleY - hdH,
-      h: parseFloat(bar.getAttribute('height')||0)*scaleY,
+    bars.push({ y: bar.y * scaleY - hdH, h: bar.height * scaleY });
     });
   });
  
