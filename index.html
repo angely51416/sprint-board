@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QA專案儀表板</title>
+<title>衝刺看板</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.css">
 <style>
@@ -16,7 +16,7 @@
   --green:#244F30;--grn-bg:#E4EFE6;
   --blue:#1A3860;--blu-bg:#DDE5F2;
   --accent:#C89840;--dark:#3A3830;
-  --today-line:#FF8F59;--week-hl:rgba(200,152,64,.09);--month-hl:rgba(200,152,64,.10);
+  --today-line:#FF8F59;--week-hl:rgba(255,143,89,.09);--month-hl:rgba(255,143,89,.10);
   --mono:'DM Mono',monospace;--sans:'Noto Sans TC',sans-serif;--serif:'Noto Serif TC',serif;
   --radius:4px;--radius-lg:8px;
   --shadow:0 2px 12px rgba(0,0,0,.07),0 1px 4px rgba(0,0,0,.05);
@@ -124,8 +124,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 /* ── 時間線 ── */
 .now-line{position:absolute;top:0;bottom:0;width:2px;background:var(--today-line);pointer-events:none;z-index:50;}
 .now-line::after{content:'▼';position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--today-line);line-height:1;}
-.week-band{position:absolute;top:0;bottom:0;background:var(--week-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(200,152,64,.4);border-right:1.5px dashed rgba(200,152,64,.4);}
-.month-band{position:absolute;top:0;bottom:0;background:var(--month-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(200,152,64,.4);border-right:1.5px dashed rgba(200,152,64,.4);}
+.week-band{position:absolute;top:0;bottom:0;background:var(--week-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(255,143,89,.4);border-right:1.5px dashed rgba(255,143,89,.4);}
+.month-band{position:absolute;top:0;bottom:0;background:var(--month-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(255,143,89,.4);border-right:1.5px dashed rgba(255,143,89,.4);}
 
 /* ── Frappe overrides ── */
 .gantt .bar-label{display:none;}
@@ -250,7 +250,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 <!-- HEADER -->
 <header class="pg-hd">
   <div>
-    <div class="pg-title"><span>QA 專案儀表板</span></div>
+    <div class="pg-title"><span>QA 專案週報</span><span>衝刺看板</span></div>
     <div class="pg-meta" id="pg-meta">—</div>
   </div>
   <div class="pg-right">
@@ -322,9 +322,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
    QA Board 靜態資料（每週手動更新）
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const QA_ITEMS = [
-  { id:"qa1", text:"皇家王牌測試W3", done:false },
-  { id:"qa2", text:"舞獅奪寶測試W2", done:false },
-  { id:"qa3", text:"荒野槍客2測試W1", done:false }
+  { id:"qa1", text:"DAL 測試", done:false },
+  { id:"qa2", text:"狂野霸盜 最終測試", done:false },
+  { id:"qa3", text:"錦標賽 測試案例", done:false }
 ];
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -332,8 +332,10 @@ const QA_ITEMS = [
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 // 動態偵測 data.json 路徑
 const DATA_URL = (() => {
-  const path = window.location.pathname.replace(/\/[^/]*$/, '');
-  return window.location.origin + path + '/data.json';
+  // 取得目前頁面所在目錄（相容 GitHub Pages 子目錄與根目錄）
+  const loc = window.location.href.split('?')[0].split('#')[0];
+  const base = loc.endsWith('/') ? loc : loc.substring(0, loc.lastIndexOf('/') + 1);
+  return base + 'data.json';
 })();
 
 const STATUS_MAP = {
@@ -627,27 +629,29 @@ function syncRows(){
   const svgEl=document.getElementById('gantt-chart');
   const vb=svgEl.viewBox?.baseVal;
   const scaleY=(vb&&vb.height>0)?(svgEl.clientHeight/vb.height):1;
- 
+
   // ── 同步 header 高度
   const hdH=parseFloat(gridHdr.getAttribute('height')||0)*scaleY;
   const leftHd=document.getElementById('gantt-left-hd');
   if(leftHd)leftHd.style.height=`${hdH}px`;
- 
+
   // ── 同步左欄整體高度與 SVG 一致
   const svgH=parseFloat(svgEl.getAttribute('height')||0)*scaleY;
   const ganttLeft=document.querySelector('.gantt-left');
   if(ganttLeft&&svgH>0)ganttLeft.style.height=`${svgH}px`;
- 
+
   // ── 核心修復：直接用 .bar-wrapper 的 bar y 座標對應 label
   // 跳過 placeholder(_ph)，剩餘 bar 順序與 projOrder 完全一致
   const bars=[];
   svg.querySelectorAll('.bar-wrapper').forEach(w=>{
     if(w.getAttribute('data-id')==='_ph')return;
     const bar=w.querySelector('.bar');if(!bar)return;
-    bars.push({ y: bar.y * scaleY - hdH, h: bar.height * scaleY });
+    bars.push({
+      y: parseFloat(bar.getAttribute('y')||0)*scaleY - hdH,
+      h: parseFloat(bar.getAttribute('height')||0)*scaleY,
     });
   });
- 
+
   const list=document.getElementById('gantt-label-list');
   let maxB=0;
   bars.forEach((b,i)=>{
@@ -770,7 +774,7 @@ function decorateDay(){
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
    Cards + 篩選
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
-const FILTER_OPTS=['全部','COCOS串接','基本測試完成','基本測試中','GS串接中','數學製作中','美術製作中','已上線'];
+const FILTER_OPTS=['全部','COCOS串接','基本測試完成','基本測試中','QA測試中','GS開發中','數學製作中','美術製作中','已上線'];
 let curFilter='';
 function renderFilterBar(){
   document.getElementById('filter-bar').innerHTML=FILTER_OPTS.map(l=>
@@ -785,7 +789,8 @@ const MECH_DEFS=[
   {key:'frb',label:'FRB'},
   {key:'fra',label:'FRA'},
   {key:'tournament',label:'錦標賽'},
-  {key:'scPayout',label:'頂倍'},
+  {key:'guarantee',label:'保底機制'},
+  {key:'scPayout',label:'SC賠付'},
 ];
 
 function mechSection(mechs){
