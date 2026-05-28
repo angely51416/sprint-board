@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>衝刺看板</title>
+<title>進度儀錶板</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.css">
 <style>
@@ -95,8 +96,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 .gantt-split{display:grid;grid-template-columns:260px minmax(0,1fr);border-top:1px solid var(--border);}
 .gantt-left{border-right:1px solid var(--border);background:var(--panel);overflow:hidden;display:block;}
 .gantt-left-hd{padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:.61rem;letter-spacing:.07em;color:var(--ink-3);display:flex;align-items:center;box-sizing:border-box;}
-.gantt-label-list{list-style:none;margin:0;padding:0;position:relative;}
-.gantt-label-item{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);color:var(--ink-2);font-size:.81rem;font-weight:500;white-space:nowrap;overflow:hidden;cursor:grab;transition:background .1s;position:absolute;left:0;right:0;box-sizing:border-box;}
+.gantt-label-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+.gantt-label-item{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);color:var(--ink-2);font-size:.81rem;font-weight:500;white-space:nowrap;overflow:hidden;cursor:grab;transition:background .1s;box-sizing:border-box;flex-shrink:0;}
 .gantt-label-item:hover{background:rgba(200,152,64,.12);}
 .gantt-label-item.row-dragging{opacity:.35;}
 .gantt-label-item.row-drag-over{border-top:2px solid var(--accent)!important;}
@@ -250,7 +251,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 <!-- HEADER -->
 <header class="pg-hd">
   <div>
-    <div class="pg-title"><span>QA 專案週報</span><span>衝刺看板</span></div>
+    <div class="pg-title"><span>QA 專案週報</span><span>進度儀錶板</span></div>
     <div class="pg-meta" id="pg-meta">—</div>
   </div>
   <div class="pg-right">
@@ -340,7 +341,7 @@ const DATA_URL = (() => {
 
 const STATUS_MAP = {
   '基本測試完成':'survey','基本測試中':'survey',
-  'COCOS串接':'fe','QA測試中':'qa',
+  'COCOS串接':'fe',
   'GS開發中':'audio','數學製作中':'audio','美術製作中':'art',
   '已上線':'final','問卷demo會議':'survey','待開發':'tech',
   'GS/CS/COCOS實作中':'tech','已出測':'tech',
@@ -452,7 +453,7 @@ function updateHeader(){
   const mn=TODAY.getMonth()+1,yr=TODAY.getFullYear(),mw=Math.ceil(TODAY.getDate()/7);
   document.getElementById('pg-meta').innerHTML=`第 ${wn} 週 &nbsp;·&nbsp; ${yr}.${fmtMD(ws)} – ${fmtMD(we)} &nbsp;·&nbsp; Slot Studio`;
   document.getElementById('pg-badge').textContent=`${mn}月 第${mw}週 · ${yr}`;
-  document.title=`衝刺看板 · ${yr} 第${wn}週`;
+  document.title=`進度儀錶板 · ${yr} 第${wn}週`;
   const mNames=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
   const rS=new Date(yr,mn-2,1),rE=new Date(yr,mn+3,0);
   document.getElementById('gantt-note').textContent=`${mNames[rS.getMonth()]} – ${mNames[rE.getMonth()]} ｜ 可拖曳長條調整時程`;
@@ -605,7 +606,7 @@ function rowDE(){document.querySelectorAll('.gantt-label-item').forEach(el=>el.c
 function setGanttView(mode,evt){
   curView=mode;
   ['Day','Week','Month'].forEach(k=>{const b=document.getElementById('vt-'+k);if(b)b.classList.toggle('active',k===mode);});
-  if(ganttInst){ganttInst.change_view_mode(mode);const r=()=>{syncRows();decorateDay();applyColors();drawMilestones();drawHighlights();buildHeaders();};requestAnimationFrame(r);setTimeout(r,200);}
+  if(ganttInst){ganttInst.change_view_mode(mode);const r=()=>{syncRows();decorateDay();applyColors();drawMilestones();drawHighlights();buildHeaders();};requestAnimationFrame(r);setTimeout(r,500);}
   else renderGantt();
   if(evt&&evt.currentTarget)evt.currentTarget.blur();
 }
@@ -622,74 +623,32 @@ function applyColors(){
   });
 }
 
+const ROW_H=22+20; // bar_height + padding（與 Gantt 設定一致，固定值不需量測）
+
 function syncRows(){
   const svgEl=document.getElementById('gantt-chart');if(!svgEl)return;
-  const svg=svgEl.querySelector('.gantt');if(!svg)return;        // [A] Frappe 在 <svg> 內部產生的 .gantt <g>
+  const svg=svgEl.querySelector('.gantt');if(!svg)return;
   const labels=document.querySelectorAll('.gantt-label-item');if(!labels.length)return;
- 
-  // [B] 用 getBoundingClientRect 取得 SVG 容器在頁面上的真實位置
-  //     不依賴 viewBox，避免 viewBox=0 或未設定時 scaleY 算錯
+
   const svgRect=svgEl.getBoundingClientRect();
-  const ganttRight=document.getElementById('gantt-right');
-  const rightRect=ganttRight?ganttRight.getBoundingClientRect():svgRect;
-  const scrollTop=ganttRight?ganttRight.scrollTop:0;
- 
-  // [C] header 高度：讀 .grid-header 的 SVG attr，換算成畫面像素
-  const gridHdr=svg.querySelector('.grid-header');
   const vb=svgEl.viewBox?.baseVal;
-  // scaleY 只用來換算 header 高度（grid-header 沒有 getBCR）
   const scaleY=(vb&&vb.height>0&&svgRect.height>0)?(svgRect.height/vb.height):1;
+
+  const gridHdr=svg.querySelector('.grid-header');
   const hdH=parseFloat(gridHdr?.getAttribute('height')||0)*scaleY;
- 
+
   const leftHd=document.getElementById('gantt-left-hd');
   if(leftHd)leftHd.style.height=`${hdH}px`;
- 
-  // [D] 同步左欄整體高度
+
   const ganttLeft=document.querySelector('.gantt-left');
   if(ganttLeft&&svgRect.height>0)ganttLeft.style.height=`${svgRect.height}px`;
- 
-  // [E] 核心：對每個 bar，用 getBoundingClientRect() 取得「真實螢幕位置」
-  //     再換算成相對於左欄頂部的偏移（扣掉 header 高度）
-  const bars=[];
-  svg.querySelectorAll('.bar-wrapper').forEach(w=>{
-    if(w.getAttribute('data-id')==='_ph')return;
-    const bar=w.querySelector('.bar');if(!bar)return;
-    const br=bar.getBoundingClientRect();           // 真實座標，不受 viewBox 影響
-    const topRelToSvg=br.top - svgRect.top;        // 相對 SVG 頂部
-    bars.push({
-      top: topRelToSvg - hdH,                      // 扣掉 header
-      height: br.height,
-    });
+
+  // 直接用固定列高，不再從 DOM 量測（量測結果因渲染時機不同而不穩定）
+  const rowStep=ROW_H*scaleY;
+  labels.forEach(lbl=>{
+    lbl.style.height=`${rowStep}px`;
+    lbl.style.lineHeight=`${rowStep}px`;
   });
- 
-  // [F] 如果 getBCR 全部回傳 0（SVG 尚未渲染），fallback 到 viewBox 換算
-  const allZero=bars.every(b=>b.height===0);
-  if(allZero&&vb&&vb.height>0){
-    bars.length=0;
-    svg.querySelectorAll('.bar-wrapper').forEach(w=>{
-      if(w.getAttribute('data-id')==='_ph')return;
-      const bar=w.querySelector('.bar');if(!bar)return;
-      bars.push({
-        top:  parseFloat(bar.getAttribute('y')||0)*scaleY - hdH,
-        height: parseFloat(bar.getAttribute('height')||0)*scaleY,
-      });
-    });
-  }
- 
-  const list=document.getElementById('gantt-label-list');
-  let maxB=0;
-  bars.forEach((b,i)=>{
-    const lbl=labels[i];if(!lbl)return;
-    // [G] 每個 label 的 top = bar 的 top，height = 整列高（padding 讓文字不貼邊）
-    const rowPad=8;
-    const rowTop=b.top - rowPad;
-    const rowH=Math.max(b.height + rowPad*2, 38);
-    lbl.style.top=`${rowTop}px`;
-    lbl.style.height=`${rowH}px`;
-    lbl.style.lineHeight=`${rowH}px`;
-    maxB=Math.max(maxB, rowTop+rowH);
-  });
-  if(list&&maxB>0)list.style.height=`${maxB}px`;
 }
 
 function drawHighlights(){
@@ -799,7 +758,7 @@ function decorateDay(){
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
    Cards + 篩選
 ━━━━━━━━━━━━━━━━━━━━━━━━ */
-const FILTER_OPTS=['全部','COCOS串接','基本測試完成','基本測試中','QA測試中','GS開發中','數學製作中','美術製作中','已上線'];
+const FILTER_OPTS=['全部','COCOS串接','基本測試完成','基本測試中','GS開發中','數學製作中','美術製作中','已上線'];
 let curFilter='';
 function renderFilterBar(){
   document.getElementById('filter-bar').innerHTML=FILTER_OPTS.map(l=>
@@ -814,8 +773,6 @@ const MECH_DEFS=[
   {key:'frb',label:'FRB'},
   {key:'fra',label:'FRA'},
   {key:'tournament',label:'錦標賽'},
-  {key:'guarantee',label:'保底機制'},
-  {key:'scPayout',label:'SC賠付'},
 ];
 
 function mechSection(mechs){
