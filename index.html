@@ -17,7 +17,7 @@
   --green:#244F30;--grn-bg:#E4EFE6;
   --blue:#1A3860;--blu-bg:#DDE5F2;
   --accent:#C89840;--dark:#3A3830;
-  --today-line:#FF8F59;--week-hl:rgba(255,143,89,.09);--month-hl:rgba(255,143,89,.10);
+  --today-line:#8600FF;--week-hl:rgba(134,0,255,.09);--month-hl:rgba(134,0,255,.10);
   --mono:'DM Mono',monospace;--sans:'Noto Sans TC',sans-serif;--serif:'Noto Serif TC',serif;
   --radius:4px;--radius-lg:8px;
   --shadow:0 2px 12px rgba(0,0,0,.07),0 1px 4px rgba(0,0,0,.05);
@@ -125,16 +125,16 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 /* ── 時間線 ── */
 .now-line{position:absolute;top:0;bottom:0;width:2px;background:var(--today-line);pointer-events:none;z-index:50;}
 .now-line::after{content:'▼';position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--today-line);line-height:1;}
-.week-band{position:absolute;top:0;bottom:0;background:var(--week-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(255,143,89,.4);border-right:1.5px dashed rgba(255,143,89,.4);}
-.month-band{position:absolute;top:0;bottom:0;background:var(--month-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(255,143,89,.4);border-right:1.5px dashed rgba(255,143,89,.4);}
+.week-band{position:absolute;top:0;bottom:0;background:var(--week-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(134,0,255,.4);border-right:1.5px dashed rgba(134,0,255,.4);}
+.month-band{position:absolute;top:0;bottom:0;background:var(--month-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(134,0,255,.4);border-right:1.5px dashed rgba(134,0,255,.4);}
 
 /* ── Frappe overrides ── */
-.gantt .bar-label{display:none;}
+.gantt .bar-label{font-size:10px;fill:rgba(30,28,24,.65);font-family:'DM Mono',monospace;letter-spacing:.01em;}
 .gantt .grid-header,.gantt .grid-row{fill:var(--surface);}
 .gantt .row-line{stroke:var(--border);}
 .gantt .lower-text,.gantt .upper-text{fill:var(--ink-3);}
 .gantt .tick{stroke:var(--border);}
-.gantt .today-highlight{fill:var(--accent);opacity:.13;}
+.gantt .today-highlight{fill:#8600FF;opacity:.08;}
 .gantt .bar{fill:#C4B090;stroke:#A89060;}
 .gantt .bar-progress{fill:#C4B090;}
 .gantt-container{padding:0;}
@@ -501,7 +501,6 @@ async function loadAndRender(){
     console.error('data.json 載入失敗：',err);
     document.getElementById('loading-state').style.display='none';
     document.getElementById('load-error').style.display='flex';
-    // 使用空資料渲染空狀態
     initOrder();renderFilterBar();renderGantt();renderCards();
   }
 }
@@ -582,16 +581,19 @@ function renderGantt(){
       requestAnimationFrame(()=>{applyColors();drawMilestones();drawHighlights();buildHeaders();});
     }
   });
-  const r=()=>{syncRows();decorateDay();applyColors();drawMilestones();drawHighlights();buildHeaders();};
+  const r=()=>{syncRows();decorateDay();applyColors();drawMilestones();drawHighlights();buildHeaders();scrollToToday();};
   requestAnimationFrame(r); setTimeout(r, 300); setTimeout(r, 800); setTimeout(syncRows, 1500);
 }
 
 function buildLabelList(){
-  document.getElementById('gantt-label-list').innerHTML=projOrder.map((item,i)=>{
+  // 只列出有日期的專案，與 Gantt SVG 列一一對應
+  const ganttItems=projOrder.filter(item=>tlStart(item)&&tlEnd(item));
+  document.getElementById('gantt-label-list').innerHTML=ganttItems.map((item)=>{
     const nm=item.kind==='game'?`${item.emoji} ${item.name}`:`${item.icon} ${item.name}`;
-    return`<li class="gantt-label-item" title="${nm}" data-ri="${i}" draggable="true"
-      ondragstart="rowDS(event,${i})" ondragover="rowDO(event,${i})"
-      ondragleave="rowDL(event)" ondrop="rowDrop(event,${i})" ondragend="rowDE(event)">
+    const ri=projOrder.indexOf(item);
+    return`<li class="gantt-label-item" title="${nm}" data-ri="${ri}" draggable="true"
+      ondragstart="rowDS(event,${ri})" ondragover="rowDO(event,${ri})"
+      ondragleave="rowDL(event)" ondrop="rowDrop(event,${ri})" ondragend="rowDE(event)">
       <span class="gantt-drag-hdl">⠿</span><span class="gantt-label-name">${nm}</span></li>`;
   }).join('');
 }
@@ -625,30 +627,90 @@ function applyColors(){
 
 const ROW_H=22+20; // bar_height + padding（與 Gantt 設定一致，固定值不需量測）
 
-function syncRows(){
-  const svgEl=document.getElementById('gantt-chart');if(!svgEl)return;
-  const svg=svgEl.querySelector('.gantt');if(!svg)return;
-  const labels=document.querySelectorAll('.gantt-label-item');if(!labels.length)return;
+function syncRows() {
+  const svgEl = document.getElementById('gantt-chart');
+  if (!svgEl) return;
 
-  const svgRect=svgEl.getBoundingClientRect();
-  const vb=svgEl.viewBox?.baseVal;
-  const scaleY=(vb&&vb.height>0&&svgRect.height>0)?(svgRect.height/vb.height):1;
+  const svg = svgEl.querySelector('.gantt');
+  if (!svg) return;
 
-  const gridHdr=svg.querySelector('.grid-header');
-  const hdH=parseFloat(gridHdr?.getAttribute('height')||0)*scaleY;
+  const labels = [...document.querySelectorAll('.gantt-label-item')];
+  if (!labels.length) return;
 
-  const leftHd=document.getElementById('gantt-left-hd');
-  if(leftHd)leftHd.style.height=`${hdH}px`;
+  const gridRows = [...svg.querySelectorAll('rect.grid-row')];
 
-  const ganttLeft=document.querySelector('.gantt-left');
-  if(ganttLeft&&svgRect.height>0)ganttLeft.style.height=`${svgRect.height}px`;
+  if (gridRows.length <= 1) return;
 
-  // 直接用固定列高，不再從 DOM 量測（量測結果因渲染時機不同而不穩定）
-  const rowStep=ROW_H*scaleY;
-  labels.forEach(lbl=>{
-    lbl.style.height=`${rowStep}px`;
-    lbl.style.lineHeight=`${rowStep}px`;
+  const svgRect = svgEl.getBoundingClientRect();
+
+  const vb = svgEl.viewBox?.baseVal;
+
+  const scaleY =
+    vb && vb.height > 0
+      ? svgRect.height / vb.height
+      : 1;
+
+  // header 高度
+  const gridHeader = svg.querySelector('.grid-header');
+
+  const headerHeight =
+    parseFloat(gridHeader?.getAttribute('height') || 0) * scaleY;
+
+  // 同步左側 header
+  const leftHd = document.getElementById('gantt-left-hd');
+
+  if (leftHd) {
+    leftHd.style.height = `${headerHeight}px`;
+  }
+
+  // label list
+  const labelList = document.getElementById('gantt-label-list');
+
+  // 第一列真正位置
+  const firstRowY =
+    parseFloat(gridRows[1].getAttribute('y')) * scaleY;
+
+  labelList.style.paddingTop =
+    `${Math.max(0, firstRowY - headerHeight)}px`;
+
+  // 每列逐一對齊
+  labels.forEach((label, i) => {
+
+    const row = gridRows[i + 1];
+
+    if (!row) return;
+
+    const rowY =
+      parseFloat(row.getAttribute('y')) * scaleY;
+
+    const rowH =
+      parseFloat(row.getAttribute('height')) * scaleY;
+
+    label.style.height = `${rowH}px`;
+    label.style.lineHeight = `${rowH}px`;
+
+    label.style.transform =
+      `translateY(${rowY - firstRowY}px)`;
   });
+
+  // 左側總高度同步
+  const ganttLeft = document.querySelector('.gantt-left');
+
+  if (ganttLeft) {
+    ganttLeft.style.height = `${svgRect.height}px`;
+  }
+}
+
+function scrollToToday(){
+  const gr=document.getElementById('gantt-right');
+  if(!gr||!ganttInst?.gantt_start)return;
+  const svg=document.querySelector('#gantt-chart .gantt');if(!svg)return;
+  const tr=svg.querySelector('.today-highlight');if(!tr)return;
+  const svgEl=document.getElementById('gantt-chart');
+  const vb=svgEl.viewBox?.baseVal;
+  const scaleX=(vb&&vb.width>0)?(svgEl.getBoundingClientRect().width/vb.width):1;
+  const tx=parseFloat(tr.getAttribute('x')||0);
+  gr.scrollLeft=Math.max(0,tx*scaleX-160);
 }
 
 function drawHighlights(){
