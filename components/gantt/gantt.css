@@ -1,0 +1,58 @@
+/* ── GANTT ── */
+.gantt-outer{border:1px solid var(--border-dk);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow);overflow:hidden;}
+.gantt-split{display:grid;grid-template-columns:260px minmax(0,1fr);border-top:1px solid var(--border);}
+.gantt-left{border-right:1px solid var(--border);background:var(--panel);overflow:hidden;display:block;}
+.gantt-left__header{padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:.61rem;letter-spacing:.07em;color:var(--ink-3);display:flex;align-items:center;box-sizing:border-box;}
+.gantt-label-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+.gantt-label-item{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);color:var(--ink-2);font-size:.81rem;font-weight:500;white-space:nowrap;overflow:hidden;cursor:grab;transition:background .1s;box-sizing:border-box;flex-shrink:0;}
+.gantt-label-item:hover{background:rgba(200,152,64,.12);}
+.gantt-label-item--dragging{opacity:.35;}
+.gantt-label-item--drag-over{border-top:2px solid var(--accent)!important;}
+.gantt-label-item__handle{color:var(--ink-4);font-size:.7rem;flex-shrink:0;}
+.gantt-label-item__name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1;}
+.gantt-right{overflow-x:auto;overflow-y:hidden;position:relative;}
+
+/* ── VIEW TOGGLE ── */
+.view-toggle{display:flex;gap:2px;background:var(--panel-b);border:1px solid var(--border-dk);border-radius:4px;padding:2px;flex-shrink:0;}
+.view-toggle__btn{font-family:var(--mono);font-size:.61rem;font-weight:500;letter-spacing:.07em;padding:4px 12px;border:none;border-radius:3px;cursor:pointer;background:transparent;color:var(--ink-3);transition:background .12s,color .12s;}
+.view-toggle__btn--active{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.10);}
+.view-toggle__btn:hover:not(.view-toggle__btn--active){background:var(--panel);color:var(--ink-2);}
+
+/* ── 季度/月份 header ── */
+.gantt-hd-quarter{display:flex;border-bottom:1px solid rgba(255,255,255,.08);background:var(--dark);}
+.gantt-hd-quarter__label{flex-shrink:0;width:260px;padding:5px 14px;font-family:var(--mono);font-size:.59rem;font-weight:500;letter-spacing:.07em;color:rgba(255,255,255,.4);border-right:1px solid rgba(255,255,255,.08);box-sizing:border-box;}
+.gantt-hd-quarter__cells{flex:1;position:relative;height:26px;overflow:hidden;}
+.gantt-hd-quarter__cell{position:absolute;height:26px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.61rem;font-weight:500;letter-spacing:.08em;color:#FFF;border-right:1px solid rgba(255,255,255,.10);white-space:nowrap;overflow:hidden;box-sizing:border-box;}
+.gantt-hd-month{display:flex;border-bottom:1px solid var(--border);}
+.gantt-hd-month__label{flex-shrink:0;width:260px;border-right:1px solid var(--border-dk);background:var(--panel-b);box-sizing:border-box;}
+.gantt-hd-month__cells{flex:1;position:relative;height:28px;overflow:hidden;}
+.gantt-hd-month__cell{position:absolute;height:28px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.69rem;font-weight:500;color:var(--ink-2);background:var(--panel-b);border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;box-sizing:border-box;}
+.gantt-hd-month__cell--current{color:var(--dark);background:#E8D5A0;font-weight:700;}
+
+/* ── 時間線 ── */
+.now-line{position:absolute;top:0;bottom:0;width:2px;background:var(--today-line);pointer-events:none;z-index:50;}
+.now-line::after{content:'▼';position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--today-line);line-height:1;}
+.week-band{position:absolute;top:0;bottom:0;background:var(--week-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(134,0,255,.4);border-right:1.5px dashed rgba(134,0,255,.4);}
+.month-band{position:absolute;top:0;bottom:0;background:var(--month-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(134,0,255,.4);border-right:1.5px dashed rgba(134,0,255,.4);}
+
+/* ── Frappe overrides ── */
+.gantt .bar-label{font-size:10px;fill:rgba(30,28,24,.65);font-family:'DM Mono',monospace;letter-spacing:.01em;}
+.gantt .grid-header,.gantt .grid-row{fill:var(--surface);}
+.gantt .row-line{stroke:var(--border);}
+.gantt .lower-text,.gantt .upper-text{fill:var(--ink-3);}
+.gantt .tick{stroke:var(--border);}
+.gantt .today-highlight{fill:#8600FF;opacity:.08;}
+.gantt .bar{fill:#C4B090;stroke:#A89060;}
+.gantt .bar-progress{fill:#C4B090;}
+.gantt-container{padding:0;}
+.range-ph .bar,.range-ph .bar-progress{opacity:0!important;}
+.gantt-tag-tri{stroke:none;}
+.gantt-tag-tri.qa{fill:#8C2A1C;}
+.gantt-tag-tri.done{fill:#8A5C10;}
+.gantt-tag-bg{fill:var(--surface);stroke:var(--border-dk);stroke-width:1;}
+.gantt-tag-text{fill:var(--ink-2);font-family:'DM Mono',monospace;font-size:10.5px;}
+
+@media(max-width:900px){
+  .gantt-split{grid-template-columns:180px minmax(0,1fr);}
+  .gantt-hd-quarter__label,.gantt-hd-month__label{width:180px;}
+}
