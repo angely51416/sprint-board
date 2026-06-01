@@ -1,0 +1,8 @@
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;padding-bottom:20px;margin-bottom:28px;border-bottom:2px solid var(--border-dk);}
+.page-header__title{font-family:var(--serif);font-size:2.1rem;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:var(--ink);}
+.page-header__title span{display:block;}
+.page-header__title span:last-child{color:var(--accent);}
+.page-header__meta{margin-top:6px;font-family:var(--mono);font-size:.67rem;letter-spacing:.09em;color:var(--ink-3);}
+.page-header__right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.page-header__badge{font-family:var(--mono);font-size:.76rem;font-weight:500;letter-spacing:.07em;color:var(--ink-2);border:1.5px solid var(--border-dk);padding:8px 18px;border-radius:var(--radius);background:var(--surface);}
+.page-header__updated{font-family:var(--mono);font-size:.60rem;color:var(--ink-4);letter-spacing:.06em;}

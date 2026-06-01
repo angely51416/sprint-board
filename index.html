@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -7,278 +6,66 @@
 <title>進度儀錶板</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.css">
-<style>
-:root {
-  --bg:#F5F2EC;--surface:#FFFFFF;--panel:#EDE7D8;--panel-b:#E3D9C4;
-  --border:#D4C49C;--border-dk:#B8A070;
-  --ink:#1E1C18;--ink-2:#4A4840;--ink-3:#847E72;--ink-4:#B0AA9E;
-  --red:#8C2A1C;--red-bg:#F6EDEB;
-  --amber:#8A5C10;--amb-bg:#FBF0DC;
-  --green:#244F30;--grn-bg:#E4EFE6;
-  --blue:#1A3860;--blu-bg:#DDE5F2;
-  --accent:#C89840;--dark:#3A3830;
-  --today-line:#8600FF;--week-hl:rgba(134,0,255,.09);--month-hl:rgba(134,0,255,.10);
-  --mono:'DM Mono',monospace;--sans:'Noto Sans TC',sans-serif;--serif:'Noto Serif TC',serif;
-  --radius:4px;--radius-lg:8px;
-  --shadow:0 2px 12px rgba(0,0,0,.07),0 1px 4px rgba(0,0,0,.05);
-  --shadow-md:0 4px 24px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06);
-}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:18px;}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;padding:36px 44px 100px;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-thumb{background:var(--border-dk);border-radius:3px;}
-
-/* ── LOADING / ERROR ── */
-#loading-state{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
-.ld-spin{width:36px;height:36px;border:3px solid var(--border-dk);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ld-text{font-family:var(--mono);font-size:0.7rem;letter-spacing:.1em;color:var(--ink-3);}
-#load-error{display:none;background:var(--red-bg);border:1px solid var(--red);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:20px;gap:10px;align-items:flex-start;font-size:.82rem;color:var(--red);}
-#load-error strong{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;}
-
-/* ── HEADER ── */
-.pg-hd{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;padding-bottom:20px;margin-bottom:28px;border-bottom:2px solid var(--border-dk);}
-.pg-title{font-family:var(--serif);font-size:2.1rem;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:var(--ink);}
-.pg-title span{display:block;}
-.pg-title span:last-child{color:var(--accent);}
-.pg-meta{margin-top:6px;font-family:var(--mono);font-size:.67rem;letter-spacing:.09em;color:var(--ink-3);}
-.pg-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-.pg-badge{font-family:var(--mono);font-size:.76rem;font-weight:500;letter-spacing:.07em;color:var(--ink-2);border:1.5px solid var(--border-dk);padding:8px 18px;border-radius:var(--radius);background:var(--surface);}
-#last-updated{font-family:var(--mono);font-size:.60rem;color:var(--ink-4);letter-spacing:.06em;}
-
-/* ── QA BOARD ── */
-.qa-board{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:40px;}
-.qa-col{background:var(--surface);border:1px solid var(--border-dk);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
-.qa-col-hd{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:.63rem;font-weight:500;letter-spacing:.10em;}
-.qa-col-hd.todo{color:var(--amber);background:var(--amb-bg);}
-.qa-col-hd.done{color:var(--green);background:var(--grn-bg);}
-.qa-col-hd .col-count{margin-left:auto;font-size:.72rem;opacity:.7;}
-.qa-list{min-height:60px;padding:8px;display:flex;flex-direction:column;gap:6px;}
-.qa-list.drag-over{background:rgba(97,104,94,.07);border-radius:4px;}
-.qa-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:5px;font-size:.8rem;font-weight:500;cursor:grab;user-select:none;transition:box-shadow .15s,opacity .15s,transform .12s;border:1px solid var(--border);background:var(--panel);color:var(--ink-2);}
-.qa-chip:active{cursor:grabbing;}
-.qa-chip.done-item{background:var(--grn-bg);border-color:#A0C4A8;color:var(--green);opacity:.8;}
-.qa-chip.dragging{opacity:.32;transform:scale(.97);}
-.qa-chip .drag-handle{color:var(--ink-4);font-size:.74rem;flex-shrink:0;}
-.qa-chip .chip-text{flex:1;min-width:0;}
-.qa-chip-actions{display:flex;gap:3px;flex-shrink:0;opacity:0;transition:opacity .15s;}
-.qa-chip:hover .qa-chip-actions{opacity:1;}
-.qa-act-btn{width:22px;height:22px;border:none;border-radius:3px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--ink-3);transition:background .1s,color .1s;}
-.qa-act-btn:hover.edit{background:#E4EBF5;color:var(--blue);}
-.qa-act-btn:hover.del{background:var(--red-bg);color:var(--red);}
-.qa-add-btn{font-family:var(--mono);font-size:.63rem;font-weight:500;letter-spacing:.07em;padding:5px 14px;border-radius:var(--radius);background:var(--surface);border:1.5px solid var(--border-dk);color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:background .1s,border-color .1s;}
-.qa-add-btn:hover{background:var(--panel);border-color:var(--dark);color:var(--dark);}
-
-/* ── MODAL ── */
-.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(20,18,14,.50);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}
-.modal-backdrop.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border-dk);border-radius:10px;padding:30px 30px 26px;width:460px;max-width:92vw;box-shadow:var(--shadow-md);animation:modalIn .18s ease both;}
-@keyframes modalIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-.modal-title{font-family:var(--serif);font-size:1.08rem;font-weight:700;color:var(--ink);margin-bottom:20px;}
-.modal-label{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.09em;color:var(--ink-3);margin-bottom:6px;}
-.modal-input{width:100%;padding:10px 13px;border-radius:4px;border:1.5px solid var(--border-dk);background:var(--bg);font-family:var(--sans);font-size:.88rem;color:var(--ink);outline:none;transition:border-color .12s;margin-bottom:18px;}
-.modal-input:focus{border-color:var(--dark);}
-.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:4px;}
-.modal-cancel{font-family:var(--mono);font-size:.7rem;padding:8px 17px;border-radius:var(--radius);background:var(--panel);border:1.5px solid var(--border-dk);color:var(--ink-3);cursor:pointer;}
-.modal-cancel:hover{background:var(--panel-b);}
-.modal-save{font-family:var(--mono);font-size:.7rem;font-weight:500;padding:8px 20px;border-radius:var(--radius);background:var(--dark);border:1.5px solid var(--dark);color:#FFF;cursor:pointer;transition:background .1s;}
-.modal-save:hover{background:#2A2820;}
-
-/* ── SECTION HDR ── */
-.sh{display:flex;align-items:center;gap:14px;margin:36px 0 14px;}
-.sh-title{font-family:var(--mono);font-size:.62rem;font-weight:500;letter-spacing:.15em;color:var(--ink-3);white-space:nowrap;text-transform:uppercase;}
-.sh-line{flex:1;height:1px;background:var(--border);}
-.sh-note{font-family:var(--mono);font-size:.62rem;color:var(--ink-4);white-space:nowrap;}
-
-/* ── GANTT ── */
-.gantt-outer{border:1px solid var(--border-dk);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow);overflow:hidden;}
-.gantt-split{display:grid;grid-template-columns:260px minmax(0,1fr);border-top:1px solid var(--border);}
-.gantt-left{border-right:1px solid var(--border);background:var(--panel);overflow:hidden;display:block;}
-.gantt-left-hd{padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:.61rem;letter-spacing:.07em;color:var(--ink-3);display:flex;align-items:center;box-sizing:border-box;}
-.gantt-label-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
-.gantt-label-item{display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);color:var(--ink-2);font-size:.81rem;font-weight:500;white-space:nowrap;overflow:hidden;cursor:grab;transition:background .1s;box-sizing:border-box;flex-shrink:0;}
-.gantt-label-item:hover{background:rgba(200,152,64,.12);}
-.gantt-label-item.row-dragging{opacity:.35;}
-.gantt-label-item.row-drag-over{border-top:2px solid var(--accent)!important;}
-.gantt-drag-hdl{color:var(--ink-4);font-size:.7rem;flex-shrink:0;}
-.gantt-label-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1;}
-.gantt-right{overflow-x:auto;overflow-y:hidden;position:relative;}
-
-/* ── VIEW TOGGLE ── */
-.view-toggle{display:flex;gap:2px;background:var(--panel-b);border:1px solid var(--border-dk);border-radius:4px;padding:2px;flex-shrink:0;}
-.vt-btn{font-family:var(--mono);font-size:.61rem;font-weight:500;letter-spacing:.07em;padding:4px 12px;border:none;border-radius:3px;cursor:pointer;background:transparent;color:var(--ink-3);transition:background .12s,color .12s;}
-.vt-btn.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.10);}
-.vt-btn:hover:not(.active){background:var(--panel);color:var(--ink-2);}
-
-/* ── 季度/月份 header ── */
-.g-hd-quarter{display:flex;border-bottom:1px solid rgba(255,255,255,.08);background:var(--dark);}
-.g-hd-quarter-lbl{flex-shrink:0;width:260px;padding:5px 14px;font-family:var(--mono);font-size:.59rem;font-weight:500;letter-spacing:.07em;color:rgba(255,255,255,.4);border-right:1px solid rgba(255,255,255,.08);box-sizing:border-box;}
-.g-hd-quarter-cells{flex:1;position:relative;height:26px;overflow:hidden;}
-.g-hd-q-cell{position:absolute;height:26px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.61rem;font-weight:500;letter-spacing:.08em;color:#FFF;border-right:1px solid rgba(255,255,255,.10);white-space:nowrap;overflow:hidden;box-sizing:border-box;}
-.g-hd-month{display:flex;border-bottom:1px solid var(--border);}
-.g-hd-month-lbl{flex-shrink:0;width:260px;border-right:1px solid var(--border-dk);background:var(--panel-b);box-sizing:border-box;}
-.g-hd-month-cells{flex:1;position:relative;height:28px;overflow:hidden;}
-.g-hd-m-cell{position:absolute;height:28px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.69rem;font-weight:500;color:var(--ink-2);background:var(--panel-b);border-right:1px solid var(--border);white-space:nowrap;overflow:hidden;box-sizing:border-box;}
-.g-hd-m-cell.now-month{color:var(--dark);background:#E8D5A0;font-weight:700;}
-
-/* ── 時間線 ── */
-.now-line{position:absolute;top:0;bottom:0;width:2px;background:var(--today-line);pointer-events:none;z-index:50;}
-.now-line::after{content:'▼';position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--today-line);line-height:1;}
-.week-band{position:absolute;top:0;bottom:0;background:var(--week-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(134,0,255,.4);border-right:1.5px dashed rgba(134,0,255,.4);}
-.month-band{position:absolute;top:0;bottom:0;background:var(--month-hl);pointer-events:none;z-index:10;border-left:1.5px dashed rgba(134,0,255,.4);border-right:1.5px dashed rgba(134,0,255,.4);}
-
-/* ── Frappe overrides ── */
-.gantt .bar-label{font-size:10px;fill:rgba(30,28,24,.65);font-family:'DM Mono',monospace;letter-spacing:.01em;}
-.gantt .grid-header,.gantt .grid-row{fill:var(--surface);}
-.gantt .row-line{stroke:var(--border);}
-.gantt .lower-text,.gantt .upper-text{fill:var(--ink-3);}
-.gantt .tick{stroke:var(--border);}
-.gantt .today-highlight{fill:#8600FF;opacity:.08;}
-.gantt .bar{fill:#C4B090;stroke:#A89060;}
-.gantt .bar-progress{fill:#C4B090;}
-.gantt-container{padding:0;}
-.range-ph .bar,.range-ph .bar-progress{opacity:0!important;}
-.gantt-tag-tri{stroke:none;}
-.gantt-tag-tri.qa{fill:#8C2A1C;}
-.gantt-tag-tri.done{fill:#8A5C10;}
-.gantt-tag-bg{fill:var(--surface);stroke:var(--border-dk);stroke-width:1;}
-.gantt-tag-text{fill:var(--ink-2);font-family:'DM Mono',monospace;font-size:10.5px;}
-
-/* ── Filter ── */
-.filter-bar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
-.filter-btn{font-family:var(--mono);font-size:.62rem;font-weight:500;letter-spacing:.05em;padding:4px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border-dk);background:var(--surface);color:var(--ink-3);transition:all .12s;white-space:nowrap;}
-.filter-btn:hover{border-color:var(--dark);color:var(--dark);background:var(--panel);}
-.filter-btn.active{background:var(--dark);border-color:var(--dark);color:#FFF;}
-
-/* ── CARDS ── */
-.all-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(296px,1fr));gap:1px;background:var(--border);border:1px solid var(--border-dk);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
-.flip-card{height:380px;perspective:1000px;animation:rise .35s ease both;}
-@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .44s cubic-bezier(.4,0,.2,1);}
-.flip-card:hover .flip-inner{transform:rotateY(180deg);}
-.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:16px 17px 12px;display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
-.flip-back{transform:rotateY(180deg);background:var(--dark);color:#FFF;justify-content:center;}
-.flip-front::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pc-color,var(--border));}
-.pc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-.pc-ico{font-size:19px;}
-.pc-pill{font-family:var(--mono);font-size:.54rem;font-weight:500;letter-spacing:.05em;padding:3px 8px;border-radius:3px;}
-.pc-name{font-size:.93rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:1px;}
-.pc-sub{font-family:var(--mono);font-size:.62rem;color:var(--ink-4);margin-bottom:8px;}
-.pc-prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
-.pc-prog-lbl{font-family:var(--mono);font-size:.59rem;letter-spacing:.08em;color:var(--ink-4);}
-.pc-prog-pct{font-family:var(--mono);font-size:.87rem;font-weight:500;}
-.pc-bar-track{height:2px;background:var(--panel-b);margin-bottom:9px;border-radius:1px;overflow:hidden;}
-.pc-bar-fill{height:100%;border-radius:1px;}
-.pc-dates{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:7px;}
-.pc-date{background:var(--panel);padding:6px 8px;}
-.pc-date.empty{background:var(--bg);}
-.pcd-lbl{font-family:var(--mono);font-size:.51rem;font-weight:500;letter-spacing:.07em;color:var(--ink-4);margin-bottom:2px;}
-.pcd-val{font-family:var(--mono);font-size:.77rem;font-weight:500;color:var(--ink);line-height:1;}
-.pcd-cnt{font-family:var(--mono);font-size:.57rem;color:var(--ink-3);margin-top:2px;}
-.pcd-cnt.hot{color:var(--red);}
-.pc-updates{display:flex;flex-direction:column;gap:3px;overflow:hidden;flex-shrink:1;min-height:0;margin-top:4px;}
-.pc-upd{display:flex;gap:7px;align-items:flex-start;font-size:.72rem;color:var(--ink-2);line-height:1.38;}
-.upd-pip{width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:6px;}
-.tc-rows{display:flex;flex-direction:column;gap:5px;overflow:hidden;flex-shrink:1;min-height:0;margin-top:6px;}
-.tc-row{display:flex;justify-content:space-between;gap:8px;}
-.tc-k{font-family:var(--mono);font-size:.67rem;color:var(--ink-3);}
-.tc-v{font-family:var(--mono);font-size:.67rem;font-weight:500;color:var(--ink-2);text-align:right;}
-.tc-v.hot{color:var(--red);}
-.tc-v.warn{color:var(--amber);}
-.tc-v.ok{color:var(--green);}
-
-/* ── 遊戲機制標籤 ── */
-.mech-section{margin-top:5px;margin-bottom:2px;}
-.mech-label{font-family:var(--mono);font-size:.50rem;letter-spacing:.08em;color:var(--ink-4);margin-bottom:4px;}
-.mech-row{display:flex;flex-wrap:wrap;gap:3px;}
-.mech-tag{font-family:var(--mono);font-size:.49rem;font-weight:500;letter-spacing:.04em;padding:2px 6px;border-radius:3px;white-space:nowrap;border:1px solid transparent;}
-.mech-tag.y{background:#E4F0E8;color:#1E4A2A;border-color:#A8D0B0;}
-.mech-tag.n{background:#F2F0EC;color:#909088;border-color:#D4CEC4;}
-/* 頂倍標籤 */
-.mech-maxwin{font-family:var(--mono);font-size:.49rem;font-weight:500;padding:2px 7px;border-radius:3px;background:var(--amb-bg);color:var(--amber);border:1px solid #D4A860;}
-
-/* ── Back side ── */
-.back-hint{font-family:var(--mono);font-size:.60rem;letter-spacing:.06em;color:rgba(255,255,255,.38);margin-bottom:10px;}
-.back-name{font-family:var(--serif);font-size:1.04rem;font-weight:700;color:#FFF;margin-bottom:2px;line-height:1.2;}
-.back-sub{font-family:var(--mono);font-size:.61rem;color:rgba(255,255,255,.36);margin-bottom:14px;}
-.back-team{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;}
-.bt-item{display:flex;flex-direction:column;gap:1px;}
-.bt-role{font-family:var(--mono);font-size:.55rem;letter-spacing:.06em;color:rgba(255,255,255,.32);}
-.bt-name{font-size:.81rem;font-weight:700;color:#FFF;}
-.back-no-team{font-family:var(--mono);font-size:.7rem;color:rgba(255,255,255,.28);margin-top:8px;}
-.flip-hint{position:absolute;bottom:8px;right:11px;font-family:var(--mono);font-size:.52rem;letter-spacing:.05em;color:var(--ink-4);opacity:.7;pointer-events:none;}
-
-/* ── Pills ── */
-.pill-final{background:#E4EDF6;color:#1A3A6A;}
-.pill-qa{background:var(--red-bg);color:var(--red);}
-.pill-survey{background:var(--amb-bg);color:var(--amber);}
-.pill-audio{background:#EDE6F6;color:#3A1E60;}
-.pill-fe{background:#E2EFF1;color:#0A3840;}
-.pill-art{background:#F1E9E4;color:#4C2616;}
-.pill-tech{background:var(--panel-b);color:var(--ink-2);}
-
-@media(max-width:900px){
-  body{padding:20px 16px 60px;}
-  .qa-board{grid-template-columns:1fr;}
-  .gantt-split{grid-template-columns:180px minmax(0,1fr);}
-  .g-hd-quarter-lbl,.g-hd-month-lbl{width:180px;}
-}
-</style>
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="components/loading/loading.css">
+<link rel="stylesheet" href="components/header/header.css">
+<link rel="stylesheet" href="components/qa-board/qa-board.css">
+<link rel="stylesheet" href="components/gantt/gantt.css">
+<link rel="stylesheet" href="components/cards/cards.css">
 </head>
 <body>
 
 <!-- LOADING -->
-<div id="loading-state">
-  <div class="ld-spin"></div>
-  <div class="ld-text">載入專案資料中…</div>
+<div id="loading-state" class="loading">
+  <div class="loading__spinner"></div>
+  <div class="loading__text">載入專案資料中…</div>
 </div>
 
 <!-- MODAL -->
 <div class="modal-backdrop" id="qa-modal" onclick="onBackdropClick(event)">
   <div class="modal">
-    <div class="modal-title" id="modal-title">新增關注項目</div>
-    <label class="modal-label" for="modal-text">項目內容</label>
-    <input class="modal-input" id="modal-text" type="text" placeholder="例：🔗 Free Round API 3/20 出貨確認" maxlength="120"
+    <div class="modal__title" id="modal-title">新增關注項目</div>
+    <label class="modal__label" for="modal-text">項目內容</label>
+    <input class="modal__input" id="modal-text" type="text" placeholder="例：🔗 Free Round API 3/20 出貨確認" maxlength="120"
       onkeydown="if(event.key==='Enter')saveModal();if(event.key==='Escape')closeModal();">
-    <div class="modal-footer">
-      <button class="modal-cancel" onclick="closeModal()">取消</button>
-      <button class="modal-save" onclick="saveModal()">儲存</button>
+    <div class="modal__footer">
+      <button class="modal__cancel" onclick="closeModal()">取消</button>
+      <button class="modal__save" onclick="saveModal()">儲存</button>
     </div>
   </div>
 </div>
 
 <!-- HEADER -->
-<header class="pg-hd">
+<header class="page-header">
   <div>
-    <div class="pg-title"><span>QA 專案週報</span><span>進度儀錶板</span></div>
-    <div class="pg-meta" id="pg-meta">—</div>
+    <div class="page-header__title"><span>QA 專案週報</span><span>進度儀錶板</span></div>
+    <div class="page-header__meta" id="pg-meta">—</div>
   </div>
-  <div class="pg-right">
-    <div class="pg-badge" id="pg-badge">—</div>
-    <div id="last-updated">—</div>
+  <div class="page-header__right">
+    <div class="page-header__badge" id="pg-badge">—</div>
+    <div class="page-header__updated" id="last-updated">—</div>
   </div>
 </header>
 
 <!-- ERROR BANNER -->
-<div id="load-error">
+<div id="load-error" class="load-error">
   <span>⚠️</span>
-  <div><strong>無法載入 data.json</strong><br>請確認 Apps Script 已正確執行，或直接開啟本機版本。</div>
+  <div><strong class="load-error__label">無法載入 data.json</strong><br>請確認 Apps Script 已正確執行，或直接開啟本機版本。</div>
 </div>
 
 <!-- QA BOARD -->
 <div class="sh">
-  <span class="sh-title">本週 QA 重點關注</span>
-  <div class="sh-line"></div>
+  <span class="sh__title">本週 QA 重點關注</span>
+  <div class="sh__line"></div>
   <button class="qa-add-btn" onclick="openModal()">＋ 新增項目</button>
 </div>
 <div class="qa-board">
   <div class="qa-col">
-    <div class="qa-col-hd todo">⚡ 進行中 / 待處理<span class="col-count" id="todo-count"></span></div>
+    <div class="qa-col__header qa-col__header--todo">⚡ 進行中 / 待處理<span class="qa-col__count" id="todo-count"></span></div>
     <div class="qa-list" id="qa-todo" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'todo')"></div>
   </div>
   <div class="qa-col">
-    <div class="qa-col-hd done">✓ 已完成<span class="col-count" id="done-count"></span></div>
+    <div class="qa-col__header qa-col__header--done">✓ 已完成<span class="qa-col__count" id="done-count"></span></div>
     <div class="qa-list" id="qa-done" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'done')"></div>
   </div>
 </div>
@@ -286,20 +73,20 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 <!-- GANTT -->
 <div class="sh">
   <div class="view-toggle">
-    <button class="vt-btn active" id="vt-Day"   onclick="setGanttView('Day',event)">日</button>
-    <button class="vt-btn"        id="vt-Week"  onclick="setGanttView('Week',event)">週</button>
-    <button class="vt-btn"        id="vt-Month" onclick="setGanttView('Month',event)">月</button>
+    <button class="view-toggle__btn view-toggle__btn--active" id="vt-Day"   onclick="setGanttView('Day',event)">日</button>
+    <button class="view-toggle__btn"                          id="vt-Week"  onclick="setGanttView('Week',event)">週</button>
+    <button class="view-toggle__btn"                          id="vt-Month" onclick="setGanttView('Month',event)">月</button>
   </div>
-  <span class="sh-title">全專案時間軸</span>
-  <div class="sh-line"></div>
-  <span class="sh-note" id="gantt-note">— 可拖曳長條調整時程</span>
+  <span class="sh__title">全專案時間軸</span>
+  <div class="sh__line"></div>
+  <span class="sh__note" id="gantt-note">— 可拖曳長條調整時程</span>
 </div>
 <div class="gantt-outer">
-  <div class="g-hd-quarter"><div class="g-hd-quarter-lbl">季度</div><div class="g-hd-quarter-cells" id="g-hd-q-cells"></div></div>
-  <div class="g-hd-month"><div class="g-hd-month-lbl"></div><div class="g-hd-month-cells" id="g-hd-m-cells"></div></div>
+  <div class="gantt-hd-quarter"><div class="gantt-hd-quarter__label">季度</div><div class="gantt-hd-quarter__cells" id="g-hd-q-cells"></div></div>
+  <div class="gantt-hd-month"><div class="gantt-hd-month__label"></div><div class="gantt-hd-month__cells" id="g-hd-m-cells"></div></div>
   <div class="gantt-split">
     <div class="gantt-left">
-      <div class="gantt-left-hd" id="gantt-left-hd">專案名稱</div>
+      <div class="gantt-left__header" id="gantt-left-hd">專案名稱</div>
       <ul class="gantt-label-list" id="gantt-label-list"></ul>
     </div>
     <div class="gantt-right" id="gantt-right">
@@ -310,593 +97,14 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1
 
 <!-- CARDS -->
 <div class="sh">
-  <span class="sh-title">所有專案詳情</span>
-  <div class="sh-line"></div>
-  <span class="sh-note">滑入翻轉查看負責人</span>
+  <span class="sh__title">所有專案詳情</span>
+  <div class="sh__line"></div>
+  <span class="sh__note">滑入翻轉查看負責人</span>
 </div>
 <div class="filter-bar" id="filter-bar"></div>
 <div class="all-cards-grid" id="all-cards"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
-<script>
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   QA Board 靜態資料（每週手動更新）
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const QA_ITEMS = [
-  { id:"qa1", text:"DAL 測試", done:false },
-  { id:"qa2", text:"狂野霸盜 最終測試", done:false },
-  { id:"qa3", text:"錦標賽 測試案例", done:false }
-];
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   data.json 載入與格式轉換
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-// 動態偵測 data.json 路徑
-const DATA_URL = (() => {
-  // 取得目前頁面所在目錄（相容 GitHub Pages 子目錄與根目錄）
-  const loc = window.location.href.split('?')[0].split('#')[0];
-  const base = loc.endsWith('/') ? loc : loc.substring(0, loc.lastIndexOf('/') + 1);
-  return base + 'data.json';
-})();
-
-const STATUS_MAP = {
-  '基本測試完成':'survey','基本測試中':'survey',
-  'COCOS串接':'fe',
-  'GS開發中':'audio','數學製作中':'audio','美術製作中':'art',
-  '已上線':'final','問卷demo會議':'survey','待開發':'tech',
-  'GS/CS/COCOS實作中':'tech','已出測':'tech',
-};
-
-function normalizeColor(c){
-  if(!c)return'#888888';
-  c=c.trim();
-  if(!c.startsWith('#'))c='#'+c;
-  if(c.length===9)c=c.slice(0,7); // 8碼取6碼
-  return c;
-}
-
-function toISODate(val){
-  if(!val||val===''||val==='0'||val==='待確認')return null;
-  if(/^\d{4}-\d{2}-\d{2}$/.test(val))return val;
-  // M/d 格式（Apps Script 輸出）
-  const m=val.match(/^(\d{1,2})\/(\d{1,2})$/);
-  if(m){
-    const yr=new Date().getFullYear();
-    return`${yr}-${String(m[1]).padStart(2,'0')}-${String(m[2]).padStart(2,'0')}`;
-  }
-  return null;
-}
-
-function toBool(val){
-  if(!val||val==='')return false;
-  const s=String(val).trim().toLowerCase();
-  return s==='有'||s==='是'||s==='true'||s==='✓'||s==='yes'||s==='1';
-}
-function toProgress(val){
-  if(!val||val==='')return 0;
-  const n=parseFloat(String(val).replace('%',''));
-  if(isNaN(n))return 0;
-  return n>1?n/100:n;
-}
-
-function rowToGame(r){
-  const stCls=STATUS_MAP[r.status||'']||'survey';
-  return{
-    kind:'game',id:r.id||'',emoji:r.emoji||'🎰',
-    name:r.name||r.nameEn||'',en:r.nameEn||'',
-    color:normalizeColor(r.color),
-    status:stCls,statusLabel:r.status||'',
-    progress:toProgress(r.progress),
-    qa:toISODate(r.qaTest),testDone:toISODate(r.doneTest),
-    ship:null,live:toISODate(r.releaseDate),
-    team:{
-      ...(r.gp    ?{GP:r.gp}:{}),
-      ...(r.fe    ?{FE:r.fe}:{}),
-      ...(r.info  ?{Info:r.info}:{}),
-      ...(r.his   ?{HIS:r.his}:{}),
-      ...(r.gs    ?{GS:r.gs}:{}),
-      ...(r.audio ?{音效:r.audio}:{}),
-    },
-    done:['—'],wip:[r.status||''],
-    mechs:{
-      extraBet:toBool(r.extrabet),
-      blitz:toBool(r.blitzmode),
-      frb:toBool(r.FreeRoundBonus),
-      fra:toBool(r.FreeRoundApi),
-      tournament:toBool(r.Tournament),
-      guarantee:false,
-      scPayout:false,
-      maxwin:(r.MAXWIN&&r.MAXWIN!==''&&r.MAXWIN!=='待確認')?r.MAXWIN:'',
-    },
-  };
-}
-
-function rowToTech(r){
-  const stCls=STATUS_MAP[r.status||'']||'tech';
-  return{
-    kind:'tech',icon:r.icon||'🔧',
-    name:r.name||'',en:r.nameEn||'',
-    color:normalizeColor(r.color),
-    status:stCls,statusLabel:r.status||'',
-    qa:toISODate(r.qaTest),testDone:toISODate(r.doneTest),
-    ship:null,prod:toISODate(r.prodDate),
-    team:{},
-    rows:[
-      ...(r.uatDate ?[{k:'UAT/Stage',v:r.uatDate,cls:''}]:[]),
-      ...(r.prodDate?[{k:'Prod',v:r.prodDate,cls:''}]:[]),
-    ],
-    mechs:null,
-  };
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━
-   全域資料（由 loadAndRender 填入）
-━━━━━━━━━━━━━━━━━━━━━━━━ */
-let GAMES=[], TECH=[];
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━
-   動態日期
-━━━━━━━━━━━━━━━━━━━━━━━━ */
-const TODAY=new Date(); TODAY.setHours(0,0,0,0);
-const TODAY_STR=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
-
-function isoWeek(d){const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-day);const y1=new Date(Date.UTC(dt.getUTCFullYear(),0,1));return Math.ceil((((dt-y1)/86400000)+1)/7);}
-function weekStart(d){const w=d.getDay()||7;const m=new Date(d);m.setDate(d.getDate()-w+1);return m;}
-function weekEnd(d){const f=new Date(weekStart(d));f.setDate(f.getDate()+6);return f;}
-function monthStart(d){return new Date(d.getFullYear(),d.getMonth(),1);}
-function monthEnd(d){return new Date(d.getFullYear(),d.getMonth()+1,0);}
-function fmtMD(d){return String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');}
-function toStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-
-function updateHeader(){
-  const wn=isoWeek(TODAY),ws=weekStart(TODAY),we=weekEnd(TODAY);
-  const mn=TODAY.getMonth()+1,yr=TODAY.getFullYear(),mw=Math.ceil(TODAY.getDate()/7);
-  document.getElementById('pg-meta').innerHTML=`第 ${wn} 週 &nbsp;·&nbsp; ${yr}.${fmtMD(ws)} – ${fmtMD(we)} &nbsp;·&nbsp; Slot Studio`;
-  document.getElementById('pg-badge').textContent=`${mn}月 第${mw}週 · ${yr}`;
-  document.title=`進度儀錶板 · ${yr} 第${wn}週`;
-  const mNames=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  const rS=new Date(yr,mn-2,1),rE=new Date(yr,mn+3,0);
-  document.getElementById('gantt-note').textContent=`${mNames[rS.getMonth()]} – ${mNames[rE.getMonth()]} ｜ 可拖曳長條調整時程`;
-}
-
-const RANGE_S=new Date(TODAY.getFullYear(),TODAY.getMonth()-1,1);
-const RANGE_E=new Date(TODAY.getFullYear(),TODAY.getMonth()+4,0);
-const RANGE_S_STR=toStr(RANGE_S),RANGE_E_STR=toStr(RANGE_E);
-
-const PILL={final:'pill-final',qa:'pill-qa',survey:'pill-survey',audio:'pill-audio',fe:'pill-fe',art:'pill-art',tech:'pill-tech'};
-let ganttInst=null,curView='Day',taskMeta={},projOrder=[];
-
-function initOrder(){
-  projOrder=[...[...GAMES].sort((a,b)=>shipDate(a)-shipDate(b)),...[...TECH].sort((a,b)=>shipDate(a)-shipDate(b))];
-}
-function daysLeft(ds){return Math.round((new Date(ds)-TODAY)/86400000);}
-function shortDate(ds){if(!ds)return'--/--';const d=new Date(ds);return String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0');}
-function shipDate(it){const s=it.ship||it.prod;return s?+new Date(s):+new Date(tlEnd(it));}
-function tlStart(it){return it.qa||it.barStart;}
-function tlEnd(it){return it.testDone||it.barEnd||it.ship||it.live||it.prod||it.qa;}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━
-   載入 data.json
-━━━━━━━━━━━━━━━━━━━━━━━━ */
-async function loadAndRender(){
-  document.getElementById('loading-state').style.display='flex';
-  try{
-    const res=await fetch(DATA_URL+'?t='+Date.now());
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
-
-    GAMES=(data.gameProjects||[]).map(rowToGame);
-    TECH=(data.techProjects||[]).map(rowToTech);
-
-    if(data.lastUpdated){
-      const d=new Date(data.lastUpdated);
-      const fmt=`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      document.getElementById('last-updated').textContent='資料更新：'+fmt;
-    }
-
-    document.getElementById('loading-state').style.display='none';
-    initOrder();renderFilterBar();renderGantt();renderCards();
-
-  }catch(err){
-    console.error('data.json 載入失敗：',err);
-    document.getElementById('loading-state').style.display='none';
-    document.getElementById('load-error').style.display='flex';
-    initOrder();renderFilterBar();renderGantt();renderCards();
-  }
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━
-   QA Board
-━━━━━━━━━━━━━━━━━━━━━━━━ */
-let qaState=QA_ITEMS.map(x=>({...x})),dragId=null,editId=null,idSeq=QA_ITEMS.length+1;
-function renderQA(){
-  const todo=qaState.filter(x=>!x.done),done=qaState.filter(x=>x.done);
-  document.getElementById('todo-count').textContent=todo.length;
-  document.getElementById('done-count').textContent=done.length;
-  function chip(item){
-    return`<div class="qa-chip ${item.done?'done-item':''}" draggable="true" data-id="${item.id}"
-      ondragstart="onDragStart(event,'${item.id}')" ondragend="onDragEnd(event)">
-      <span class="drag-handle">⠿</span><span class="chip-text">${item.text}</span>
-      <div class="qa-chip-actions">
-        <button class="qa-act-btn edit" onclick="openModal('${item.id}');event.stopPropagation();">✎</button>
-        <button class="qa-act-btn del"  onclick="deleteItem('${item.id}');event.stopPropagation();">✕</button>
-      </div></div>`;
-  }
-  document.getElementById('qa-todo').innerHTML=todo.map(chip).join('')||'<div style="padding:8px 10px;font-size:.75rem;color:var(--ink-4);font-family:var(--mono)">— 沒有待處理項目 —</div>';
-  document.getElementById('qa-done').innerHTML=done.map(chip).join('')||'<div style="padding:8px 10px;font-size:.75rem;color:var(--ink-4);font-family:var(--mono)">— 拖曳到此標記完成 —</div>';
-}
-function onDragStart(e,id){dragId=id;e.dataTransfer.effectAllowed='move';setTimeout(()=>{const el=document.querySelector(`[data-id="${id}"]`);if(el)el.classList.add('dragging');},0);}
-function onDragEnd(){document.querySelectorAll('.qa-chip').forEach(el=>el.classList.remove('dragging'));document.querySelectorAll('.qa-list').forEach(el=>el.classList.remove('drag-over'));}
-function onDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('drag-over');}
-function onDragLeave(e){e.currentTarget.classList.remove('drag-over');}
-function onDrop(e,col){e.preventDefault();e.currentTarget.classList.remove('drag-over');if(!dragId)return;const it=qaState.find(x=>x.id===dragId);if(it)it.done=(col==='done');dragId=null;renderQA();}
-function openModal(id){
-  editId=id||null;
-  const t=document.getElementById('modal-title'),inp=document.getElementById('modal-text');
-  if(editId){t.textContent='編輯項目';inp.value=qaState.find(x=>x.id===editId)?.text||'';}
-  else{t.textContent='新增關注項目';inp.value='';}
-  document.getElementById('qa-modal').classList.add('open');
-  setTimeout(()=>inp.focus(),80);
-}
-function closeModal(){document.getElementById('qa-modal').classList.remove('open');editId=null;}
-function onBackdropClick(e){if(e.target===e.currentTarget)closeModal();}
-function saveModal(){const text=document.getElementById('modal-text').value.trim();if(!text)return;if(editId){const it=qaState.find(x=>x.id===editId);if(it)it.text=text;}else qaState.push({id:`qa${++idSeq}`,text,done:false});closeModal();renderQA();}
-function deleteItem(id){if(!confirm('確定要刪除此項目？'))return;qaState=qaState.filter(x=>x.id!==id);renderQA();}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━
-   Gantt
-━━━━━━━━━━━━━━━━━━━━━━━━ */
-function renderGantt(){
-  const placeholder={id:'_ph',name:'',start:RANGE_S_STR,end:RANGE_E_STR,progress:0,custom_class:'range-ph'};
-  const tasks=[placeholder,...projOrder.map((item,idx)=>{
-    const s=tlStart(item),e=tlEnd(item);if(!s||!e)return null;
-    const launch=item.live||item.prod;
-    return{id:`t${idx}`,name:item.name,start:s,end:e,progress:100,
-      custom_class:item.kind==='game'?'gantt-game':'gantt-tech',
-      _color:item.color,_meta:{start:s,end:e,launch}};
-  }).filter(Boolean)];
-
-  taskMeta=Object.fromEntries(tasks.filter(t=>t.id!=='_ph').map(t=>[t.id,{start:t.start,end:t.end}]));
-  buildLabelList();
-  document.getElementById('gantt-chart').innerHTML='';
-
-  if(tasks.length<=1){
-    // 空資料：顯示提示
-    document.getElementById('gantt-label-list').innerHTML='<li style="padding:16px 14px;font-family:var(--mono);font-size:.72rem;color:var(--ink-4);">— 無專案資料 —</li>';
-    return;
-  }
-
-  ganttInst=new Gantt('#gantt-chart',tasks,{
-    view_mode:curView,language:'zh',date_format:'YYYY-MM-DD',
-    bar_height:22,padding:20,
-    custom_popup_html:(task)=>{
-      if(task.id==='_ph')return'';
-      const m=task._meta||{};
-      return`<div style="padding:10px 13px;font-family:var(--sans);line-height:1.55;min-width:155px;font-size:.82rem"><b>${task.name}</b><br>QA進測：${m.start||'-'}<br>完成測試：${m.end||'-'}${m.launch?`<br>上線：${m.launch}`:''}</div>`;
-    },
-    on_date_change:(task,start,end)=>{
-      if(task.id==='_ph')return;
-      const idx=parseInt(task.id.slice(1));const item=projOrder[idx];
-      if(item){item.qa=toStr(start);item.testDone=toStr(end);taskMeta[task.id]={start:item.qa,end:item.testDone};}
-      requestAnimationFrame(()=>{applyColors();drawMilestones();drawHighlights();buildHeaders();});
-    }
-  });
-  const r=()=>{syncRows();decorateDay();applyColors();drawMilestones();drawHighlights();buildHeaders();scrollToToday();};
-  requestAnimationFrame(r); setTimeout(r, 300); setTimeout(r, 800); setTimeout(syncRows, 1500);
-}
-
-function buildLabelList(){
-  // 只列出有日期的專案，與 Gantt SVG 列一一對應
-  const ganttItems=projOrder.filter(item=>tlStart(item)&&tlEnd(item));
-  document.getElementById('gantt-label-list').innerHTML=ganttItems.map((item)=>{
-    const nm=item.kind==='game'?`${item.emoji} ${item.name}`:`${item.icon} ${item.name}`;
-    const ri=projOrder.indexOf(item);
-    return`<li class="gantt-label-item" title="${nm}" data-ri="${ri}" draggable="true"
-      ondragstart="rowDS(event,${ri})" ondragover="rowDO(event,${ri})"
-      ondragleave="rowDL(event)" ondrop="rowDrop(event,${ri})" ondragend="rowDE(event)">
-      <span class="gantt-drag-hdl">⠿</span><span class="gantt-label-name">${nm}</span></li>`;
-  }).join('');
-}
-
-let rowDragI=null;
-function rowDS(e,i){rowDragI=i;e.dataTransfer.effectAllowed='move';setTimeout(()=>{const el=document.querySelector(`[data-ri="${i}"]`);if(el)el.classList.add('row-dragging');},0);}
-function rowDO(e,i){e.preventDefault();e.stopPropagation();document.querySelectorAll('.gantt-label-item').forEach(el=>el.classList.remove('row-drag-over'));const el=document.querySelector(`[data-ri="${i}"]`);if(el)el.classList.add('row-drag-over');}
-function rowDL(e){e.currentTarget.classList.remove('row-drag-over');}
-function rowDrop(e,toI){e.preventDefault();e.stopPropagation();document.querySelectorAll('.gantt-label-item').forEach(el=>el.classList.remove('row-drag-over','row-dragging'));if(rowDragI===null||rowDragI===toI){rowDragI=null;return;}const moved=projOrder.splice(rowDragI,1)[0];projOrder.splice(toI,0,moved);rowDragI=null;renderGantt();renderCards();}
-function rowDE(){document.querySelectorAll('.gantt-label-item').forEach(el=>el.classList.remove('row-drag-over','row-dragging'));rowDragI=null;}
-
-function setGanttView(mode,evt){
-  curView=mode;
-  ['Day','Week','Month'].forEach(k=>{const b=document.getElementById('vt-'+k);if(b)b.classList.toggle('active',k===mode);});
-  if(ganttInst){ganttInst.change_view_mode(mode);const r=()=>{syncRows();decorateDay();applyColors();drawMilestones();drawHighlights();buildHeaders();};requestAnimationFrame(r);setTimeout(r,500);}
-  else renderGantt();
-  if(evt&&evt.currentTarget)evt.currentTarget.blur();
-}
-
-function applyColors(){
-  const svg=document.querySelector('#gantt-chart .gantt');if(!svg)return;
-  let pi=0;
-  svg.querySelectorAll('.bar-wrapper').forEach(w=>{
-    if(w.getAttribute('data-id')==='_ph')return;
-    const item=projOrder[pi++];if(!item)return;
-    const bar=w.querySelector('.bar'),prog=w.querySelector('.bar-progress');
-    if(bar){bar.setAttribute('fill',item.color+'28');bar.setAttribute('stroke',item.color+'80');}
-    if(prog)prog.setAttribute('fill',item.color+'40');
-  });
-}
-
-const ROW_H=22+20; // bar_height + padding（與 Gantt 設定一致，固定值不需量測）
-
-function syncRows() {
-  const svgEl = document.getElementById('gantt-chart');
-  if (!svgEl) return;
-
-  const svg = svgEl.querySelector('.gantt');
-  if (!svg) return;
-
-  const labels = [...document.querySelectorAll('.gantt-label-item')];
-  if (!labels.length) return;
-
-  const gridRows = [...svg.querySelectorAll('rect.grid-row')];
-
-  if (gridRows.length <= 1) return;
-
-  const svgRect = svgEl.getBoundingClientRect();
-
-  const vb = svgEl.viewBox?.baseVal;
-
-  const scaleY =
-    vb && vb.height > 0
-      ? svgRect.height / vb.height
-      : 1;
-
-  // header 高度
-  const gridHeader = svg.querySelector('.grid-header');
-
-  const headerHeight =
-    parseFloat(gridHeader?.getAttribute('height') || 0) * scaleY;
-
-  // 同步左側 header
-  const leftHd = document.getElementById('gantt-left-hd');
-
-  if (leftHd) {
-    leftHd.style.height = `${headerHeight}px`;
-  }
-
-  // label list
-  const labelList = document.getElementById('gantt-label-list');
-
-  // 第一列真正位置
-  const firstRowY =
-    parseFloat(gridRows[1].getAttribute('y')) * scaleY;
-
-  labelList.style.paddingTop =
-    `${Math.max(0, firstRowY - headerHeight)}px`;
-
-  // 每列逐一對齊
-  labels.forEach((label, i) => {
-
-    const row = gridRows[i + 1];
-
-    if (!row) return;
-
-    const rowY =
-      parseFloat(row.getAttribute('y')) * scaleY;
-
-    const rowH =
-      parseFloat(row.getAttribute('height')) * scaleY;
-
-    label.style.height = `${rowH}px`;
-    label.style.lineHeight = `${rowH}px`;
-
-    label.style.transform =
-      `translateY(${rowY - firstRowY}px)`;
-  });
-
-  // 左側總高度同步
-  const ganttLeft = document.querySelector('.gantt-left');
-
-  if (ganttLeft) {
-    ganttLeft.style.height = `${svgRect.height}px`;
-  }
-}
-
-function scrollToToday(){
-  const gr=document.getElementById('gantt-right');
-  if(!gr||!ganttInst?.gantt_start)return;
-  const svg=document.querySelector('#gantt-chart .gantt');if(!svg)return;
-  const tr=svg.querySelector('.today-highlight');if(!tr)return;
-  const svgEl=document.getElementById('gantt-chart');
-  const vb=svgEl.viewBox?.baseVal;
-  const scaleX=(vb&&vb.width>0)?(svgEl.getBoundingClientRect().width/vb.width):1;
-  const tx=parseFloat(tr.getAttribute('x')||0);
-  gr.scrollLeft=Math.max(0,tx*scaleX-160);
-}
-
-function drawHighlights(){
-  const gr=document.getElementById('gantt-right');if(!gr)return;
-  gr.querySelectorAll('.now-line,.week-band,.month-band').forEach(n=>n.remove());
-  const svg=document.querySelector('#gantt-chart .gantt');if(!svg||!ganttInst?.gantt_start)return;
-  const tr=svg.querySelector('.today-highlight');if(!tr)return;
-  const svgEl=document.getElementById('gantt-chart');
-  const vb=svgEl.viewBox?.baseVal;
-  const scaleX=(vb&&vb.width>0)?(svgEl.getBoundingClientRect().width/vb.width):1;
-  const grR=gr.getBoundingClientRect(),svgR=svgEl.getBoundingClientRect();
-  const offsetX=svgR.left-grR.left;
-  const tx=parseFloat(tr.getAttribute('x')||0),tw=parseFloat(tr.getAttribute('width')||0);
-  const pxDay=tw*scaleX,todayCenterX=tx*scaleX+pxDay/2+offsetX;
-
-  const addLine=()=>{const l=document.createElement('div');l.className='now-line';l.style.left=todayCenterX+'px';gr.appendChild(l);};
-
-  if(curView==='Day'){
-    addLine();
-  }else if(curView==='Week'){
-    const ws=weekStart(TODAY),we=weekEnd(TODAY);
-    const msOff=(ws-TODAY)/86400000,meOff=(we-TODAY)/86400000;
-    const b=document.createElement('div');b.className='week-band';
-    b.style.left=(todayCenterX+msOff*pxDay)+'px';
-    b.style.width=Math.max(0,(meOff-msOff+1)*pxDay)+'px';
-    gr.appendChild(b);addLine();
-  }else if(curView==='Month'){
-    const ms=monthStart(TODAY),me=monthEnd(TODAY);
-    const msOff=(ms-TODAY)/86400000,meOff=(me-TODAY)/86400000;
-    const b=document.createElement('div');b.className='month-band';
-    b.style.left=(todayCenterX+msOff*pxDay)+'px';
-    b.style.width=Math.max(0,(meOff-msOff+1)*pxDay)+'px';
-    gr.appendChild(b);addLine();
-  }
-}
-
-function drawMilestones(){
-  const svg=document.querySelector('#gantt-chart .gantt');if(!svg)return;
-  svg.querySelectorAll('.gantt-ms-tag').forEach(n=>n.remove());
-  const placed=[];
-  function overlaps(a,b,g=4){return!(a.x+a.w+g<b.x||b.x+b.w+g<a.x||a.y+a.h+g<b.y||b.y+b.h+g<a.y);}
-  function mkTag(x,y,kind,text,align,place='top'){
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','gantt-ms-tag');
-    const tri=document.createElementNS('http://www.w3.org/2000/svg','polygon');tri.setAttribute('class',`gantt-tag-tri ${kind}`);
-    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');rect.setAttribute('class','gantt-tag-bg');
-    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');txt.setAttribute('class','gantt-tag-text');txt.textContent=text;
-    const w=Math.max(74,text.length*6.6+12),h=18,tW=6,tH=7;
-    const by=place==='top'?(y-h-tH-4):(y+tH+4),bx=align==='right'?x-w:x;
-    rect.setAttribute('x',bx);rect.setAttribute('y',by);rect.setAttribute('width',w);rect.setAttribute('height',h);
-    txt.setAttribute('x',bx+6);txt.setAttribute('y',by+12);
-    tri.setAttribute('points',place==='top'?(align==='right'?`${x},${y} ${x-tW},${y-tH} ${x-tW*2},${y-tH}`:`${x},${y} ${x+tW},${y-tH} ${x+tW*2},${y-tH}`):(align==='right'?`${x},${y} ${x-tW},${y+tH} ${x-tW*2},${y+tH}`:`${x},${y} ${x+tW},${y+tH} ${x+tW*2},${y+tH}`));
-    g.appendChild(rect);g.appendChild(tri);g.appendChild(txt);return{g,r:{x:bx,y:by,w,h}};
-  }
-  function placeTag(x,y,kind,text,align){
-    for(const[pl,yo]of[['top',0],['bottom',0],['top',-12],['bottom',12]]){
-      const c=mkTag(x,y+yo,kind,text,align,pl);if(!placed.some(r=>overlaps(c.r,r))){placed.push(c.r);return c.g;}
-    }
-    const fb=mkTag(x,y-18,kind,text,align,'top');placed.push(fb.r);return fb.g;
-  }
-  svg.querySelectorAll('.bar-wrapper').forEach(w=>{
-    const id=w.getAttribute('data-id');if(id==='_ph')return;
-    const meta=taskMeta[id];if(!meta)return;
-    const bar=w.querySelector('.bar');if(!bar)return;
-    const x=parseFloat(bar.getAttribute('x')||0),y=parseFloat(bar.getAttribute('y')||0),bw=parseFloat(bar.getAttribute('width')||0);
-    if(bw<=0)return;
-    svg.appendChild(placeTag(x,y+1,'qa',`QA ${shortDate(meta.start)}`,'left'));
-    svg.appendChild(placeTag(x+bw,y+1,'done',`完成 ${shortDate(meta.end)}`,'right'));
-  });
-}
-
-function buildHeaders(){
-  const svg=document.querySelector('#gantt-chart .gantt');if(!svg||!ganttInst?.gantt_start)return;
-  const gr=document.getElementById('gantt-right');
-  const svgEl=document.getElementById('gantt-chart');
-  const svgR=svgEl.getBoundingClientRect(),grR=gr.getBoundingClientRect();
-  const vb=svgEl.viewBox?.baseVal;
-  const scaleX=(vb&&vb.width>0)?(svgR.width/vb.width):1;
-  const uts=svg.querySelectorAll('.upper-text');if(!uts.length)return;
-  const segs=[];
-  uts.forEach(el=>{const x=parseFloat(el.getAttribute('x')||0);segs.push({x:x*scaleX+(svgR.left-grR.left),label:el.textContent.trim()});});
-  const W=grR.width,nowM=TODAY.getMonth()+1;
-  const mC=document.getElementById('g-hd-m-cells');mC.innerHTML='';
-  segs.forEach((seg,i)=>{
-    const nx=i<segs.length-1?segs[i+1].x:W,w=Math.max(0,nx-seg.x);
-    const mNum=parseInt(seg.label.match(/\d+/)?.[0]||0),isNow=mNum===nowM;
-    const cell=document.createElement('div');cell.className='g-hd-m-cell'+(isNow?' now-month':'');
-    cell.style.cssText=`left:${seg.x}px;width:${w}px;`;cell.textContent=seg.label;mC.appendChild(cell);
-  });
-  function toQ(l){const n=parseInt(l.match(/\d+/)?.[0]||0);if(n<=3)return'第一季';if(n<=6)return'第二季';if(n<=9)return'第三季';return'第四季';}
-  const qC=document.getElementById('g-hd-q-cells');qC.innerHTML='';
-  const qG=[];
-  segs.forEach((seg,i)=>{const q=toQ(seg.label),nx=i<segs.length-1?segs[i+1].x:W;if(!qG.length||qG[qG.length-1].q!==q)qG.push({q,x:seg.x,ex:nx});else qG[qG.length-1].ex=nx;});
-  qG.forEach(g=>{const w=Math.max(0,g.ex-g.x);const cell=document.createElement('div');cell.className='g-hd-q-cell';cell.style.cssText=`left:${g.x}px;width:${w}px;`;cell.textContent=g.q;qC.appendChild(cell);});
-}
-
-function decorateDay(){
-  if(curView!=='Day'||!ganttInst?.gantt_start)return;
-  const wd=['日','一','二','三','四','五','六'];
-  document.querySelectorAll('#gantt-chart .lower-text').forEach((el,i)=>{
-    const d=new Date(ganttInst.gantt_start);d.setDate(d.getDate()+i);
-    el.textContent=`${d.getDate()}(${wd[d.getDay()]})`;
-    const isToday=d.toDateString()===TODAY.toDateString();
-    el.setAttribute('fill',isToday?'#FF8F59':'');el.style.fontWeight=isToday?'700':'';
-  });
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━
-   Cards + 篩選
-━━━━━━━━━━━━━━━━━━━━━━━━ */
-const FILTER_OPTS=['全部','COCOS串接','基本測試完成','基本測試中','GS開發中','數學製作中','美術製作中','已上線'];
-let curFilter='';
-function renderFilterBar(){
-  document.getElementById('filter-bar').innerHTML=FILTER_OPTS.map(l=>
-    `<button class="filter-btn${(l==='全部'&&curFilter==='')||(curFilter===l)?' active':''}" onclick="setFilter('${l}')">${l}</button>`
-  ).join('');
-}
-function setFilter(l){curFilter=l==='全部'?'':l;renderFilterBar();renderCards();}
-
-const MECH_DEFS=[
-  {key:'extraBet',label:'Extra Bet'},
-  {key:'blitz',label:'Blitz Mode'},
-  {key:'frb',label:'FRB'},
-  {key:'fra',label:'FRA'},
-  {key:'tournament',label:'錦標賽'},
-];
-
-function mechSection(mechs){
-  if(!mechs)return'';
-  const tags=MECH_DEFS.map(d=>{
-    const v=mechs[d.key];
-    const cls=v?'y':'n';
-    return`<span class="mech-tag ${cls}">${v?'✓':'✕'} ${d.label}</span>`;
-  }).join('');
-  const maxwin=mechs.maxwin?`<span class="mech-maxwin">頂倍 ${mechs.maxwin}</span>`:'';
-  return`<div class="mech-section"><div class="mech-row">${tags}${maxwin}</div></div>`;
-}
-
-function renderCards(){
-  function dateCell(label,ds,hot){
-    if(!ds)return`<div class="pc-date empty"><div class="pcd-lbl">${label}</div><div class="pcd-val" style="color:var(--ink-4)">—</div></div>`;
-    const dl=daysLeft(ds),cnt=dl<0?'已完成':dl===0?'今天':`剩 ${dl} 天`;
-    const hc=(hot&&dl>=0&&dl<=7)?' hot':'';
-    return`<div class="pc-date"><div class="pcd-lbl">${label}</div><div class="pcd-val">${ds.slice(5)}</div><div class="pcd-cnt${hc}">${cnt}</div></div>`;
-  }
-  function teamBack(item){
-    const ent=Object.entries(item.team||{});
-    const tg=ent.length?`<div class="back-team">${ent.map(([r,n])=>`<div class="bt-item"><span class="bt-role">${r}</span><span class="bt-name">${n}</span></div>`).join('')}</div>`:`<div class="back-no-team">— 負責人資料待補 —</div>`;
-    const sub=item.kind==='game'?`${item.en} · #${item.id}`:item.en;
-    return`<div class="flip-back"><div class="back-hint">團隊成員</div><div class="back-name">${item.name}</div><div class="back-sub">${sub}</div>${tg}</div>`;
-  }
-  function gameFront(g){
-    const done=g.done.map(t=>`<div class="pc-upd"><div class="upd-pip" style="background:var(--green)"></div><span>${t}</span></div>`).join('');
-    const wip=g.wip.map(t=>`<div class="pc-upd"><div class="upd-pip" style="background:var(--amber)"></div><span>${t}</span></div>`).join('');
-    return`<div class="flip-front" style="--pc-color:${g.color}">
-      <div class="pc-top"><span class="pc-ico">${g.emoji}</span><span class="pc-pill ${PILL[g.status]}">${g.statusLabel}</span></div>
-      <div class="pc-name">${g.name}</div><div class="pc-sub">${g.en}${g.id?' · #'+g.id:''}</div>
-      <div class="pc-prog-row"><span class="pc-prog-lbl">進度</span><span class="pc-prog-pct" style="color:${g.color}">${Math.round(g.progress*100)}%</span></div>
-      <div class="pc-bar-track"><div class="pc-bar-fill" style="width:${g.progress*100}%;background:${g.color}"></div></div>
-      <div class="pc-dates">${dateCell('QA 進測',g.qa,true)}${dateCell('出貨',g.ship,true)}${dateCell('上線',g.live,false)}</div>
-      ${mechSection(g.mechs)}
-      <div class="pc-updates">${done}${wip}</div>
-      <span class="flip-hint">▷ 滑入翻轉查看負責人</span></div>`;
-  }
-  function techFront(t){
-    const rows=t.rows.map(r=>`<div class="tc-row"><span class="tc-k">${r.k}</span><span class="tc-v ${r.cls}">${r.v}</span></div>`).join('');
-    return`<div class="flip-front" style="--pc-color:${t.color}">
-      <div class="pc-top"><span class="pc-ico">${t.icon}</span><span class="pc-pill pill-tech">${t.statusLabel}</span></div>
-      <div class="pc-name">${t.name}</div><div class="pc-sub">${t.en}</div>
-      <div class="pc-dates">${dateCell('QA 進測',t.qa,true)}${dateCell('出貨',t.ship,true)}${dateCell('正式上線',t.prod,false)}</div>
-      <div class="tc-rows">${rows}</div>
-      <span class="flip-hint">▷ 滑入翻轉查看負責人</span></div>`;
-  }
-  const filtered=curFilter?projOrder.filter(it=>(it.statusLabel||'').includes(curFilter)):projOrder;
-  document.getElementById('all-cards').innerHTML=filtered.map((item,i)=>{
-    const front=item.kind==='game'?gameFront(item):techFront(item);
-    return`<div class="flip-card" style="animation-delay:${i*0.05}s"><div class="flip-inner">${front}${teamBack(item)}</div></div>`;
-  }).join('')||'<div style="padding:24px;color:var(--ink-4);font-family:var(--mono);font-size:.8rem;text-align:center;grid-column:1/-1">— 無符合條件的專案 —</div>';
-}
-
-/* ── Init ── */
-updateHeader();
-renderQA();
-loadAndRender();   // ← 非同步載入 data.json，完成後才渲染 Gantt + Cards
-
-(()=>{const r=document.getElementById('gantt-right');if(r)r.addEventListener('scroll',()=>requestAnimationFrame(buildHeaders));})();
-window.addEventListener('resize',()=>requestAnimationFrame(()=>{syncRows();drawHighlights();buildHeaders();}));
-</script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

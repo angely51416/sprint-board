@@ -1,0 +1,73 @@
+/* ── Filter ── */
+.filter-bar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
+.filter-btn{font-family:var(--mono);font-size:.62rem;font-weight:500;letter-spacing:.05em;padding:4px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border-dk);background:var(--surface);color:var(--ink-3);transition:all .12s;white-space:nowrap;}
+.filter-btn:hover{border-color:var(--dark);color:var(--dark);background:var(--panel);}
+.filter-btn--active{background:var(--dark);border-color:var(--dark);color:#FFF;}
+
+/* ── CARDS ── */
+.all-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(296px,1fr));gap:1px;background:var(--border);border:1px solid var(--border-dk);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);}
+.flip-card{height:380px;perspective:1000px;animation:card-rise .35s ease both;}
+@keyframes card-rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flip-card__inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .44s cubic-bezier(.4,0,.2,1);}
+.flip-card:hover .flip-card__inner{transform:rotateY(180deg);}
+.flip-card__front,.flip-card__back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:16px 17px 12px;display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
+.flip-card__back{transform:rotateY(180deg);background:var(--dark);color:#FFF;justify-content:center;}
+.flip-card__front::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pc-color,var(--border));}
+
+/* ── Card front ── */
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.card-top__icon{font-size:19px;}
+.card-top__pill{font-family:var(--mono);font-size:.54rem;font-weight:500;letter-spacing:.05em;padding:3px 8px;border-radius:3px;}
+.card__name{font-size:.93rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:1px;}
+.card__sub{font-family:var(--mono);font-size:.62rem;color:var(--ink-4);margin-bottom:8px;}
+.card-progress__row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.card-progress__label{font-family:var(--mono);font-size:.59rem;letter-spacing:.08em;color:var(--ink-4);}
+.card-progress__pct{font-family:var(--mono);font-size:.87rem;font-weight:500;}
+.card-progress__track{height:2px;background:var(--panel-b);margin-bottom:9px;border-radius:1px;overflow:hidden;}
+.card-progress__fill{height:100%;border-radius:1px;}
+.card-dates{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:7px;}
+.card-date{background:var(--panel);padding:6px 8px;}
+.card-date--empty{background:var(--bg);}
+.card-date__label{font-family:var(--mono);font-size:.51rem;font-weight:500;letter-spacing:.07em;color:var(--ink-4);margin-bottom:2px;}
+.card-date__value{font-family:var(--mono);font-size:.77rem;font-weight:500;color:var(--ink);line-height:1;}
+.card-date__countdown{font-family:var(--mono);font-size:.57rem;color:var(--ink-3);margin-top:2px;}
+.card-date__countdown--hot{color:var(--red);}
+.card-updates{display:flex;flex-direction:column;gap:3px;overflow:hidden;flex-shrink:1;min-height:0;margin-top:4px;}
+.card-update{display:flex;gap:7px;align-items:flex-start;font-size:.72rem;color:var(--ink-2);line-height:1.38;}
+.card-update__dot{width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.card-tech-rows{display:flex;flex-direction:column;gap:5px;overflow:hidden;flex-shrink:1;min-height:0;margin-top:6px;}
+.card-tech-row{display:flex;justify-content:space-between;gap:8px;}
+.card-tech-row__key{font-family:var(--mono);font-size:.67rem;color:var(--ink-3);}
+.card-tech-row__val{font-family:var(--mono);font-size:.67rem;font-weight:500;color:var(--ink-2);text-align:right;}
+.card-tech-row__val--hot{color:var(--red);}
+.card-tech-row__val--warn{color:var(--amber);}
+.card-tech-row__val--ok{color:var(--green);}
+
+/* ── 遊戲機制標籤 ── */
+.mech-section{margin-top:5px;margin-bottom:2px;}
+.mech-section__label{font-family:var(--mono);font-size:.50rem;letter-spacing:.08em;color:var(--ink-4);margin-bottom:4px;}
+.mech-section__row{display:flex;flex-wrap:wrap;gap:3px;}
+.mech-tag{font-family:var(--mono);font-size:.49rem;font-weight:500;letter-spacing:.04em;padding:2px 6px;border-radius:3px;white-space:nowrap;border:1px solid transparent;}
+.mech-tag--yes{background:#E4F0E8;color:#1E4A2A;border-color:#A8D0B0;}
+.mech-tag--no{background:#F2F0EC;color:#909088;border-color:#D4CEC4;}
+.mech-maxwin{font-family:var(--mono);font-size:.49rem;font-weight:500;padding:2px 7px;border-radius:3px;background:var(--amb-bg);color:var(--amber);border:1px solid #D4A860;}
+
+/* ── Card back ── */
+.card-back__hint{font-family:var(--mono);font-size:.60rem;letter-spacing:.06em;color:rgba(255,255,255,.38);margin-bottom:10px;}
+.card-back__name{font-family:var(--serif);font-size:1.04rem;font-weight:700;color:#FFF;margin-bottom:2px;line-height:1.2;}
+.card-back__sub{font-family:var(--mono);font-size:.61rem;color:rgba(255,255,255,.36);margin-bottom:14px;}
+.card-back__team{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;}
+.card-back__member{display:flex;flex-direction:column;gap:1px;}
+.card-back__role{font-family:var(--mono);font-size:.55rem;letter-spacing:.06em;color:rgba(255,255,255,.32);}
+.card-back__member-name{font-size:.81rem;font-weight:700;color:#FFF;}
+.card-back__no-team{font-family:var(--mono);font-size:.7rem;color:rgba(255,255,255,.28);margin-top:8px;}
+.card-flip-hint{position:absolute;bottom:8px;right:11px;font-family:var(--mono);font-size:.52rem;letter-spacing:.05em;color:var(--ink-4);opacity:.7;pointer-events:none;}
+
+/* ── Status pills ── */
+.pill--final{background:#E4EDF6;color:#1A3A6A;}
+.pill--qa{background:var(--red-bg);color:var(--red);}
+.pill--survey{background:var(--amb-bg);color:var(--amber);}
+.pill--audio{background:#EDE6F6;color:#3A1E60;}
+.pill--fe{background:#E2EFF1;color:#0A3840;}
+.pill--art{background:#F1E9E4;color:#4C2616;}
+.pill--tech{background:var(--panel-b);color:var(--ink-2);}
